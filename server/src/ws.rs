@@ -1,4 +1,4 @@
-use futures_util::{StreamExt, SinkExt, stream::SplitSink};
+use futures_util::{StreamExt, stream::SplitSink, SinkExt};
 use tokio_tungstenite::WebSocketStream;
 use tokio::net::TcpStream;
 use tokio_tungstenite::tungstenite::{Error as WsError, Message};
@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-use std::{sync::Arc, io, error::{Error, self}, collections::HashMap};
+use std::{sync::Arc};
 
 use crate::{user::User, room::Room, ROOMS};
 
@@ -31,10 +31,27 @@ impl WsMsg {
     }
 }
 
+#[derive(Serialize)]
+#[serde(tag = "type")]
+pub enum ServerWsMsg<'a> {
+    JoinRoom {success: bool, message: Option<String>},
+    LeaveRoom,
+    CreateRoom {success: bool, room_code: String},
+    RoomData {Room: &'a Room},
+    NewUserConnected {user: (String, String)},
+    UserLeft {user: String}
+}
+impl<'a> ServerWsMsg<'a> {
+    pub fn to_msg(&self) -> Message {
+        let str_data = serde_json::to_string(&self).unwrap();
+        Message::Text(str_data)
+    }
+}
+
 pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
     let ws_conn = tokio_tungstenite::accept_async(conn).await?;
 
-    let (mut ws_sender, mut ws_reader) = ws_conn.split();
+    let (ws_sender, mut ws_reader) = ws_conn.split();
     let ws_sender = Arc::new(Mutex::new(ws_sender));
 
     let mut room_code = String::from("");
@@ -62,7 +79,12 @@ pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
 
         match ws_msg {
             WsMsg::SetPlay { playing } => todo!(),
-            WsMsg::JoinRoom { room_id, username } => todo!(),
+            WsMsg::JoinRoom { room_id, username } => {
+                let succ = join_room(&room_id, &user_id, &username, &ws_sender).await;
+                if succ {
+                    room_code = room_id;
+                }
+            },
             WsMsg::CreateRoom { username } => {
                 let rc = create_room(&ws_sender, &user_id, username).await;
                 room_code = rc
@@ -81,12 +103,17 @@ pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
         let room = Room::new(User { name, conn: ws_sender.clone() }, user_id);
         let code = room.code.clone();
         ROOMS.lock().await.insert(code.clone(), room);
+        ws_sender.lock().await.send(ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }.to_msg()).await.ok();
         code
     }
 
     async fn leave_room(room_id: &String, user_id: &String, ) {
         let mut rooms = ROOMS.lock().await;
-        let room = rooms.get_mut(room_id).unwrap();
+        let room = rooms.get_mut(room_id);
+        if room.is_none() {
+            return ;
+        }
+        let room = room.unwrap();
         room.remove_user(user_id).await;
         let roomcode = room.code.clone();
         if room.user_count() == 0 {
@@ -95,6 +122,25 @@ pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
             rooms.remove(&roomcode);
             return;
         }
+        
+    }
+
+    async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sender: &WsWriter) -> bool {
+        let mut rooms = ROOMS.lock().await;
+        let room = rooms.get_mut(room_id);
+        if room.is_none() {
+            ws_sender.lock().await.send(ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }.to_msg()).await.ok();
+            return false;
+        }
+
+        let user = User{
+            conn: ws_sender.clone(),
+            name: username.clone()
+        };
+
+        let room = room.unwrap();
+        room.add_user(user_id, user).await;
+        true
     }
 
     async fn set_video() {

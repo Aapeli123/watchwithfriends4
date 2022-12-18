@@ -1,13 +1,26 @@
 use std::collections::HashMap;
 
 use futures_util::SinkExt;
+use serde::{Serialize};
+use rand::Rng;
 
-use crate::{ws::{WsMsg, WsWriter}, user::User};
+use crate::{ws::ServerWsMsg, user::User};
 
 fn create_room_code() -> String {
-    todo!();
+    const CHARSET: &[u8] = b"0123456789";
+    const ROOMCODE_LEN: usize = 6;
+    let mut rng = rand::thread_rng();
+
+    let roomcode: String = (0..ROOMCODE_LEN)
+        .map(|_| {
+            let idx = rng.gen_range(0..CHARSET.len());
+            CHARSET[idx] as char
+        })
+        .collect();
+    roomcode
 }
 
+#[derive(Serialize)]
 pub struct Room {
     pub code: String,
     users: HashMap<String, User>,
@@ -32,20 +45,35 @@ impl Room {
         }
     }
 
-    pub async fn broadcast(&self, message: WsMsg) {
-        for (id, ws_sender) in &self.users {
+    pub async fn broadcast<'a>(&self, message: ServerWsMsg<'a>) {
+        for (_, ws_sender) in &self.users {
             let mut conn = ws_sender.conn.lock().await;
             conn.send(message.to_msg()).await.ok();
         }
     }
 
-    pub async fn add_user(&mut self, user_id: &String, ws_sender: User) {
-        self.users.insert(user_id.clone(), ws_sender);
-        // self.broadcast()
+    pub async fn add_user(&mut self, user_id: &String, user: User) {
+        let un = user.name.clone();
+        self.broadcast(ServerWsMsg::NewUserConnected { user: (user_id.clone(), un) }).await;
+        let c = user.conn.clone();
+        self.users.insert(user_id.clone(), user);
+        c.lock().await.send(ServerWsMsg::RoomData { Room: self }.to_msg()).await.ok();
     }
 
     pub async fn remove_user(&mut self,user_id: &String) {
-        self.users.remove(user_id);
+        let u = self.users.remove(user_id);
+        let u = u.unwrap();
+        u.conn.lock().await.send(ServerWsMsg::LeaveRoom.to_msg()).await.ok();
+
+        self.broadcast(ServerWsMsg::UserLeft { user: user_id.clone() }).await;
+        if user_id.clone() == self.leader_id && self.user_count() != 0{
+            let new_leader = self.users.keys().next().unwrap().clone();
+            self.leader_id = new_leader;
+        }
+    }
+
+    pub async fn sync_time() {
+        todo!()
     }
 
     pub fn user_count(&self) -> usize {
