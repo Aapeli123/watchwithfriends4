@@ -57,7 +57,7 @@ impl Room {
         self.broadcast(ServerWsMsg::NewUserConnected { user: (user_id.clone(), un) }).await;
         let c = user.conn.clone();
         self.users.insert(user_id.clone(), user);
-        c.lock().await.send(ServerWsMsg::RoomData { Room: self }.to_msg()).await.ok();
+        c.lock().await.send(ServerWsMsg::RoomData { room: self }.to_msg()).await.ok();
     }
 
     pub async fn remove_user(&mut self,user_id: &String) {

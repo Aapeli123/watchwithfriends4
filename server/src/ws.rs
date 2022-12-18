@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use crate::{user::User, room::Room, ROOMS};
 
@@ -37,7 +37,7 @@ pub enum ServerWsMsg<'a> {
     JoinRoom {success: bool, message: Option<String>},
     LeaveRoom,
     CreateRoom {success: bool, room_code: String},
-    RoomData {Room: &'a Room},
+    RoomData {room: &'a Room},
     NewUserConnected {user: (String, String)},
     UserLeft {user: String}
 }
