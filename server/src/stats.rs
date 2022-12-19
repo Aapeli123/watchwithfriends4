@@ -5,7 +5,7 @@ use log::debug;
 use crate::{ROOMS, USER_COUNT};
 
 pub async fn stat_display_thread() {
-    let mut interval = tokio::time::interval(Duration::from_secs(10));
+    let mut interval = tokio::time::interval(Duration::from_secs(30));
 
     loop {
         interval.tick().await; // Wait 10 seconds
