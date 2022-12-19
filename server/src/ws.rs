@@ -31,7 +31,8 @@ pub enum WsMsg {
     LeaveRoom,
     SetVideo{video_id: String},
     SetLeader{leader_id: String},
-    SyncTime{time: f64}
+    SyncTime{time: f64},
+    RoomData
 }
 
 impl WSSendable for WsMsg {
@@ -135,6 +136,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             WsMsg::SetVideo { video_id } => set_video(&room_code, &video_id, &user_id, &ws_sender).await,
             WsMsg::SetLeader { leader_id } => set_leader(&room_code, &user_id, &leader_id).await,
             WsMsg::SyncTime { time } => sync_time(&room_code, time, &user_id).await,
+            WsMsg::RoomData => get_room_data(&room_code, &user_id, &ws_sender).await,
         }
     }
 
@@ -155,9 +157,8 @@ async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> S
     let room = Room::new(User { name, conn: ws_sender.clone() }, user_id);
     let code = room.code.clone();
     info!("New room created by {} with code {}", un, code);
-    send_message(ws_sender, ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }).await;
-    send_message(ws_sender, ServerWsMsg::RoomData { room: &room }).await;
     ROOMS.lock().await.insert(code.clone(), room);
+    send_message(ws_sender, ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }).await;
 
     code
 }
@@ -203,6 +204,18 @@ async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sen
     room.add_user(user_id, user).await;
     info!("User {} joined room {}", username, room_id);
     true
+}
+
+async fn get_room_data(room_code: &String, user_id: &String, ws_sender: &WsWriter) {
+    debug!("{} has requested the room data for {}", user_id, room_code);
+    let rooms = ROOMS.lock().await;
+    let room = rooms.get(room_code);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_code);
+        return;
+    }
+    let room = room.unwrap();
+    send_message(ws_sender, ServerWsMsg::RoomData { room: room }).await;
 }
 
 async fn sync_time(room_id: &String, time: f64, user_id: &String) {
