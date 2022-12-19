@@ -9,7 +9,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 use std::{sync::Arc, net::SocketAddr};
 
-use crate::{user::User, room::{Room, self}, ROOMS, USER_COUNT};
+use crate::{user::User, room::{Room}, ROOMS, USER_COUNT};
 
 pub type WsWriter = Arc<Mutex<SplitSink<WebSocketStream<TcpStream>, Message>>>;
 
