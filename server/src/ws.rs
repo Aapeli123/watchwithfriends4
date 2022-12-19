@@ -53,6 +53,8 @@ pub enum ServerWsMsg<'a> {
     SetLeader {success: bool},
     SetVideo {success: bool},
     NewLeader {leader_id: String},
+    Sync {time: f64},
+    SetPlay {playing: bool}
 }
 impl<'a> WSSendable for ServerWsMsg<'a> {
     fn to_msg(&self) -> Message {
@@ -100,7 +102,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         let ws_msg = ws_msg.unwrap();
         debug!("Recieved message from user {}. Message: {:?}", user_id, ws_msg);
         match ws_msg {
-            WsMsg::SetPlay { playing } => todo!(),
+            WsMsg::SetPlay { playing } => set_playing(&room_code, playing, &user_id).await,
             WsMsg::JoinRoom { room_id, username } => {
                 let succ = join_room(&room_id, &user_id, &username, &ws_sender).await;
                 if succ {
@@ -117,7 +119,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             },
             WsMsg::SetVideo { video_id } => set_video(&room_code, &video_id, &user_id, &ws_sender).await,
             WsMsg::SetLeader { leader_id } => set_leader(&room_code, &user_id, &leader_id).await,
-            WsMsg::SyncTime { time } => todo!(),
+            WsMsg::SyncTime { time } => sync_time(&room_code, time, &user_id).await,
         }
     }
 
@@ -185,6 +187,35 @@ async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sen
     room.add_user(user_id, user).await;
     info!("User {} joined room {}", username, room_id);
     true
+}
+
+async fn sync_time(room_id: &String, time: f64, user_id: &String) {
+    debug!("{} has sent a sync message.", user_id);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_id);
+        return;
+    }
+    let room = room.unwrap();
+    if !room.is_leader(user_id) {
+        warn!("User {} is not leader and sent a sync event.", user_id);
+        return;
+    }
+    room.sync_time(time).await;
+}
+
+
+async fn set_playing(room_id: &String, playing: bool, user_id: &String) {
+    debug!("{} has requested to change playing to {}.", user_id, playing);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_id);
+        return;
+    }
+    let room = room.unwrap();
+    room.set_play(playing).await;
 }
 
 async fn set_video(room_id: &String, video_id: &String, user_id: &String, ws_sender: &WsWriter) {

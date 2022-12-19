@@ -97,14 +97,20 @@ impl Room {
         info!("Leader of room {} has been changed to {}", self.code, leader_name);
     }
 
-    pub fn is_leader(&self,user_id: &String) -> bool {
-        self.leader_id == *user_id
+    pub async fn sync_time(&mut self, time: f64) {
+        trace!("Syncing time of room {}.", self.code);
+        self.time = time;
+        self.broadcast(ServerWsMsg::Sync{time}).await;
     }
 
+    pub async fn set_play(&mut self, playing: bool) {
+        self.playing = playing;
+        self.broadcast(ServerWsMsg::SetPlay { playing: true }).await;
+        info!("Room {} playback state changed to {}", self.code, playing);
+    }
 
-
-    pub async fn sync_time() {
-        todo!()
+    pub fn is_leader(&self,user_id: &String) -> bool {
+        self.leader_id == *user_id
     }
 
     pub fn user_count(&self) -> usize {
