@@ -82,6 +82,27 @@ impl Room {
         }
     }
 
+    pub async fn set_video(&mut self,video_id: &String) {
+        self.video_id = Some(video_id.clone());
+        self.playing = false;
+        self.broadcast(ServerWsMsg::RoomData { room: self }).await;
+        info!("Room {} video changed to {}", self.code, video_id);
+    }
+
+    pub async fn set_leader(&mut self, new_leader: &String) {
+        self.leader_id = new_leader.clone();
+        self.broadcast(ServerWsMsg::NewLeader { leader_id: self.leader_id.clone() }).await;
+        
+        let leader_name = self.users[new_leader].name.clone();
+        info!("Leader of room {} has been changed to {}", self.code, leader_name);
+    }
+
+    pub fn is_leader(&self,user_id: &String) -> bool {
+        self.leader_id == *user_id
+    }
+
+
+
     pub async fn sync_time() {
         todo!()
     }

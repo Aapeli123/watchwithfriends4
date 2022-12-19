@@ -49,7 +49,10 @@ pub enum ServerWsMsg<'a> {
     CreateRoom {success: bool, room_code: String},
     RoomData {room: &'a Room},
     NewUserConnected {user: (String, String)},
-    UserLeft {user: String}
+    UserLeft {user: String},
+    SetLeader {success: bool},
+    SetVideo {success: bool},
+    NewLeader {leader_id: String},
 }
 impl<'a> WSSendable for ServerWsMsg<'a> {
     fn to_msg(&self) -> Message {
@@ -112,8 +115,8 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
                 leave_room(&room_code, &user_id).await;
                 room_code = String::from("");
             },
-            WsMsg::SetVideo { video_id } => todo!(),
-            WsMsg::SetLeader { leader_id } => todo!(),
+            WsMsg::SetVideo { video_id } => set_video(&room_code, &video_id, &user_id, &ws_sender).await,
+            WsMsg::SetLeader { leader_id } => set_leader(&room_code, &user_id, &leader_id).await,
             WsMsg::SyncTime { time } => todo!(),
         }
     }
@@ -182,6 +185,37 @@ async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sen
     true
 }
 
-async fn set_video() {
+async fn set_video(room_id: &String, video_id: &String, user_id: &String, ws_sender: &WsWriter) {
+    debug!("{} is trying to change the video in room {}", user_id, room_id);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_id);
+        return;
+    }
+    let room = room.unwrap();
+    if !room.is_leader(user_id) {
+        debug!("{} is not leader and therefore cannot change the video.", user_id);
+        send_message(ws_sender, ServerWsMsg::SetVideo { success: false }).await;
+        return;
+    }
+    room.set_video(video_id).await;
+}
 
+async fn set_leader(room_id: &String, user_id: &String, new_leader_id: &String) {
+    debug!("{} is trying to change the leader in room {}", user_id, room_id);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_id);
+        return;
+    }
+    let room = room.unwrap();
+
+    if !room.is_leader(user_id) {
+        warn!("{} is not the leader and cannot change the leader.", user_id);
+        return;
+    }
+
+    room.set_leader(new_leader_id).await;
 }
