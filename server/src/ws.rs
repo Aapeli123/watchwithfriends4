@@ -136,9 +136,11 @@ async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> S
     debug!("User {} is creating a new room with the username {}...", user_id, &un);
     let room = Room::new(User { name, conn: ws_sender.clone() }, user_id);
     let code = room.code.clone();
-    ROOMS.lock().await.insert(code.clone(), room);
     info!("New room created by {} with code {}", un, code);
     send_message(ws_sender, ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }).await;
+    send_message(ws_sender, ServerWsMsg::RoomData { room: &room }).await;
+    ROOMS.lock().await.insert(code.clone(), room);
+
     code
 }
 
