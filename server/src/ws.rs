@@ -9,7 +9,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 use std::{sync::Arc, net::SocketAddr};
 
-use crate::{user::User, room::Room, ROOMS, USER_COUNT};
+use crate::{user::User, room::{Room, self}, ROOMS, USER_COUNT};
 
 pub type WsWriter = Arc<Mutex<SplitSink<WebSocketStream<TcpStream>, Message>>>;
 
@@ -120,12 +120,20 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         match ws_msg {
             WsMsg::SetPlay { playing } => set_playing(&room_code, playing, &user_id).await,
             WsMsg::JoinRoom { room_id, username } => {
+                if room_code != "" {
+                    warn!("{} tried to join a room while already in a room", {&user_id});
+                    continue;
+                }
                 let succ = join_room(&room_id, &user_id, &username, &ws_sender).await;
                 if succ {
                     room_code = room_id;
                 }
             },
             WsMsg::CreateRoom { username } => {
+                if room_code != "" {
+                    warn!("{} tried to create a room while already in a room", {&user_id});
+                    continue;
+                }
                 let rc = create_room(&ws_sender, &user_id, username).await;
                 room_code = rc
             },
