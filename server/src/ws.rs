@@ -41,7 +41,7 @@ impl WSSendable for WsMsg {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 #[serde(tag = "type")]
 pub enum ServerWsMsg<'a> {
     JoinRoom {success: bool, message: Option<String>},

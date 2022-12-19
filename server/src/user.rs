@@ -1,7 +1,7 @@
 use crate::ws::WsWriter;
 use serde::{Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct User {
     pub name: String,
 

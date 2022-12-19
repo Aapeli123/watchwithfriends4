@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use futures_util::SinkExt;
-use log::info;
+use log::{info, trace, debug};
 use serde::{Serialize};
 use rand::Rng;
 
@@ -21,7 +21,7 @@ fn create_room_code() -> String {
     roomcode
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct Room {
     pub code: String,
     users: HashMap<String, User>,
@@ -47,7 +47,9 @@ impl Room {
     }
 
     pub async fn broadcast<'a>(&self, message: ServerWsMsg<'a>) {
-        for (_, user) in &self.users {
+        trace!("Broadcasting {:?} to all users in room {}", message, self.code);
+        for (id, user) in &self.users {
+            trace!("Broadcasting the message to {}({})", id,user.name);
             let mut conn = user.conn.lock().await;
             conn.send(message.to_msg()).await.ok();
         }
@@ -57,10 +59,11 @@ impl Room {
         send_message(&user.conn, ServerWsMsg::JoinRoom { success: true, message: None }).await;
         let un = user.name.clone();
         self.broadcast(ServerWsMsg::NewUserConnected { user: (user_id.clone(), un) }).await;
+        debug!("Broadcasting user connection to all room users...");
         let c = user.conn.clone();
         self.users.insert(user_id.clone(), user);
+        debug!("Added new user({}) to room {}. Room has now {} members.", user_id, self.code, self.user_count());
         send_message(&c, ServerWsMsg::RoomData { room: self }).await;
-
     }
 
     pub async fn remove_user(&mut self,user_id: &String) {
@@ -69,8 +72,12 @@ impl Room {
         info!("Removed user {} from room {}", u.name, self.code);
         send_message(&u.conn, ServerWsMsg::LeaveRoom).await;
         self.broadcast(ServerWsMsg::UserLeft { user: user_id.clone() }).await;
-        if user_id.clone() == self.leader_id && self.user_count() != 0{
+        if user_id.clone() == self.leader_id && self.user_count() != 0 {
+            debug!("User was leader of the room and the room still exists, getting new leader.");
             let new_leader = self.users.keys().next().unwrap().clone();
+            let new_leader_name = self.users[&new_leader].name.clone();
+            info!("Room {} leader is now {}.", self.code, new_leader_name);
+            debug!("New leader id: {}", new_leader);
             self.leader_id = new_leader;
         }
     }
