@@ -44,6 +44,7 @@ impl WSSendable for WsMsg {
 #[derive(Serialize, Debug)]
 #[serde(tag = "type")]
 pub enum ServerWsMsg<'a> {
+    UserID {user_id: String},
     JoinRoom {success: bool, message: Option<String>},
     LeaveRoom,
     CreateRoom {success: bool, room_code: String},
@@ -87,7 +88,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
 
     let mut room_code = String::from("");
     let user_id = Uuid::new_v4().to_string();
-
+    send_message(&ws_sender, ServerWsMsg::UserID { user_id: user_id.clone() }).await;
     debug!("Assinged user id {} to address {}", user_id, &addr.to_string());
 
     'main_loop: loop {
