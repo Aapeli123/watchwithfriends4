@@ -1,4 +1,5 @@
 use futures_util::{StreamExt, stream::SplitSink, SinkExt};
+use log::{warn, debug, info};
 use tokio_tungstenite::WebSocketStream;
 use tokio::net::TcpStream;
 use tokio_tungstenite::tungstenite::{Error as WsError, Message};
@@ -6,13 +7,13 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-use std::sync::Arc;
+use std::{sync::Arc, net::SocketAddr};
 
 use crate::{user::User, room::Room, ROOMS};
 
 pub type WsWriter = Arc<Mutex<SplitSink<WebSocketStream<TcpStream>, Message>>>;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
 pub enum WsMsg {
     SetPlay{playing: bool},
@@ -48,7 +49,9 @@ impl<'a> ServerWsMsg<'a> {
     }
 }
 
-pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
+pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), WsError> {
+    debug!("New connection from {}", &addr.to_string());
+
     let ws_conn = tokio_tungstenite::accept_async(conn).await?;
 
     let (ws_sender, mut ws_reader) = ws_conn.split();
@@ -56,27 +59,34 @@ pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
 
     let mut room_code = String::from("");
     let user_id = Uuid::new_v4().to_string();
+
+    debug!("Assinged user id {} to address {}", user_id, &addr.to_string());
+
     'main_loop: loop {
         let msg = ws_reader.next().await;
         if msg.is_none() {
+            debug!("Recieved empty or close message from user {}. Closing connection.", user_id);
             break 'main_loop;
         }
         let data = msg.unwrap();
         if data.is_err() {
+            warn!("Websocket data from user {} was erroneous. Disconnecting them.", user_id);
             break 'main_loop;
         }
         let msg = data.unwrap();
         if !msg.is_text() {
+            debug!("Message from user {} was not text...", user_id);
             continue;
         }
         let data = msg.into_text().unwrap();
         let ws_msg = serde_json::from_str::<WsMsg>(data.as_str());
         if ws_msg.is_err() {
+            warn!("User {} broke protocol. Disconnecting.", user_id);
             break 'main_loop;
         }
 
         let ws_msg = ws_msg.unwrap();
-
+        debug!("Recieved message from user {}. Message: {:?}", user_id, ws_msg);
         match ws_msg {
             WsMsg::SetPlay { playing } => todo!(),
             WsMsg::JoinRoom { room_id, username } => {
@@ -99,53 +109,70 @@ pub async fn handle_connection(conn: TcpStream) -> Result<(), WsError> {
         }
     }
 
-    async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> String  {
-        let room = Room::new(User { name, conn: ws_sender.clone() }, user_id);
-        let code = room.code.clone();
-        ROOMS.lock().await.insert(code.clone(), room);
-        ws_sender.lock().await.send(ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }.to_msg()).await.ok();
-        code
+    if room_code != "" {
+        debug!("User {} is disconnecting but still in room. Leaving the room.", user_id);
+        leave_room(&room_code, &user_id).await;
     }
 
-    async fn leave_room(room_id: &String, user_id: &String, ) {
-        let mut rooms = ROOMS.lock().await;
-        let room = rooms.get_mut(room_id);
-        if room.is_none() {
-            return ;
-        }
-        let room = room.unwrap();
-        room.remove_user(user_id).await;
-        let roomcode = room.code.clone();
-        if room.user_count() == 0 {
-            // Delete empty room
-            drop(room);
-            rooms.remove(&roomcode);
-            return;
-        }
-        
-    }
-
-    async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sender: &WsWriter) -> bool {
-        let mut rooms = ROOMS.lock().await;
-        let room = rooms.get_mut(room_id);
-        if room.is_none() {
-            ws_sender.lock().await.send(ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }.to_msg()).await.ok();
-            return false;
-        }
-
-        let user = User{
-            conn: ws_sender.clone(),
-            name: username.clone()
-        };
-
-        let room = room.unwrap();
-        room.add_user(user_id, user).await;
-        true
-    }
-
-    async fn set_video() {
-
-    }
-
+    debug!("Closing connection for address {}", addr.to_string());
     Ok(())
+}
+
+
+async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> String  {
+    let un = name.clone();
+    debug!("User {} is creating a new room with the username {}...", user_id, &un);
+    let room = Room::new(User { name, conn: ws_sender.clone() }, user_id);
+    let code = room.code.clone();
+    ROOMS.lock().await.insert(code.clone(), room);
+    info!("New room created by {} with code {}", un, code);
+    ws_sender.lock().await.send(ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }.to_msg()).await.ok();
+    code
+}
+
+async fn leave_room(room_id: &String, user_id: &String) {
+    debug!("User {} is leaving the room {}", user_id, room_id);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with ID {} not found", room_id);
+        return ;
+    }
+    let room = room.unwrap();
+    room.remove_user(user_id).await;
+    let roomcode = room.code.clone();
+    if room.user_count() == 0 {
+        // Delete empty room
+        info!("Room {} is now empty. Removing it.", room_id);
+        drop(room);
+        rooms.remove(&roomcode);
+        info!("Empty room removed.");
+        return;
+    }
+    
+}
+
+async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sender: &WsWriter) -> bool {
+    debug!("User {} is trying to join room {} with username: {}", user_id, room_id, username);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist to join.", room_id);
+        ws_sender.lock().await.send(ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }.to_msg()).await.ok();
+        return false;
+    }
+
+    let user = User{
+        conn: ws_sender.clone(),
+        name: username.clone()
+    };
+
+    let room = room.unwrap();
+    room.add_user(user_id, user).await;
+    info!("User {} joined room {}", username, room_id);
+    true
+}
+
+async fn set_video() {
+
 }

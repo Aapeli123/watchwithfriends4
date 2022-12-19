@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use futures_util::SinkExt;
+use log::info;
 use serde::{Serialize};
 use rand::Rng;
 
@@ -63,6 +64,7 @@ impl Room {
     pub async fn remove_user(&mut self,user_id: &String) {
         let u = self.users.remove(user_id);
         let u = u.unwrap();
+        info!("Removed user {} from room {}", u.name, self.code);
         u.conn.lock().await.send(ServerWsMsg::LeaveRoom.to_msg()).await.ok();
 
         self.broadcast(ServerWsMsg::UserLeft { user: user_id.clone() }).await;
