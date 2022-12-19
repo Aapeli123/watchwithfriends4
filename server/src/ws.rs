@@ -9,7 +9,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 use std::{sync::Arc, net::SocketAddr};
 
-use crate::{user::User, room::Room, ROOMS};
+use crate::{user::User, room::Room, ROOMS, USER_COUNT};
 
 pub type WsWriter = Arc<Mutex<SplitSink<WebSocketStream<TcpStream>, Message>>>;
 
@@ -63,8 +63,22 @@ impl<'a> WSSendable for ServerWsMsg<'a> {
     }
 }
 
+pub async fn add_user_to_count() {
+    let mut lock = USER_COUNT.lock().await;
+    let uc = *lock + 1;
+    *lock = uc;
+}
+
+pub async fn remove_user_from_count() {
+    let mut lock = USER_COUNT.lock().await;
+    let uc = *lock - 1;
+    *lock = uc;
+}
+
 pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), WsError> {
     debug!("New connection from {}", &addr.to_string());
+    
+    add_user_to_count().await;
 
     let ws_conn = tokio_tungstenite::accept_async(conn).await?;
 
@@ -129,6 +143,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
     }
 
     debug!("Closing connection for address {}", addr.to_string());
+    remove_user_from_count().await;
     Ok(())
 }
 
@@ -228,7 +243,7 @@ async fn set_video(room_id: &String, video_id: &String, user_id: &String, ws_sen
     }
     let room = room.unwrap();
     if !room.is_leader(user_id) {
-        debug!("{} is not leader and therefore cannot change the video.", user_id);
+        warn!("{} is not leader and therefore cannot change the video.", user_id);
         send_message(ws_sender, ServerWsMsg::SetVideo { success: false }).await;
         return;
     }

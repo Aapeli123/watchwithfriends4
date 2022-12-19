@@ -75,10 +75,7 @@ impl Room {
         if user_id.clone() == self.leader_id && self.user_count() != 0 {
             debug!("User was leader of the room and the room still exists, getting new leader.");
             let new_leader = self.users.keys().next().unwrap().clone();
-            let new_leader_name = self.users[&new_leader].name.clone();
-            info!("Room {} leader is now {}.", self.code, new_leader_name);
-            debug!("New leader id: {}", new_leader);
-            self.leader_id = new_leader;
+            self.set_leader(&new_leader).await;
         }
     }
 
@@ -105,7 +102,7 @@ impl Room {
 
     pub async fn set_play(&mut self, playing: bool) {
         self.playing = playing;
-        self.broadcast(ServerWsMsg::SetPlay { playing: true }).await;
+        self.broadcast(ServerWsMsg::SetPlay { playing: self.playing }).await;
         info!("Room {} playback state changed to {}", self.code, playing);
     }
 
