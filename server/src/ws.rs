@@ -198,7 +198,7 @@ async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sen
     let mut rooms = ROOMS.lock().await;
     let room = rooms.get_mut(room_id);
     if room.is_none() {
-        warn!("Room with code {} does not exist to join.", room_id);
+        debug!("Room with code {} does not exist to join.", room_id);
         send_message(ws_sender, ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }).await;
         return false;
     }
