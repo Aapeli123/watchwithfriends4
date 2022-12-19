@@ -5,7 +5,7 @@ use log::info;
 use serde::{Serialize};
 use rand::Rng;
 
-use crate::{ws::ServerWsMsg, user::User};
+use crate::{ws::{ServerWsMsg, WSSendable, send_message}, user::User};
 
 fn create_room_code() -> String {
     const CHARSET: &[u8] = b"0123456789";
@@ -47,26 +47,27 @@ impl Room {
     }
 
     pub async fn broadcast<'a>(&self, message: ServerWsMsg<'a>) {
-        for (_, ws_sender) in &self.users {
-            let mut conn = ws_sender.conn.lock().await;
+        for (_, user) in &self.users {
+            let mut conn = user.conn.lock().await;
             conn.send(message.to_msg()).await.ok();
         }
     }
 
     pub async fn add_user(&mut self, user_id: &String, user: User) {
+        send_message(&user.conn, ServerWsMsg::JoinRoom { success: true, message: None }).await;
         let un = user.name.clone();
         self.broadcast(ServerWsMsg::NewUserConnected { user: (user_id.clone(), un) }).await;
         let c = user.conn.clone();
         self.users.insert(user_id.clone(), user);
-        c.lock().await.send(ServerWsMsg::RoomData { room: self }.to_msg()).await.ok();
+        send_message(&c, ServerWsMsg::RoomData { room: self }).await;
+
     }
 
     pub async fn remove_user(&mut self,user_id: &String) {
         let u = self.users.remove(user_id);
         let u = u.unwrap();
         info!("Removed user {} from room {}", u.name, self.code);
-        u.conn.lock().await.send(ServerWsMsg::LeaveRoom.to_msg()).await.ok();
-
+        send_message(&u.conn, ServerWsMsg::LeaveRoom).await;
         self.broadcast(ServerWsMsg::UserLeft { user: user_id.clone() }).await;
         if user_id.clone() == self.leader_id && self.user_count() != 0{
             let new_leader = self.users.keys().next().unwrap().clone();

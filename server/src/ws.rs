@@ -13,6 +13,15 @@ use crate::{user::User, room::Room, ROOMS};
 
 pub type WsWriter = Arc<Mutex<SplitSink<WebSocketStream<TcpStream>, Message>>>;
 
+pub trait WSSendable {
+    fn to_msg(&self) -> Message;
+}
+
+pub async fn send_message(ws_sender: &WsWriter, message: impl WSSendable) {
+    ws_sender.lock().await.send(message.to_msg()).await.ok();
+}
+
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
 pub enum WsMsg {
@@ -25,8 +34,8 @@ pub enum WsMsg {
     SyncTime{time: f64}
 }
 
-impl WsMsg {
-    pub fn to_msg(&self) -> Message {
+impl WSSendable for WsMsg {
+    fn to_msg(&self) -> Message {
         let str_data = serde_json::to_string(&self).unwrap();
         Message::Text(str_data)
     }
@@ -42,8 +51,8 @@ pub enum ServerWsMsg<'a> {
     NewUserConnected {user: (String, String)},
     UserLeft {user: String}
 }
-impl<'a> ServerWsMsg<'a> {
-    pub fn to_msg(&self) -> Message {
+impl<'a> WSSendable for ServerWsMsg<'a> {
+    fn to_msg(&self) -> Message {
         let str_data = serde_json::to_string(&self).unwrap();
         Message::Text(str_data)
     }
@@ -126,7 +135,7 @@ async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> S
     let code = room.code.clone();
     ROOMS.lock().await.insert(code.clone(), room);
     info!("New room created by {} with code {}", un, code);
-    ws_sender.lock().await.send(ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }.to_msg()).await.ok();
+    send_message(ws_sender, ServerWsMsg::CreateRoom { success: true, room_code: code.clone() }).await;
     code
 }
 
@@ -158,7 +167,7 @@ async fn join_room(room_id: &String, user_id: &String, username: &String, ws_sen
     let room = rooms.get_mut(room_id);
     if room.is_none() {
         warn!("Room with code {} does not exist to join.", room_id);
-        ws_sender.lock().await.send(ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }.to_msg()).await.ok();
+        send_message(ws_sender, ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Room not found")) }).await;
         return false;
     }
 
