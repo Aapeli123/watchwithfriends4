@@ -1,0 +1,6 @@
+.player-container {
+    margin: 2px;
+    width: calc(100% - 4px);
+    height: 90vh;
+    align-self: center;
+}

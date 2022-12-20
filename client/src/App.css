@@ -1,0 +1,9 @@
+.main-content div {
+  display: inline-block;
+}
+.app-data {
+  background-color: #121212;
+  width: calc(100% - 240px);
+  height: calc(100vh - 40px);
+  vertical-align: top;
+}
