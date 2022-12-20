@@ -10,6 +10,7 @@
 
     width: fit-content;
     height: 100%;
+    display: block !important;
 }
 
 .logo h2{
@@ -34,3 +35,9 @@
     vertical-align: text-bottom;
     display: inline;
 }
+
+#link-breaker{
+    height: 100%;
+    width: 5px;
+}
+

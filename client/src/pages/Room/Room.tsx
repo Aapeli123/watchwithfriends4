@@ -2,11 +2,7 @@ import React from "react";
 import ReactPlayer from 'react-player'
 import "./Room.css"
 
-interface RoomProps {
-
-}
-
-const Room = (props: RoomProps) => {
+const Room = () => {
     return (
         <>
             <div className="player-container">

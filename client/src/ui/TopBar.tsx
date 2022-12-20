@@ -1,6 +1,7 @@
 import React from "react";
 import "./TopBar.css"
 import logo from "./logo_placeholder.png"
+import { Link } from "react-router-dom";
 const TopBar = () => {
     return (
         <>
@@ -10,6 +11,7 @@ const TopBar = () => {
                     <h2 id="logo-text-left">Watchwith</h2>
                     <h2 id="logo-text-right">friends</h2>
                 </div>
+                <div id="link-breaker"></div>
             </div>
         </>
     )
