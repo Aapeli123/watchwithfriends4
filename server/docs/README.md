@@ -106,10 +106,8 @@ For example when the leader changes:
 ```
 or when someone joins or disconnects:
 ```json
-// Here an user called test joined the room
 {"type":"NewUserConnected","user":["53bf6eb1-14e9-4ea2-a880-40ef74f21af3","test"]}
 ```
 ```json
-// Here the same user left
 {"type":"UserLeft","user":"5998e1ee-68ac-4ca1-af26-5bf559a3f2d6"}
 ```
