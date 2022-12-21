@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes} from 'react-router-dom'
 import './App.css'
-import connect from './lib/conn'
+import connect, { ServerConn } from './lib/conn'
 import Home from './pages/Home/Home'
 import Info from './pages/Info/Info'
 import Room from './pages/Room/Room'
@@ -25,23 +26,41 @@ const MainLayout = () => {
 }
 
 function App(): JSX.Element {
+  const [connection, setConnection] = useState<ServerConn | undefined>();
+  const [connected, setConnected] = useState(false);
   
-  return (
+  useEffect(() => {
+    if (connected) {
+      console.log("Already connected.")
+      return;
+    }
+    const connectToServer = async () => {
+      const conn = await connect("ws://localhost:8080");
+      console.log("Connected...");
+      setConnection(conn);
+      setConnected(true);
+
+    }
+    connectToServer();
+  }, [])
+  return connected ? (
   <>
     <BrowserRouter>
       <div className="App">
         <Routes>
           <Route path="/" element={<MainLayout />}>
-              <Route path="/room" element={<Room />} />
+              <Route path="/room" element={<Room conn={connection as ServerConn} />} />
               <Route path="/info" element={<Info />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home conn={connection as ServerConn}/>} />
             </Route>
         </Routes>    
       </div>
     </BrowserRouter>
   </>
-  )
+  ) : <div className="App">
+    <h1>Loading..</h1>
+  </div>
 }
 
 export default App

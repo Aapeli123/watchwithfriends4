@@ -1,6 +1,6 @@
 import { parseMessage, Response, Sendable } from "./messages";
 
-class ServerConn {
+export class ServerConn {
     readonly user_id: string
     private socket: WebSocket
 
@@ -14,7 +14,7 @@ class ServerConn {
     }
 
     joinRoom(room_id: string, username: string) {
-        this.sendMessage({username: username, room_id: room_id}, Sendable.WsMsgType.CreateRoom);
+        this.sendMessage({username: username, room_id: room_id}, Sendable.WsMsgType.JoinRoom);
     }
 
     leaveRoom() {

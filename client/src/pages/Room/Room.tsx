@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactPlayer from 'react-player'
+import { ServerConn } from "../../lib/conn";
 import "./Room.css"
 
-const Room = () => {
+const Room = (props: {conn: ServerConn}) => {
+    useEffect(() => {
+
+    });
     return (
         <>
             <div className="player-container">
