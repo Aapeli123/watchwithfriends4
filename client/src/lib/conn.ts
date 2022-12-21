@@ -51,25 +51,19 @@ export class ServerConn {
         });
     }
 
-    syncTime(time: number) {
-        return new Promise((res, rej) => {
-            // TODO
-            this.sendMessage({time: time}, Sendable.WsMsgType.SyncTime);
-        });
-    }
-
-    setPlay(playing: boolean) {
-        return new Promise((res, rej) => {
-            // TODO
-            this.sendMessage({playing: playing}, Sendable.WsMsgType.SetPlay);
-        });
-    }
-
-    setVideo(video_id: string) {
+    setVideo(video_id: string): Promise<Response.SetVideoResp> {
         return new Promise((res, rej) => {
             // TODO
             this.sendMessage({video_id: video_id}, Sendable.WsMsgType.SetVideo);
         });
+    }
+
+    syncTime(time: number) {
+        this.sendMessage({time: time}, Sendable.WsMsgType.SyncTime);
+    }
+
+    setPlay(playing: boolean) {
+        this.sendMessage({playing: playing}, Sendable.WsMsgType.SetPlay);
     }
 
     addMessageCallback(callback: (msg: Response.WsResponse) => any) {

@@ -1,5 +1,6 @@
 export namespace Response {
-    export type WsResponseBody = UserIdResp | JoinRoomResp | LeaveRoomResp | CreateRoomResp | RoomDataResp | NewUserConnectedResp | UserLeftResp | SetLeaderResp | SetVideoResp | NewLeaderResp | SyncResp | SetPlayResp
+    export type WsResponseBody = UserIdResp | JoinRoomResp | LeaveRoomResp | CreateRoomResp | RoomDataResp 
+    | NewUserConnectedResp | UserLeftResp | SetLeaderResp | SetVideoResp | NewLeader | Sync | SetPlay
 
     export interface UserIdResp {user_id: string};
     export interface JoinRoomResp  {success: boolean, message: string | null};
@@ -10,9 +11,10 @@ export namespace Response {
     export interface UserLeftResp {user: string}
     export interface SetLeaderResp {success: boolean}
     export interface SetVideoResp {success: boolean}
-    export interface NewLeaderResp {leader_id: string}
-    export interface SyncResp {time: number}
-    export interface SetPlayResp {playing: boolean}
+    export interface NewLeader {leader_id: string}
+    export interface Sync {time: number}
+    export interface SetPlay {playing: boolean}
+    export interface NewVideo {video_id: string}
     
     export enum MessageType {
         UserID = "UserID",
@@ -26,7 +28,8 @@ export namespace Response {
         SetVideo = "SetVideo",
         NewLeader = "NewLeader",
         Sync = "Sync",
-        SetPlay = "SetPlay"
+        SetPlay = "SetPlay",
+        NewVideo = "NewVideo"
     }
     export interface WsResponse {
         type: MessageType,
