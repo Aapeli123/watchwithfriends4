@@ -1,4 +1,3 @@
-import React from "react";
 import "./TopBar.css"
 import logo from "./logo_placeholder.png"
 import { Link } from "react-router-dom";

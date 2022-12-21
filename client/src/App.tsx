@@ -5,6 +5,7 @@ import connect, { ServerConn } from './lib/conn'
 import Home from './pages/Home/Home'
 import Info from './pages/Info/Info'
 import Room from './pages/Room/Room'
+import RoomCode from './pages/RoomCodeEntry/RoomCode'
 import Settings from './pages/Settings/Settings'
 import SideBar from './ui/SideBar'
 import TopBar from './ui/TopBar'
@@ -49,6 +50,7 @@ function App(): JSX.Element {
       <div className="App">
         <Routes>
           <Route path="/" element={<MainLayout />}>
+              <Route path="/joinroom" element={<RoomCode conn={connection as ServerConn} />} />
               <Route path="/room/:code" element={<Room conn={connection as ServerConn} />} />
               <Route path="/info" element={<Info />} />
               <Route path="/settings" element={<Settings />} />

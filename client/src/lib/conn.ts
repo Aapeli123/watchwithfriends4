@@ -13,7 +13,7 @@ export class ServerConn {
         return new Promise((res, rej) => {
             this.socket.onmessage = (event) => {
                 const msg = parseMessage(event.data).message as Response.CreateRoomResp;
-                if(msg.success) {
+                if(!msg.success) {
                     rej(msg.message);
                     return;
                 }
@@ -25,7 +25,14 @@ export class ServerConn {
 
     joinRoom(room_id: string, username: string): Promise<Response.JoinRoomResp> {
         return new Promise((res, rej) => {
-            // TODO
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.JoinRoomResp;
+                if(!msg.success) {
+                    rej(msg.message);
+                    return;
+                }
+                res(msg);
+            }
             this.sendMessage({username: username, room_id: room_id}, Sendable.WsMsgType.JoinRoom);
         });
     }

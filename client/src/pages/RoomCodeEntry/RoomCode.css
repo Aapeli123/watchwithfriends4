@@ -1,0 +1,26 @@
+.room-code-container {
+    width: 100%;
+    height: calc(100vh - 45px);
+    text-align: center;
+}
+
+.code-input-container input {
+    background-color: aqua;
+    border: none;
+    margin: 5px;
+    height: fit-content;
+    font-size: 90px;
+    text-align: center;
+    border-radius: 2px;
+    width: 50px;
+}
+
+.code-input-container input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
