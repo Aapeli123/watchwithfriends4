@@ -270,6 +270,8 @@ async fn set_video(room_id: &String, video_id: &String, user_id: &String, ws_sen
         return;
     }
     room.set_video(video_id).await;
+    send_message(ws_sender, ServerWsMsg::SetVideo { success: true }).await;
+
 }
 
 async fn set_leader(room_id: &String, user_id: &String, new_leader_id: &String) {
