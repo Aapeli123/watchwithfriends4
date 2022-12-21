@@ -1,81 +1,74 @@
-export enum MessageType {
-    UserID = "UserID",
-    JoinRoom = "JoinRoom",
-    LeaveRoom = "LeaveRoom",
-    CreateRoom = "CreateRoom",
-    RoomData = "RoomData",
-    NewUserConnected = "NewUserConnected",
-    UserLeft = "UserLeft",
-    SetLeader = "SetLeader",
-    SetVideo = "SetVideo",
-    NewLeader = "NewLeader",
-    Sync = "Sync",
-    SetPlay = "SetPlay"
+export namespace Response {
+    export type WsResponseBody = UserIdResp | JoinRoomResp | LeaveRoomResp | CreateRoomResp | RoomDataResp | NewUserConnectedResp | UserLeftResp | SetLeaderResp | SetVideoResp | NewLeaderResp | SyncResp | SetPlayResp
+
+    export interface UserIdResp {user_id: string};
+    export interface JoinRoomResp  {success: boolean, message: string | null};
+    export interface LeaveRoomResp {};
+    export interface CreateRoomResp {success: boolean, message: string | null}
+    export interface RoomDataResp {room: SrvrRoom}
+    export interface NewUserConnectedResp {user: [string, string]}
+    export interface UserLeftResp {user: string}
+    export interface SetLeaderResp {success: boolean}
+    export interface SetVideoResp {success: boolean}
+    export interface NewLeaderResp {leader_id: string}
+    export interface SyncResp {time: number}
+    export interface SetPlayResp {playing: boolean}
+    
+    export enum MessageType {
+        UserID = "UserID",
+        JoinRoom = "JoinRoom",
+        LeaveRoom = "LeaveRoom",
+        CreateRoom = "CreateRoom",
+        RoomData = "RoomData",
+        NewUserConnected = "NewUserConnected",
+        UserLeft = "UserLeft",
+        SetLeader = "SetLeader",
+        SetVideo = "SetVideo",
+        NewLeader = "NewLeader",
+        Sync = "Sync",
+        SetPlay = "SetPlay"
+    }
+    export interface WsResponse {
+        type: MessageType,
+        message: WsResponseBody
+    }
+
+    export interface SrvrRoom { // Stands for ServerRoom to avoid confusion between this and the Room.tsx file export Room
+        code: string,
+        users: Map<string, string>,
+        video_id: string | null,
+        time: number,
+        playing: boolean,
+        leader_id: string
+    }
 }
 
-export interface WsMessage {
-    type: MessageType,
-    message: WsMessageBody
-}
-
-export type WsMessageBody = UserIdMsg | JoinRoomMsg | LeaveRoomMsg | CreateRoomMsg | RoomDataMsg | NewUserConnectedMsg | UserLeftMsg | SetLeaderMsg | SetVideoMsg | NewLeaderMsg | SyncMsg | SetPlayMsg
-
-export interface SrvrRoom { // Stands for ServerRoom to avoid confusion between this and the Room.tsx file export Room
-    code: string,
-    users: Map<string, string>,
-    video_id: string | null,
-    time: number,
-    playing: boolean,
-    leader_id: string
-}
-
-export interface UserIdMsg {
-    user_id: string
-};
-export interface JoinRoomMsg  {
-    success: boolean
-    message: string | null
-};
-export interface LeaveRoomMsg {};
-export interface CreateRoomMsg {
-    success: boolean
-    message: string | null
-}
-export interface RoomDataMsg {
-    room: SrvrRoom
-}
-
-export interface NewUserConnectedMsg {
-    user: [string, string]
-}
-
-export interface UserLeftMsg {
-    user: string
-}
-
-export interface SetLeaderMsg {
-    success: boolean
-}
-
-export interface SetVideoMsg {
-    success: boolean
-}
-
-export interface NewLeaderMsg {
-    leader_id: string
-}
-
-export interface SyncMsg {
-    time: number
-}
-
-export interface SetPlayMsg {
-    playing: boolean
-}
-
-
-export const parseMessage = (message: string): WsMessage => {
+export const parseMessage = (message: string): Response.WsResponse => {
     let data = JSON.parse(message);
-    let type = data.type as MessageType;
-    return {type: type, message: data as WsMessageBody};
+    let type = data.type as Response.MessageType;
+    return {type: type, message: data as Response.WsResponseBody};
+}
+
+
+export namespace Sendable {
+    export type WsMsgBody = SetPlay | JoinRoom | CreateRoom | LeaveRoom | SetVideo | SetLeader | SyncTime | RoomData; 
+    export interface SetPlay{playing: boolean}
+    export interface JoinRoom{room_id: string, username: string}
+    export interface CreateRoom{username: string}
+    export interface LeaveRoom{}
+    export interface SetVideo{video_id: string}
+    export interface SetLeader{leader_id: string}
+    export interface SyncTime{time: number}
+    export interface RoomData{}
+
+    export enum WsMsgType{
+        SetPlay = "SetPlay",
+        JoinRoom = "JoinRoom",
+        CreateRoom = "CreateRoom",
+        LeaveRoom = "LeaveRoom",
+        SetVideo = "SetVideo",
+        SetLeader = "SetLeader",
+        SyncTime = "SyncTime",
+        RoomData = "RoomData",
+    }
 }
