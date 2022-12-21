@@ -49,7 +49,7 @@ function App(): JSX.Element {
       <div className="App">
         <Routes>
           <Route path="/" element={<MainLayout />}>
-              <Route path="/room" element={<Room conn={connection as ServerConn} />} />
+              <Route path="/room/:code" element={<Room conn={connection as ServerConn} />} />
               <Route path="/info" element={<Info />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/" element={<Home conn={connection as ServerConn}/>} />
