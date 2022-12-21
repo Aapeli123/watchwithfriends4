@@ -56,7 +56,8 @@ pub enum ServerWsMsg<'a> {
     SetVideo {success: bool},
     NewLeader {leader_id: String},
     Sync {time: f64},
-    SetPlay {playing: bool}
+    SetPlay {playing: bool},
+    NewVideo {video_id: String}
 }
 impl<'a> WSSendable for ServerWsMsg<'a> {
     fn to_msg(&self) -> Message {

@@ -79,8 +79,8 @@ impl Room {
 
     pub async fn set_video(&mut self,video_id: &String) {
         self.video_id = Some(video_id.clone());
-        self.playing = false;
-        self.broadcast(ServerWsMsg::RoomData { room: self }).await;
+        self.broadcast(ServerWsMsg::NewVideo { video_id: video_id.clone() }).await;
+        self.set_play(false).await;
         info!("Room {} video changed to {}", self.code, video_id);
     }
 
