@@ -9,32 +9,67 @@ export class ServerConn {
         this.socket = conn;
     }
 
-    createRoom(username: string) {
-        this.sendMessage({username: username}, Sendable.WsMsgType.CreateRoom);
+    createRoom(username: string): Promise<Response.CreateRoomResp> {
+        return new Promise((res, rej) => {
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.CreateRoomResp;
+                if(msg.success) {
+                    rej(msg.message);
+                    return;
+                }
+                res(msg);
+            }
+            this.sendMessage({username: username}, Sendable.WsMsgType.CreateRoom);
+        })
     }
 
-    joinRoom(room_id: string, username: string) {
-        this.sendMessage({username: username, room_id: room_id}, Sendable.WsMsgType.JoinRoom);
+    joinRoom(room_id: string, username: string): Promise<Response.JoinRoomResp> {
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({username: username, room_id: room_id}, Sendable.WsMsgType.JoinRoom);
+        });
     }
 
-    leaveRoom() {
-        this.sendMessage({}, Sendable.WsMsgType.LeaveRoom);
+    leaveRoom(): Promise<Response.LeaveRoomResp> {
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({}, Sendable.WsMsgType.LeaveRoom);
+        });
     }
 
-    roomData() {
-        this.sendMessage({}, Sendable.WsMsgType.RoomData);
+    roomData(): Promise<Response.RoomDataResp> {
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({}, Sendable.WsMsgType.RoomData);
+        });
     }
 
-    makeLeader(new_leader: string) {
-        this.sendMessage({leader_id: new_leader}, Sendable.WsMsgType.SetLeader);
+    makeLeader(new_leader: string): Promise<Response.SetLeaderResp> {
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({leader_id: new_leader}, Sendable.WsMsgType.SetLeader);
+        });
     }
 
     syncTime(time: number) {
-        this.sendMessage({time: time}, Sendable.WsMsgType.SyncTime);
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({time: time}, Sendable.WsMsgType.SyncTime);
+        });
     }
 
     setPlay(playing: boolean) {
-        this.sendMessage({playing: playing}, Sendable.WsMsgType.SetPlay)
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({playing: playing}, Sendable.WsMsgType.SetPlay);
+        });
+    }
+
+    setVideo(video_id: string) {
+        return new Promise((res, rej) => {
+            // TODO
+            this.sendMessage({video_id: video_id}, Sendable.WsMsgType.SetVideo);
+        });
     }
 
     addMessageCallback(callback: (msg: Response.WsResponse) => any) {
