@@ -18,22 +18,26 @@ const Room = (props: {conn: ServerConn}) => {
                 alert("Room not found.");
                 return;
             }
-            console.log("Already in room, joined from RoomCodeInput");
+            console.log("Already in the room, joined from RoomCodeInput or Create room");
         }
         try {
+            console.log("Requesting room data")
             const data = await conn.roomData();
+            console.log(data);
         } catch(err) {
-
+            console.log(err)
         }
+        props.conn.addMessageCallback(msgHandler);
+
     }
 
     useEffect(() => {
         console.log(params["code"]);
-        props.conn.addMessageCallback(msgHandler);
 
         initRoom();
 
         return () => {
+            props.conn.leaveRoom();
             props.conn.removeCallback();
         }
     }, []);

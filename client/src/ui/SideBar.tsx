@@ -1,12 +1,27 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ServerConn } from "../lib/conn";
 import "./SideBar.css";
-const SideBar = () => {
+const SideBar = (props: {conn: ServerConn}) => {
+    const navigate = useNavigate();
+
+    const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        try {
+            let r = await props.conn.createRoom("test")
+            navigate(`room/${r.room_code}`);
+        } catch {
+            console.log("Room creation failed...");
+        }
+        
+    }
+
     return <>
         <div className="side-bar">
             <Link to={"/joinroom"}><div className="sidebar-top"><h2>Join Room</h2></div></Link>
-            <Link to={"/room/2"}>
+            <a href="/createroom" onClick={createRoomClick}>
                 <div className="sidebar-item"><h4><span className="material-icons">add</span>New Room</h4></div>
-            </Link>
+            </a>
             <Link to={"/info"}>
                 <div className="sidebar-item"><h4><span className="material-icons">menu_book</span>Info</h4></div>
             </Link>

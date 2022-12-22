@@ -5,7 +5,7 @@ export namespace Response {
     export interface UserIdResp {user_id: string};
     export interface JoinRoomResp  {success: boolean, message: string | null};
     export interface LeaveRoomResp {};
-    export interface CreateRoomResp {success: boolean, message: string | null}
+    export interface CreateRoomResp {success: boolean, room_code: string}
     export interface RoomDataResp {room: SrvrRoom}
     export interface NewUserConnectedResp {user: [string, string]}
     export interface SetLeaderResp {success: boolean}

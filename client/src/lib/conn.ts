@@ -18,7 +18,7 @@ export class ServerConn {
             this.socket.onmessage = (event) => {
                 const msg = parseMessage(event.data).message as Response.CreateRoomResp;
                 if(!msg.success) {
-                    rej(msg.message);
+                    rej("Could not create room");
                     return;
                 }
                 res(msg);
@@ -100,21 +100,15 @@ export class ServerConn {
     }
 
     private msgCb(event: MessageEvent) {
-        console.log(this);
         let data = JSON.parse(event.data) as Response.WsResponse;
         this.msgCallback(data);
     }
 
-    addMessageCallback(callback: (msg: Response.WsResponse) => any) {
-        
-        console.log("Message callback assigned");
-        console.log(callback);
-        
+    addMessageCallback(callback: (msg: Response.WsResponse) => any) {        
         this.msgCallback = callback.bind(this);
     }
 
     removeCallback() {
-        console.log("Message callback removed");
         this.msgCallback = (_) => {};
 
     } 

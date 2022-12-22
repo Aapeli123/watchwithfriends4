@@ -12,12 +12,12 @@ import TopBar from './ui/TopBar'
 
 
 
-const MainLayout = () => {
+const MainLayout = (props: {conn: ServerConn}) => {
   return(
   <>
     <TopBar />
     <div className='main-content'>
-      <SideBar />
+      <SideBar conn={props.conn}/>
       <div className='app-data'>
         <Outlet />
       </div>
@@ -49,7 +49,7 @@ function App(): JSX.Element {
     <BrowserRouter>
       <div className="App">
         <Routes>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<MainLayout conn={connection as ServerConn} />}>
               <Route path="/joinroom" element={<RoomCode conn={connection as ServerConn} />} />
               <Route path="/room/:code" element={<Room conn={connection as ServerConn} />} />
               <Route path="/info" element={<Info />} />
