@@ -39,28 +39,50 @@ export class ServerConn {
 
     leaveRoom(): Promise<Response.LeaveRoomResp> {
         return new Promise((res, rej) => {
-            // TODO
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.LeaveRoomResp;
+                res(msg);
+            }
             this.sendMessage({}, Sendable.WsMsgType.LeaveRoom);
+            setTimeout(() => rej("Error: Timeout"), 5000);
         });
     }
 
     roomData(): Promise<Response.RoomDataResp> {
         return new Promise((res, rej) => {
-            // TODO
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.RoomDataResp;
+                res(msg);
+            }
             this.sendMessage({}, Sendable.WsMsgType.RoomData);
+            setTimeout(() => rej("Error: Timeout"), 5000);
         });
     }
 
     makeLeader(new_leader: string): Promise<Response.SetLeaderResp> {
         return new Promise((res, rej) => {
-            // TODO
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.SetLeaderResp;
+                if(!msg.success) {
+                    rej("Could not set leader");
+                    return;
+                }
+                res(msg);
+            }
             this.sendMessage({leader_id: new_leader}, Sendable.WsMsgType.SetLeader);
         });
     }
 
     setVideo(video_id: string): Promise<Response.SetVideoResp> {
         return new Promise((res, rej) => {
-            // TODO
+            this.socket.onmessage = (event) => {
+                const msg = parseMessage(event.data).message as Response.SetVideoResp;
+                if(!msg.success) {
+                    rej("Could not set video");
+                    return;
+                }
+                res(msg);
+            }
             this.sendMessage({video_id: video_id}, Sendable.WsMsgType.SetVideo);
         });
     }

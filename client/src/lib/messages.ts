@@ -1,6 +1,6 @@
 export namespace Response {
     export type WsResponseBody = UserIdResp | JoinRoomResp | LeaveRoomResp | CreateRoomResp | RoomDataResp 
-    | NewUserConnectedResp | UserLeftResp | SetLeaderResp | SetVideoResp | NewLeader | Sync | SetPlay
+    | NewUserConnectedResp | UserLeft | SetLeaderResp | SetVideoResp | NewLeader | Sync | SetPlay
 
     export interface UserIdResp {user_id: string};
     export interface JoinRoomResp  {success: boolean, message: string | null};
@@ -8,9 +8,9 @@ export namespace Response {
     export interface CreateRoomResp {success: boolean, message: string | null}
     export interface RoomDataResp {room: SrvrRoom}
     export interface NewUserConnectedResp {user: [string, string]}
-    export interface UserLeftResp {user: string}
     export interface SetLeaderResp {success: boolean}
     export interface SetVideoResp {success: boolean}
+    export interface UserLeft {user: string}
     export interface NewLeader {leader_id: string}
     export interface Sync {time: number}
     export interface SetPlay {playing: boolean}
