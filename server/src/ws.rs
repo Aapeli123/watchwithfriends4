@@ -123,6 +123,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             WsMsg::JoinRoom { room_id, username } => {
                 if room_code != "" {
                     warn!("{} tried to join a room while already in a room", {&user_id});
+                    send_message(&ws_sender, ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Already in room")) }).await;
                     continue;
                 }
                 let succ = join_room(&room_id, &user_id, &username, &ws_sender).await;
@@ -133,6 +134,8 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             WsMsg::CreateRoom { username } => {
                 if room_code != "" {
                     warn!("{} tried to create a room while already in a room", {&user_id});
+                    send_message(&ws_sender, ServerWsMsg::CreateRoom { success: false, room_code: String::from("")}).await;
+
                     continue;
                 }
                 let rc = create_room(&ws_sender, &user_id, username).await;
