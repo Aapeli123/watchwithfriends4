@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Provider } from 'react-redux'
 import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes} from 'react-router-dom'
 import './App.css'
 import connect, { ServerConn } from './lib/conn'
@@ -7,6 +8,7 @@ import Info from './pages/Info/Info'
 import Room from './pages/Room/Room'
 import RoomCode from './pages/RoomCodeEntry/RoomCode'
 import Settings from './pages/Settings/Settings'
+import store from './store/store'
 import SideBar from './ui/SideBar'
 import TopBar from './ui/TopBar'
 
@@ -48,6 +50,7 @@ function App(): JSX.Element {
   <>
     <BrowserRouter>
       <div className="App">
+      <Provider store={store}>
         <Routes>
           <Route path="/" element={<MainLayout conn={connection as ServerConn} />}>
               <Route path="/joinroom" element={<RoomCode conn={connection as ServerConn} />} />
@@ -57,6 +60,7 @@ function App(): JSX.Element {
               <Route path="/" element={<Home conn={connection as ServerConn}/>} />
             </Route>
         </Routes>    
+      </Provider>
       </div>
     </BrowserRouter>
   </>

@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 
-const roomReducer = createReducer([], (builder) => {
+const uiReducer = createReducer([], (builder) => {
 
 });
 
-export default roomReducer;
+export default uiReducer;
