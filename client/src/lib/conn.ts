@@ -130,8 +130,6 @@ const connect = (server_url: string): Promise<ServerConn> => {
             ws.removeEventListener("message",messageEventListner);
 
             const msg = parseMessage(event.data).message as Response.UserIdResp;
-            console.log(msg);
-
             res(new ServerConn(msg.user_id, ws));
         }
         ws.addEventListener("error",errorEventListner);

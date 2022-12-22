@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import "./RoomCode.css";
 
 let codeInputs: NodeListOf<HTMLInputElement>;
 const CodeInput = (props: {conn: ServerConn}) => {
     const formRef = useRef<HTMLFormElement | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         codeInputs = formRef.current?.querySelectorAll("[data-room-input]") as NodeListOf<HTMLInputElement>;
@@ -18,7 +20,8 @@ const CodeInput = (props: {conn: ServerConn}) => {
         try {
             let res = await props.conn.joinRoom(code, "tester");
             console.log(res);
-            alert("Joined room.");
+            navigate(`/rooms/${code}`);
+
         } catch(err) {
             console.log(err);
         }
@@ -26,7 +29,6 @@ const CodeInput = (props: {conn: ServerConn}) => {
 
     const onInput = (e: React.FormEvent<HTMLFormElement | HTMLInputElement>) => { // Cursed type defination, but i know it works
         const {target} = e as React.ChangeEvent<HTMLInputElement>;
-        console.log(target);
         if(!target.value.length) {return target.value = ""};
         const inputLen = target.value.length;
         let currentIndex = Number(target.dataset.roomInput);
