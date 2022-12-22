@@ -1,12 +1,13 @@
 .top-bar {
     background-color: #232323;
     width: 100%;
-    height: 40px;
+    height: var(--top-bar-heigth);
     margin: 0;
 }
 
 .top-bar div {
     display: inline-block;
+    height: 100%;
 }
 
 .top-bar a {
@@ -16,13 +17,13 @@
 .logo {
     background-color: #2d2e2e;
 
-    width: 270px;
+    width: calc(var(--sidebar-width) + 60px);
     height: 100%;
 }
 
 .logo-text-container {
-    width: 240px;
-    height: 40px !important;
+    width: var(--sidebar-width);
+    height: var(--top-bar-heigth) !important;
 
 }
 .logo-text-container * {
@@ -36,37 +37,38 @@
     font-weight: 900;
     font-size: 2em;
     color: #efefef;
-    display: inline;
-    vertical-align: baseline;
+    
 }
 
 .logo-text-container h2 {
-    margin-left: 2px;
     text-align: center;
     font-family: Arial;
-    font-weight: 700;
-    font-size: 1.49em;
+    font-weight: 500;
+    font-size: 1.7em;
     color: #efefef;
-    display: inline;
-    vertical-align: bottom;
-    
+    vertical-align: super;
+    margin-top: calc((var(--top-bar-heigth) - 1.8em + 2px )) !important;
 }
 
 .top-bar div * {
     margin-top: 0;
     margin-bottom: 0;
+
 }
 
 #logo-text-right {
     margin-right: 5px;
     color: #19c1c7;
 }
-
+#logo-text-left {
+    margin-left: 5px;
+    
+}
 .logo-text-container img{
-    margin-left: 2px;
-    vertical-align: middle;
-    display: inline;
-    width: 30px;
+    margin-left: 5px;
+    vertical-align: text-bottom;
+    margin-top: 5px;
+    width: calc(var(--top-bar-heigth ) - 22px);
 }
 
 #link-breaker{
@@ -74,3 +76,13 @@
     width: 5px;
 }
 
+.username-container {
+    margin-left: calc(100% - var(--sidebar-width) - 185px);
+    vertical-align: top;
+}
+
+.username-container h5 {
+    font-size: 1rem;
+    margin-top: calc((var(--top-bar-heigth) / 2 - 10px )) !important;
+    font-family: Arial;
+}

@@ -15,6 +15,9 @@ const TopBar = () => {
                     </div>
                 </Link>
                 </div>
+                <div className="username-container">
+                    <h5>username: <u>test</u></h5>
+                </div>
             </div>
         </>
     )

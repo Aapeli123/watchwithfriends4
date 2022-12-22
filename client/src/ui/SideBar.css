@@ -1,7 +1,7 @@
 .side-bar {
-    height: calc(100vh - 40px);
+    height: calc(100vh - var(--top-bar-heigth));
     background-color: #232323;
-    width: 240px;
+    width: var(--sidebar-width);
 }
 
 .sidebar-top {
@@ -9,7 +9,19 @@
     margin: 0;
     width: 100%;
     height: 100px;
+    margin-bottom: 2px;
+    transition: background-color 0.2s;
 
+}
+
+.sidebar-top:hover {
+    background-color: #19a4c7;
+    transition: background-color 0.2s;
+}
+
+.sidebar-top:active {
+    background-color: #195fc7;
+    transition: background-color 0.2s;
 }
 
 .sidebar-top h2 {
@@ -24,9 +36,12 @@
 }
 
 .material-icons {
-    font-size: 1.2em;
+    font-size: 1.1em;
     margin-right: 5px;
+    margin-left: 5px;
     vertical-align: bottom;
+    display: flex;
+
 }
 
 
@@ -35,6 +50,8 @@
     width: 100%;
     height: 50px;
     transition: box-shadow 0.2s;
+    box-shadow: 0px 0px 1px 1px #3C3C3C inset;
+    margin-top: 1px;
     text-align: center;
 }
 
@@ -45,13 +62,20 @@
 
 }
 
+.sidebar-item:active {
+    box-shadow: 0px 0px 2px 2px #1933c7 inset;
+    transition: box-shadow 0.2;
+
+}
+
 .sidebar-item h4{
     margin: auto;
     color: #efefef;
     font-family: Arial;
     font-size: 30px;
     margin-top: calc(25px - calc(30px / 2));
-    display: block;
+    display: flex;
     text-align: left;
+    vertical-align: middle;
 
 }

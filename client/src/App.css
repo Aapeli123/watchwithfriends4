@@ -1,9 +1,15 @@
+* {
+  --sidebar-width: 260px;
+  --top-bar-heigth: 60px
+}
+
 .main-content div {
   display: inline-block;
 }
 .app-data {
   background-color: #121212;
-  width: calc(100% - 240px);
-  height: calc(100vh - 40px);
+  box-shadow: inset 0px 0px 8px 8px #0e0e0e;
+  width: calc(100% - var(--sidebar-width));
+  height: calc(100vh - var(--top-bar-heigth));
   vertical-align: top;
 }
