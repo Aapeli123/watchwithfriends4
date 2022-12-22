@@ -3,10 +3,14 @@ import { parseMessage, Response, Sendable } from "./messages";
 export class ServerConn {
     readonly user_id: string
     private socket: WebSocket
-
+    private msgCallback: (msg: Response.WsResponse) => any;
     constructor(user_id: string, conn: WebSocket) {
         this.user_id = user_id;
         this.socket = conn;
+        this.msgCallback = (_) => {};
+
+        this.socket.addEventListener("message", this.msgCb.bind(this), false);
+
     }
 
     createRoom(username: string): Promise<Response.CreateRoomResp> {
@@ -95,12 +99,25 @@ export class ServerConn {
         this.sendMessage({playing: playing}, Sendable.WsMsgType.SetPlay);
     }
 
-    addMessageCallback(callback: (msg: Response.WsResponse) => any) {
-        this.socket.addEventListener("message", (event) => {
-            let data = JSON.parse(event.data) as Response.WsResponse;
-            callback(data);
-        });
+    private msgCb(event: MessageEvent) {
+        console.log(this);
+        let data = JSON.parse(event.data) as Response.WsResponse;
+        this.msgCallback(data);
     }
+
+    addMessageCallback(callback: (msg: Response.WsResponse) => any) {
+        
+        console.log("Message callback assigned");
+        console.log(callback);
+        
+        this.msgCallback = callback.bind(this);
+    }
+
+    removeCallback() {
+        console.log("Message callback removed");
+        this.msgCallback = (_) => {};
+
+    } 
 
     private sendMessage(message: Sendable.WsMsgBody, type: Sendable.WsMsgType) {
         let msg = {

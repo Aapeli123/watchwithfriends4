@@ -7,9 +7,35 @@ import "./Room.css"
 
 const Room = (props: {conn: ServerConn}) => {
     const params = useParams();
+
+    const initRoom = async () => {
+        const roomCode = params["code"] as string;
+        const {conn} = props;
+        try {
+            await conn.joinRoom(roomCode, "test");
+        } catch(msg) {
+            if(msg === "Room not found") {
+                alert("Room not found.");
+                return;
+            }
+            console.log("Already in room, joined from RoomCodeInput");
+        }
+        try {
+            const data = await conn.roomData();
+        } catch(err) {
+
+        }
+    }
+
     useEffect(() => {
         console.log(params["code"]);
         props.conn.addMessageCallback(msgHandler);
+
+        initRoom();
+
+        return () => {
+            props.conn.removeCallback();
+        }
     }, []);
 
 
