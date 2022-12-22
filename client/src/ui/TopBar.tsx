@@ -2,6 +2,10 @@ import "./TopBar.css"
 import logo from "./logo_placeholder.png"
 import { Link } from "react-router-dom";
 const TopBar = () => {
+    const changeName = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+    };
+
     return (
         <>
             <div className="top-bar">
@@ -16,7 +20,7 @@ const TopBar = () => {
                 </Link>
                 </div>
                 <div className="username-container">
-                    <h5>username: <u>test</u></h5>
+                    <h5>username: <a href="" onClick={changeName}><u>test</u>  <span className="material-icons">edit</span>  </a> </h5>
                 </div>
             </div>
         </>

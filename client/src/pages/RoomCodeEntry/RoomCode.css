@@ -1,6 +1,6 @@
 .room-code-container {
     width: 100%;
-    height: calc(100vh - 45px);
+    height: calc(100vh - var(--top-bar-height));
     text-align: center;
 }
 

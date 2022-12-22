@@ -1,7 +1,7 @@
 .top-bar {
     background-color: #232323;
     width: 100%;
-    height: var(--top-bar-heigth);
+    height: var(--top-bar-height);
     margin: 0;
 }
 
@@ -23,7 +23,7 @@
 
 .logo-text-container {
     width: var(--sidebar-width);
-    height: var(--top-bar-heigth) !important;
+    height: var(--top-bar-height) !important;
 
 }
 .logo-text-container * {
@@ -44,10 +44,10 @@
     text-align: center;
     font-family: Arial;
     font-weight: 500;
-    font-size: 1.7em;
+    font-size: 2em;
     color: #efefef;
     vertical-align: super;
-    margin-top: calc((var(--top-bar-heigth) - 1.8em + 2px )) !important;
+    margin-top: calc((var(--top-bar-height) - 1.8em + 2px )) !important;
 }
 
 .top-bar div * {
@@ -68,7 +68,7 @@
     margin-left: 5px;
     vertical-align: text-bottom;
     margin-top: 5px;
-    width: calc(var(--top-bar-heigth ) - 22px);
+    width: calc(var(--top-bar-height ) - 22px);
 }
 
 #link-breaker{
@@ -81,8 +81,18 @@
     vertical-align: top;
 }
 
-.username-container h5 {
+.username-container .material-icons {
+    display: inline;
+    color: #efefef;
+    margin: 0;
     font-size: 1rem;
-    margin-top: calc((var(--top-bar-heigth) / 2 - 10px )) !important;
-    font-family: Arial;
+}
+.username-container h5 {
+    color: #efefef;
+    font-size: 1rem;
+    margin-top: calc((var(--top-bar-height) / 2 - 10px )) !important;
+}
+.username-container u{
+    color: #efefef;
+
 }

@@ -1,6 +1,6 @@
 * {
-  --sidebar-width: 260px;
-  --top-bar-heigth: 60px
+  --sidebar-width: 300px;
+  --top-bar-height: 60px
 }
 
 .main-content div {
@@ -10,6 +10,6 @@
   background-color: #121212;
   box-shadow: inset 0px 0px 8px 8px #0e0e0e;
   width: calc(100% - var(--sidebar-width));
-  height: calc(100vh - var(--top-bar-heigth));
+  height: calc(100vh - var(--top-bar-height));
   vertical-align: top;
 }
