@@ -5,9 +5,11 @@ import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { setUn } from "../store/prefs";
 import { RootState } from "../store/store";
-const TopBar = () => {
+import { ServerConn } from "../lib/conn";
+const TopBar = (props: {conn: ServerConn}) => {
     const dispatch = useDispatch();
-    const username = useSelector((state: RootState) => state.pref.username)
+    const username = useSelector((state: RootState) => state.pref.username);
+    const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
 
     const changeName = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
@@ -19,6 +21,9 @@ const TopBar = () => {
             if (username.trimStart().trimEnd() !== "") {
                 Cookies.set("username", username);
                 dispatch(setUn(username));
+                if(roomLoaded) {
+                    props.conn.changeUsername(username);
+                }
                 break;
             }
         }

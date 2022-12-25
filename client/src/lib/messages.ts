@@ -1,6 +1,6 @@
 export namespace Response {
     export type WsResponseBody = UserIdResp | JoinRoomResp | LeaveRoomResp | CreateRoomResp | RoomDataResp 
-    | NewUserConnectedResp | UserLeft | SetLeaderResp | SetVideoResp | NewLeader | Sync | SetPlay
+    | NewUserConnectedResp | UserLeft | SetLeaderResp | SetVideoResp | NewLeader | Sync | SetPlay | UserChangedName
 
     export interface UserIdResp {user_id: string};
     export interface JoinRoomResp  {success: boolean, message: string | null};
@@ -15,6 +15,7 @@ export namespace Response {
     export interface Sync {time: number}
     export interface SetPlay {playing: boolean}
     export interface NewVideo {video_id: string}
+    export interface UserChangedName {user_id: string, new_name: string}
     
     export enum MessageType {
         UserID = "UserID",
@@ -29,7 +30,8 @@ export namespace Response {
         NewLeader = "NewLeader",
         Sync = "Sync",
         SetPlay = "SetPlay",
-        NewVideo = "NewVideo"
+        NewVideo = "NewVideo",
+        UserChangedName = "UserChangedName"
     }
     export interface WsResponse {
         type: MessageType,
@@ -55,7 +57,7 @@ export const parseMessage = (message: string): Response.WsResponse => {
 
 
 export namespace Sendable {
-    export type WsMsgBody = SetPlay | JoinRoom | CreateRoom | LeaveRoom | SetVideo | SetLeader | SyncTime | RoomData; 
+    export type WsMsgBody = SetPlay | JoinRoom | CreateRoom | LeaveRoom | SetVideo | SetLeader | SyncTime | RoomData | ChangeName; 
     export interface SetPlay{playing: boolean}
     export interface JoinRoom{room_id: string, username: string}
     export interface CreateRoom{username: string}
@@ -64,6 +66,8 @@ export namespace Sendable {
     export interface SetLeader{leader_id: string}
     export interface SyncTime{time: number}
     export interface RoomData{}
+    export interface ChangeName{new_name: string}
+
 
     export enum WsMsgType{
         SetPlay = "SetPlay",
@@ -74,5 +78,6 @@ export namespace Sendable {
         SetLeader = "SetLeader",
         SyncTime = "SyncTime",
         RoomData = "RoomData",
+        ChangeName = "ChangeName"
     }
 }

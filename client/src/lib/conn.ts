@@ -91,6 +91,10 @@ export class ServerConn {
         });
     }
 
+    changeUsername(new_username: string) {
+        this.sendMessage({new_name: new_username},Sendable.WsMsgType.ChangeName)
+    }
+
     syncTime(time: number) {
         this.sendMessage({time: time}, Sendable.WsMsgType.SyncTime);
     }

@@ -46,10 +46,13 @@ const roomSlice = createSlice({
                 state.time = action.payload.time
             }
         },
+        changeUsername: (state, action: PayloadAction<Response.UserChangedName>) => {
+            state.users[action.payload.user_id] = {name: action.payload.new_name};
+        }
     }
 });
 
 
 export default roomSlice.reducer;
 
-export const { roomData, leaveRoom, newLeader, newUserJoined, userLeft, newVideo, setPlaying, setTime } = roomSlice.actions;
+export const { roomData, leaveRoom, newLeader, newUserJoined, userLeft, newVideo, setPlaying, setTime, changeUsername } = roomSlice.actions;

@@ -19,7 +19,7 @@ import TopBar from './ui/TopBar'
 const MainLayout = (props: {conn: ServerConn}) => {
   return(
   <>
-    <TopBar />
+    <TopBar conn={props.conn}/>
     <div className='main-content'>
       <SideBar conn={props.conn}/>
       <div className='app-data'>

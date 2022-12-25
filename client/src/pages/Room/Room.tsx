@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
-import { leaveRoom, newLeader, newUserJoined, newVideo, roomData, setPlaying, setTime, userLeft } from "../../store/room";
+import { changeUsername, leaveRoom, newLeader, newUserJoined, newVideo, roomData, setPlaying, setTime, userLeft } from "../../store/room";
 import { disableRoomBar, enableRoomBar } from "../../store/ui";
 import "./Room.css"
 
@@ -69,6 +69,9 @@ const Room = (props: {conn: ServerConn}) => {
                 break;
             case Response.MessageType.NewVideo:
                 dispatch(newVideo(msg.message as Response.NewVideo));
+                break;
+            case Response.MessageType.UserChangedName:
+                dispatch(changeUsername(msg.message as Response.UserChangedName));
                 break;
         }
     }
