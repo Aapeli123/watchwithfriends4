@@ -1,16 +1,21 @@
 import React, { useEffect } from "react";
 import ReactPlayer from 'react-player'
-import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
 import { changeUsername, leaveRoom, newLeader, newUserJoined, newVideo, roomData, setPlaying, setTime, userLeft } from "../../store/room";
+import { RootState } from "../../store/store";
 import { disableRoomBar, enableRoomBar } from "../../store/ui";
 import "./Room.css"
 
 const Room = (props: {conn: ServerConn}) => {
     const params = useParams();
     const dispatch = useDispatch();
+    const videoLink = useSelector((state: RootState) => state.room.videoId);
+    const navigate = useNavigate();
+    const playing  = useSelector((state: RootState) => state.room.playing);
+
     const initRoom = async () => {
         const roomCode = params["code"] as string;
         const {conn} = props;
@@ -19,6 +24,7 @@ const Room = (props: {conn: ServerConn}) => {
         } catch(msg) {
             if(msg === "Room not found") {
                 alert("Room not found.");
+                navigate("/");
                 return;
             }
             console.log("Already in the room, joined from RoomCodeInput or Create room");
@@ -76,10 +82,18 @@ const Room = (props: {conn: ServerConn}) => {
         }
     }
 
+    const onPlay = () => {
+        props.conn.setPlay(true);
+    }
+
+    const onPause = () => {
+        props.conn.setPlay(false);
+    }
+
     return (
         <>
             <div className="player-container">
-                <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' width={"100%"} height="100%" controls/>
+                <ReactPlayer url={videoLink} width={"100%"} playing={playing} onPlay={onPlay} onPause={onPause} height="100%" controls autoplay/>
             </div>
         </>
     )

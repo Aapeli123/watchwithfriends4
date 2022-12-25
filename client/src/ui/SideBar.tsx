@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ServerConn } from "../lib/conn";
 import { RootState } from "../store/store";
 import "./SideBar.css";
 const SideBar = (props: {conn: ServerConn}) => {
+
+    const [showUsers, setShowUsers] = useState(false);
+
     const navigate = useNavigate();
     const username = useSelector((state: RootState) => state.pref.username);
-    const roomBar = useSelector(((state: RootState) => state.ui.roomBar));
-    const roomCode = useSelector(((state: RootState) => state.room.roomCode));
+    const roomBar = useSelector((state: RootState) => state.ui.roomBar);
+    const roomCode = useSelector((state: RootState) => state.room.roomCode);
+    const users = useSelector((state: RootState) => state.room.users);
+
+    const leaderId = useSelector((state: RootState) => state.room.leaderId);
+
     const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         try {
@@ -21,12 +28,33 @@ const SideBar = (props: {conn: ServerConn}) => {
         
     }
 
+    const changeVideo = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const link = prompt("Video link?");
+        props.conn.setVideo(link as string);
+    }
+
+    const clickUsers = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setShowUsers(!showUsers);
+    }
+
     return roomBar ? (
         <>
             <div className="side-bar">
                 <div className="sidebar-top"><h2>Room code: {roomCode}</h2></div>
-                <div className="sidebar-item"><h4><span className="material-icons">group</span>Users</h4></div>
-                <div className="sidebar-item"><h4><span className="material-icons">video_settings</span>Change video</h4></div>
+                <div className="sidebar-item" onClick={clickUsers}><h4><span className="material-icons">group</span>Users</h4></div>
+                {showUsers && <div className="user-list">
+                {Object.keys(users).map(id => {
+                    return(
+                        <li>{users[id].name} {id === leaderId && "(Leader)"}</li>
+                    );
+                })}
+                </div>}
+
+                {leaderId === props.conn.user_id && 
+                    <div className="sidebar-item" onClick={changeVideo}><h4><span className="material-icons">video_settings</span>Change video</h4></div>
+                }
                 <Link to={"/"}><div className="sidebar-item"><h4><span className="material-icons">exit_to_app</span>Leave Room</h4></div></Link>
             </div>
         </>

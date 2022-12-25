@@ -1,4 +1,5 @@
 .side-bar {
+    user-select: none; 
     height: calc(100vh - var(--top-bar-height));
     background-color: #232323;
     width: var(--sidebar-width);

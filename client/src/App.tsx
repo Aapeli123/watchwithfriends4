@@ -10,7 +10,6 @@ import Room from './pages/Room/Room'
 import RoomCode from './pages/RoomCodeEntry/RoomCode'
 import Settings from './pages/Settings/Settings'
 import { setUn } from './store/prefs'
-import {store} from './store/store'
 import SideBar from './ui/SideBar'
 import TopBar from './ui/TopBar'
 
@@ -58,10 +57,10 @@ function App(): JSX.Element {
     }
     const connectToServer = async () => {
       const conn = await connect("ws://localhost:8080");
+
       console.log("Connected...");
       setConnection(conn);
       setConnected(true);
-
     }
     connectToServer();
   }, [])
