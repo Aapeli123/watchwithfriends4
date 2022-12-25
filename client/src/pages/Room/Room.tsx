@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import ReactPlayer from 'react-player'
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
+import { disableRoomBar } from "../../store/ui";
 import "./Room.css"
 
 const Room = (props: {conn: ServerConn}) => {
     const params = useParams();
-
+    const dispatch = useDispatch();
     const initRoom = async () => {
         const roomCode = params["code"] as string;
         const {conn} = props;
@@ -39,6 +41,7 @@ const Room = (props: {conn: ServerConn}) => {
         return () => {
             props.conn.leaveRoom();
             props.conn.removeCallback();
+            dispatch(disableRoomBar(null));
         }
     }, []);
 

@@ -8,7 +8,7 @@ import Info from './pages/Info/Info'
 import Room from './pages/Room/Room'
 import RoomCode from './pages/RoomCodeEntry/RoomCode'
 import Settings from './pages/Settings/Settings'
-import store from './store/store'
+import {store} from './store/store'
 import SideBar from './ui/SideBar'
 import TopBar from './ui/TopBar'
 

@@ -1,15 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ServerConn } from "../lib/conn";
+import { enableRoomBar } from "../store/ui";
 import "./SideBar.css";
 const SideBar = (props: {conn: ServerConn}) => {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         try {
             let r = await props.conn.createRoom("test")
             navigate(`room/${r.room_code}`);
+            dispatch(enableRoomBar(null));
+
         } catch {
             console.log("Room creation failed...");
         }

@@ -1,13 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
-import roomReducer from './roomReducer';
-import uiReducer from './uiReducer';
+import roomReducer from './room';
+import uiReducer from './ui';
 
-const store = configureStore({
+export const store = configureStore({
     reducer: {
         room: roomReducer,
         ui: uiReducer
     },
 });
-
-
-export default store;
