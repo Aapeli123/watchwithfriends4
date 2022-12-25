@@ -32,6 +32,7 @@ pub enum WsMsg {
     SetVideo{video_id: String},
     SetLeader{leader_id: String},
     SyncTime{time: f64},
+    ChangeName{new_name: String},
     RoomData
 }
 
@@ -57,6 +58,7 @@ pub enum ServerWsMsg<'a> {
     NewLeader {leader_id: String},
     Sync {time: f64},
     SetPlay {playing: bool},
+    UserChangedName {user_id: String, new_name: String},
     NewVideo {video_id: String}
 }
 impl<'a> WSSendable for ServerWsMsg<'a> {
@@ -149,6 +151,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             WsMsg::SetLeader { leader_id } => set_leader(&room_code, &user_id, &leader_id).await,
             WsMsg::SyncTime { time } => sync_time(&room_code, time, &user_id).await,
             WsMsg::RoomData => get_room_data(&room_code, &user_id, &ws_sender).await,
+            WsMsg::ChangeName { new_name } => change_name(&room_code, &user_id, &new_name).await,
         }
     }
 
@@ -294,4 +297,16 @@ async fn set_leader(room_id: &String, user_id: &String, new_leader_id: &String) 
     }
 
     room.set_leader(new_leader_id).await;
+}
+
+async fn change_name(room_id: &String, user_id: &String, new_name: &String) {
+    debug!("{} has requested to change their username to {} in room {}.", user_id, new_name, room_id);
+    let mut rooms = ROOMS.lock().await;
+    let room = rooms.get_mut(room_id);
+    if room.is_none() {
+        warn!("Room with code {} does not exist.", room_id);
+        return;
+    }
+    let room = room.unwrap();
+    room.change_user_name(user_id, new_name).await;
 }

@@ -98,6 +98,16 @@ impl Room {
         self.broadcast(ServerWsMsg::Sync{time}).await;
     }
 
+    pub async fn change_user_name(&mut self, user_id: &String, new_user_name: &String) {
+        let user = self.users.get_mut(user_id);
+        if user.is_none() {
+            return;
+        }
+        let user =user.unwrap();
+        user.name = new_user_name.clone();
+        self.broadcast(ServerWsMsg::UserChangedName { user_id: user_id.clone(), new_name: new_user_name.clone() }).await;
+    }
+
     pub async fn set_play(&mut self, playing: bool) {
         self.playing = playing;
         self.broadcast(ServerWsMsg::SetPlay { playing: self.playing }).await;
