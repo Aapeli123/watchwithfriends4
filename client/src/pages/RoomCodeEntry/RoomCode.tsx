@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
+import { RootState } from "../../store/store";
 import { enableRoomBar } from "../../store/ui";
 import "./RoomCode.css";
 
@@ -11,7 +12,7 @@ const CodeInput = (props: {conn: ServerConn}) => {
     const formRef = useRef<HTMLFormElement | null>(null);
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
+    const username = useSelector((state: RootState) => state.pref.username);
 
     useEffect(() => {
         codeInputs = formRef.current?.querySelectorAll("[data-room-input]") as NodeListOf<HTMLInputElement>;
@@ -23,7 +24,7 @@ const CodeInput = (props: {conn: ServerConn}) => {
             return;
         }
         try {
-            let res = await props.conn.joinRoom(code, "tester");
+            let res = await props.conn.joinRoom(code, username);
             console.log(res);
             navigate(`/room/${code}`);
 

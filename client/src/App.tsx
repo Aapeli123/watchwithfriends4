@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes} from 'react-router-dom'
 import './App.css'
 import connect, { ServerConn } from './lib/conn'
@@ -33,7 +33,7 @@ const MainLayout = (props: {conn: ServerConn}) => {
 function App(): JSX.Element {
   const [connection, setConnection] = useState<ServerConn | undefined>();
   const [connected, setConnected] = useState(false);
-  
+  const dispatch = useDispatch();
   useEffect(() => {
     const hasUn = Cookies.get("username") !== undefined;
     console.log(hasUn);
@@ -46,6 +46,7 @@ function App(): JSX.Element {
         }
         if (username.trimStart().trimEnd() !== "") {
           Cookies.set("username", username);
+          dispatch(setUn(username));
           break;
         }
       }
@@ -68,7 +69,6 @@ function App(): JSX.Element {
   <>
     <BrowserRouter>
       <div className="App">
-      <Provider store={store}>
         <Routes>
           <Route path="/" element={<MainLayout conn={connection as ServerConn} />}>
               <Route path="/joinroom" element={<RoomCode conn={connection as ServerConn} />} />
@@ -78,7 +78,6 @@ function App(): JSX.Element {
               <Route path="/" element={<Home conn={connection as ServerConn}/>} />
             </Route>
         </Routes>    
-      </Provider>
       </div>
     </BrowserRouter>
   </>
