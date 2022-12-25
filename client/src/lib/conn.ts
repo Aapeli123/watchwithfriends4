@@ -100,8 +100,14 @@ export class ServerConn {
     }
 
     private msgCb(event: MessageEvent) {
-        let data = JSON.parse(event.data) as Response.WsResponse;
-        this.msgCallback(data);
+        let data = JSON.parse(event.data);
+        const type = data.type;
+        delete data.type;
+        const msg: Response.WsResponse = {
+            type: type,
+            message: data as Response.WsResponseBody
+        }
+        this.msgCallback(msg);
     }
 
     addMessageCallback(callback: (msg: Response.WsResponse) => any) {        

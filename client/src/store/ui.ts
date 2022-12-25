@@ -8,10 +8,10 @@ const uiSlice = createSlice({
         roomBar: false,
     },
     reducers: {
-        enableRoomBar(state, action) {
+        enableRoomBar(state) {
             state.roomBar = true
         },
-        disableRoomBar(state, action) {
+        disableRoomBar(state) {
             state.roomBar = false
         }
     }

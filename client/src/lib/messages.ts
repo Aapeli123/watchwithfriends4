@@ -36,9 +36,10 @@ export namespace Response {
         message: WsResponseBody
     }
 
+
     export interface SrvrRoom { // Stands for ServerRoom to avoid confusion between this and the Room.tsx file export Room
         code: string,
-        users: Map<string, string>,
+        users: {[key: string]: {name: string}},
         video_id: string | null,
         time: number,
         playing: boolean,

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
+import { leaveRoom, newLeader, newUserJoined, newVideo, roomData, setPlaying, setTime, userLeft } from "../../store/room";
 import { disableRoomBar, enableRoomBar } from "../../store/ui";
 import "./Room.css"
 
@@ -25,12 +26,12 @@ const Room = (props: {conn: ServerConn}) => {
         try {
             console.log("Requesting room data")
             const data = await conn.roomData();
-            console.log(data);
+            dispatch(roomData(data));
         } catch(err) {
             console.log(err)
         }
         props.conn.addMessageCallback(msgHandler);
-        dispatch(enableRoomBar(null));
+        dispatch(enableRoomBar());
 
     }
 
@@ -42,25 +43,32 @@ const Room = (props: {conn: ServerConn}) => {
         return () => {
             props.conn.leaveRoom();
             props.conn.removeCallback();
-            dispatch(disableRoomBar(null));
+            dispatch(disableRoomBar());
+            dispatch(leaveRoom())
         }
     }, []);
 
 
     const msgHandler = (msg: Response.WsResponse) => {
-        console.log(msg);
+        console.log(msg.message);
         switch(msg.type) {
             case Response.MessageType.NewUserConnected:
+                dispatch(newUserJoined(msg.message as Response.NewUserConnectedResp));
                 break;
             case Response.MessageType.UserLeft:
+                dispatch(userLeft(msg.message as Response.UserLeft));
                 break;
             case Response.MessageType.Sync:
+                dispatch(setTime(msg.message as Response.Sync));
                 break;
             case Response.MessageType.NewLeader:
+                dispatch(newLeader(msg.message as Response.NewLeader));
                 break;
             case Response.MessageType.SetPlay:
+                dispatch(setPlaying(msg.message as Response.SetPlay));
                 break;
             case Response.MessageType.NewVideo:
+                dispatch(newVideo(msg.message as Response.NewVideo));
                 break;
         }
     }
