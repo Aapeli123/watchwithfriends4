@@ -39,6 +39,13 @@ const SideBar = (props: {conn: ServerConn}) => {
         setShowUsers(!showUsers);
     }
 
+    const makeLeader = async (user_id: string) => {
+        const res = await props.conn.makeLeader(user_id);
+        if(!res.success) {
+            console.log("Something went horribly wrong...")
+        }
+    }
+
     return roomBar ? (
         <>
             <div className="side-bar">
@@ -47,7 +54,10 @@ const SideBar = (props: {conn: ServerConn}) => {
                 {showUsers && <div className="user-list">
                 {Object.keys(users).map(id => {
                     return(
-                        <li>{users[id].name} {id === leaderId && "(Leader)"}</li>
+                        <div>
+                        <h6>{users[id].name} {id === leaderId && "(Leader)"}</h6>
+                        {props.conn.user_id === leaderId && id !== props.conn.user_id && <button onClick={() => {makeLeader(id)}}>Make leader</button>}
+                        </div>
                     );
                 })}
                 </div>}

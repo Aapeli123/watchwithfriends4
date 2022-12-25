@@ -15,12 +15,13 @@ const Room = (props: {conn: ServerConn}) => {
     const videoLink = useSelector((state: RootState) => state.room.videoId);
     const navigate = useNavigate();
     const playing  = useSelector((state: RootState) => state.room.playing);
+    const username = useSelector((state: RootState) => state.pref.username);
 
     const initRoom = async () => {
         const roomCode = params["code"] as string;
         const {conn} = props;
         try {
-            await conn.joinRoom(roomCode, "test");
+            await conn.joinRoom(roomCode, username);
         } catch(msg) {
             if(msg === "Room not found") {
                 alert("Room not found.");
