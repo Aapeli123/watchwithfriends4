@@ -1,4 +1,4 @@
-import { Action, createReducer, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Response } from "../lib/messages";
 
 const roomSlice = createSlice({
