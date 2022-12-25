@@ -25,6 +25,8 @@ const SideBar = (props: {conn: ServerConn}) => {
         <>
             <div className="side-bar">
                 <div className="sidebar-top"><h2>Room code: {roomCode}</h2></div>
+                <div className="sidebar-item"><h4><span className="material-icons">group</span>Users</h4></div>
+                <div className="sidebar-item"><h4><span className="material-icons">video_settings</span>Change video</h4></div>
                 <Link to={"/"}><div className="sidebar-item"><h4><span className="material-icons">exit_to_app</span>Leave Room</h4></div></Link>
             </div>
         </>
