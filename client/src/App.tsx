@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes} from 'react-router-dom'
@@ -8,6 +9,7 @@ import Info from './pages/Info/Info'
 import Room from './pages/Room/Room'
 import RoomCode from './pages/RoomCodeEntry/RoomCode'
 import Settings from './pages/Settings/Settings'
+import { setUn } from './store/prefs'
 import {store} from './store/store'
 import SideBar from './ui/SideBar'
 import TopBar from './ui/TopBar'
@@ -33,6 +35,22 @@ function App(): JSX.Element {
   const [connected, setConnected] = useState(false);
   
   useEffect(() => {
+    const hasUn = Cookies.get("username") !== undefined;
+    console.log(hasUn);
+
+    if(!hasUn) {
+      while(1) {
+        const username = prompt("Username?");
+        if(username === null) {
+          continue;
+        }
+        if (username.trimStart().trimEnd() !== "") {
+          Cookies.set("username", username);
+          break;
+        }
+      }
+    }
+
     if (connected) {
       console.log("Already connected.")
       return;

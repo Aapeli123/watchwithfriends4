@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import Cookies from "js-cookie";
 
 
 const preferencsSlice = createSlice({
     initialState: () => {
-        const username = "test"
+        const username = Cookies.get("username") as string;
         return {
             username: username,
         };
@@ -20,4 +20,4 @@ const preferencsSlice = createSlice({
 
 export default preferencsSlice.reducer;
 
-export const {} = preferencsSlice.actions;
+export const {setUn} = preferencsSlice.actions;

@@ -77,8 +77,12 @@
 }
 
 .username-container {
-    margin-left: calc(100% - var(--sidebar-width) - 185px);
+    margin-left: calc(100% - (var(--sidebar-width) + 60px) - 300px);
     vertical-align: top;
+    overflow-x: hidden scroll;
+    width: 300px;
+    text-align: center;
+    background-color: #2d2e2e;
 }
 
 .username-container .material-icons {
