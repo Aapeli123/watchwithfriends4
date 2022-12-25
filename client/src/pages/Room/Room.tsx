@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
-import { disableRoomBar } from "../../store/ui";
+import { disableRoomBar, enableRoomBar } from "../../store/ui";
 import "./Room.css"
 
 const Room = (props: {conn: ServerConn}) => {
@@ -30,6 +30,7 @@ const Room = (props: {conn: ServerConn}) => {
             console.log(err)
         }
         props.conn.addMessageCallback(msgHandler);
+        dispatch(enableRoomBar(null));
 
     }
 

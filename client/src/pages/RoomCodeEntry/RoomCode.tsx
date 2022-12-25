@@ -25,7 +25,6 @@ const CodeInput = (props: {conn: ServerConn}) => {
         try {
             let res = await props.conn.joinRoom(code, "tester");
             console.log(res);
-            dispatch(enableRoomBar(null));
             navigate(`/room/${code}`);
 
         } catch(err) {

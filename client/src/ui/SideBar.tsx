@@ -12,8 +12,6 @@ const SideBar = (props: {conn: ServerConn}) => {
         try {
             let r = await props.conn.createRoom("test")
             navigate(`room/${r.room_code}`);
-            dispatch(enableRoomBar(null));
-
         } catch {
             console.log("Room creation failed...");
         }
