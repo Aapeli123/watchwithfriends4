@@ -37,6 +37,6 @@ jobs:
           SERVER_IP: ${{ secrets.SERVERIP }}
         run: |
           mkdir .ssh
-          touch .ssh/id_rsa.pub
-          echo "$SSH_KEY" > .ssh/id_rsa.pub
+          touch .ssh/id_rsa
+          echo "$SSH_KEY" > .ssh/id_rsa
           scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  /home/runner/work/watchwithfriends4/watchwithfriends4 watchwithfriends@"$SERVER_IP":~/watchwithfriends/server
