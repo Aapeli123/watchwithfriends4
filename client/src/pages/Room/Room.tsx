@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from 'react-player'
+import { OnProgressProps } from "react-player/base";
 import { ReactReduxContext, useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
@@ -19,26 +20,11 @@ const Room = (props: {conn: ServerConn}) => {
 
     const { store } = useContext(ReactReduxContext)
 
-    const sync = () => {
-        const state = store.getState();
-        const player = playerRef.current as ReactPlayer;
-
-        if(state.room.leaderId === props.conn.user_id) {
-            const time = player.getCurrentTime();
-            if(time !== null)
-                props.conn.syncTime(time as number);
-        } else {
-            const tm = state.room.time;
-            console.log(tm);
-            const curTime = player.getCurrentTime() as number;
-            if(Math.abs(curTime - tm) >= 0.75) {
-                console.log(tm, curTime);
-                player.seekTo(tm, "seconds");
-            }
-        }
+    const onProgress = (state: OnProgressProps) => {
+        const isLeader = store.getState().room.leaderId === props.conn.user_id;
+        if(isLeader)
+            props.conn.syncTime(state.playedSeconds);
     }
-
-    const [intervalId, ___] = useState(() => setInterval(sync, 250));
     
     const playerRef = useRef<ReactPlayer>(null);
     
@@ -76,9 +62,6 @@ const Room = (props: {conn: ServerConn}) => {
             props.conn.removeCallback();
             dispatch(disableRoomBar());
             dispatch(leaveRoom());
-            if(intervalId !== null)  {
-                clearInterval(intervalId);
-            }
         }
     }, []);
 
@@ -93,7 +76,10 @@ const Room = (props: {conn: ServerConn}) => {
                 dispatch(userLeft(msg.message as Response.UserLeft));
                 break;
             case Response.MessageType.Sync:
-                dispatch(setTime(msg.message as Response.Sync));
+                let syncMsg = (msg.message as Response.Sync);
+                const isLeader = store.getState().room.leaderId === props.conn.user_id;
+                if(Math.abs(playerRef.current?.getCurrentTime() as number - syncMsg.time) >= 0.75 && !isLeader)
+                    playerRef.current?.seekTo(syncMsg.time);
                 break;
             case Response.MessageType.NewLeader:
                 dispatch(newLeader(msg.message as Response.NewLeader));
@@ -127,7 +113,7 @@ const Room = (props: {conn: ServerConn}) => {
     return (
         <>
             <div className="player-container">
-                <ReactPlayer url={videoLink} width={"100%"} ref={playerRef} playing={playing} onPlay={onPlay} onPause={onPause} height="100%" controls autoPlay={true} loop={true}/>
+                <ReactPlayer url={videoLink} width={"100%"} ref={playerRef} playing={playing} onPlay={onPlay} onPause={onPause} onProgress={onProgress} height="100%" controls autoPlay={true} loop={true}/>
             </div>
         </>
     )
