@@ -32,10 +32,10 @@ pub struct Room {
 }
 
 impl Room {
-    pub fn new(creator: User, user_id: &String) -> Room {
-        let creator_id = user_id.clone();
+    pub fn new(creator: User, user_id: &str) -> Room {
+        let creator_id = user_id.to_owned();
         let mut users = HashMap::new();
-        users.insert(creator_id.clone(), creator);
+        users.insert(creator_id.to_owned(), creator);
         Room{
             users,
             code: create_room_code(),
@@ -98,14 +98,14 @@ impl Room {
         self.broadcast(ServerWsMsg::Sync{time}).await;
     }
 
-    pub async fn change_user_name(&mut self, user_id: &String, new_user_name: &String) {
+    pub async fn change_user_name(&mut self, user_id: &String, new_user_name: &str) {
         let user = self.users.get_mut(user_id);
         if user.is_none() {
             return;
         }
         let user =user.unwrap();
-        user.name = new_user_name.clone();
-        self.broadcast(ServerWsMsg::UserChangedName { user_id: user_id.clone(), new_name: new_user_name.clone() }).await;
+        user.name = new_user_name.to_owned();
+        self.broadcast(ServerWsMsg::UserChangedName { user_id: user_id.clone(), new_name: new_user_name.to_owned() }).await;
     }
 
     pub async fn set_play(&mut self, playing: bool) {

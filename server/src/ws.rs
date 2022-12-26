@@ -4,7 +4,6 @@ use tokio_tungstenite::WebSocketStream;
 use tokio::net::TcpStream;
 use tokio_tungstenite::tungstenite::{Error as WsError, Message};
 use serde::{Deserialize, Serialize};
-use serde_json;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 use std::{sync::Arc, net::SocketAddr};
@@ -124,7 +123,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         match ws_msg {
             WsMsg::SetPlay { playing } => set_playing(&room_code, playing, &user_id).await,
             WsMsg::JoinRoom { room_id, username } => {
-                if room_code != "" {
+                if !room_code.is_empty() {
                     warn!("{} tried to join a room while already in a room", {&user_id});
                     send_message(&ws_sender, ServerWsMsg::JoinRoom { success: false, message: Some(String::from("Already in room")) }).await;
                     continue;
@@ -135,7 +134,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
                 }
             },
             WsMsg::CreateRoom { username } => {
-                if room_code != "" {
+                if !room_code.is_empty() {
                     warn!("{} tried to create a room while already in a room", {&user_id});
                     send_message(&ws_sender, ServerWsMsg::CreateRoom { success: false, room_code: String::from("")}).await;
 
@@ -156,7 +155,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         }
     }
 
-    if room_code != "" {
+    if !room_code.is_empty() {
         debug!("User {} is disconnecting but still in room. Leaving the room.", user_id);
         leave_room(&room_code, &user_id).await;
     }
@@ -193,10 +192,8 @@ async fn leave_room(room_id: &String, user_id: &String) {
     if room.user_count() == 0 {
         // Delete empty room
         info!("Room {} is now empty. Removing it.", room_id);
-        drop(room);
         rooms.remove(&roomcode);
         info!("Empty room removed.");
-        return;
     }
     
 }
@@ -231,7 +228,7 @@ async fn get_room_data(room_code: &String, user_id: &String, ws_sender: &WsWrite
         return;
     }
     let room = room.unwrap();
-    send_message(ws_sender, ServerWsMsg::RoomData { room: room }).await;
+    send_message(ws_sender, ServerWsMsg::RoomData { room }).await;
 }
 
 async fn sync_time(room_id: &String, time: f64, user_id: &String) {
