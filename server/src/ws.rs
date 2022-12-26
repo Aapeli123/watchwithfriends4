@@ -83,9 +83,10 @@ pub async fn remove_user_from_count() {
 pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), WsError> {
     debug!("New connection from {}", &addr.to_string());
     
-    add_user_to_count().await;
 
     let ws_conn = tokio_tungstenite::accept_async(conn).await?;
+    
+    add_user_to_count().await;
 
     let (ws_sender, mut ws_reader) = ws_conn.split();
     let ws_sender = Arc::new(Mutex::new(ws_sender));
