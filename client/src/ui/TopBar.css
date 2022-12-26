@@ -77,24 +77,62 @@
 }
 
 .username-container {
-    margin-left: calc(100% - (var(--sidebar-width) + 60px) - 300px);
+    margin-left: calc(100% - (var(--sidebar-width) + 60px) - 240px);
     vertical-align: top;
     overflow-x: hidden scroll;
-    width: 300px;
+    width: 230px;
     text-align: center;
-    background-color: #2d2e2e;
+
+}
+
+.username-btn {
+    --notch-size: 10px;
+    clip-path: 
+    polygon(
+        0% 0%,     /* top left */
+        0% 0%,     /* top left */
+        100% 0%,    /* top right */
+        100% 14px,   /* top right */
+        100% 100%,  /* bottom right */
+        100% 100%,  /* bottom right */
+        14px 100%,   /* bottom left */
+        0 40px      /* bottom left */
+      );
+    background-color: #19c1c7;
+    padding: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    text-align: center !important;
+    height: calc(100% - 5px * 2) !important;
+    width: 200px;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    box-shadow: 5px 5px 5px 5px #000000 !important;
+
+}
+.username-drop-shadow {
+    filter: drop-shadow(3px 3px 3px #000000);
 }
 
 .username-container .material-icons {
     display: inline;
+    position: relative;
+    float: right;
+    vertical-align: bottom;
     color: #efefef;
     margin: 0;
-    font-size: 1rem;
+    font-size: 30px;
+    text-align: right;
+    margin-top: calc((var(--top-bar-height) - 10px) / 2  - 0.7em) !important
 }
 .username-container h5 {
+    font-family: Arial;
+    text-align: left;
+    font-weight: 100;
     color: #efefef;
-    font-size: 1rem;
-    margin-top: calc((var(--top-bar-height) / 2 - 10px )) !important;
+    font-size: 30px;
+    margin-top: calc((var(--top-bar-height) - 10px) / 2  - 0.60em) !important;
 }
 .username-container u{
     color: #efefef;

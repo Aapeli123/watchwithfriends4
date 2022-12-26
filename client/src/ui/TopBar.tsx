@@ -43,7 +43,13 @@ const TopBar = (props: {conn: ServerConn}) => {
                 </Link>
                 </div>
                 <div className="username-container">
-                    <h5>username: <a href="" onClick={changeName}><u>{username}</u>  <span className="material-icons">edit</span>  </a> </h5>
+                <a href="" onClick={changeName}>
+                    <div className="username-drop-shadow">
+                    <div className="username-btn">
+                        <h5>{username} <span className="material-icons">edit</span>   </h5>
+                    </div>
+                    </div>
+                </a>
                 </div>
             </div>
         </>
