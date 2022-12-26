@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from 'react-player'
 import { OnProgressProps } from "react-player/base";
-import { ReactReduxContext, useDispatch, useSelector } from "react-redux";
+import { ReactReduxContext, ReactReduxContextValue, useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
@@ -18,7 +18,7 @@ const Room = (props: {conn: ServerConn}) => {
     const playing  = useSelector((state: RootState) => state.room.playing);
     const username = useSelector((state: RootState) => state.pref.username);
 
-    const { store } = useContext(ReactReduxContext)
+    const { store } = useContext<ReactReduxContextValue<RootState>>(ReactReduxContext)
 
     const onProgress = (state: OnProgressProps) => {
         const isLeader = store.getState().room.leaderId === props.conn.user_id;
