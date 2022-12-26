@@ -274,8 +274,8 @@ async fn set_video(room_id: &String, video_id: &String, user_id: &String, ws_sen
         send_message(ws_sender, ServerWsMsg::SetVideo { success: false }).await;
         return;
     }
-    room.set_video(video_id).await;
     send_message(ws_sender, ServerWsMsg::SetVideo { success: true }).await;
+    room.set_video(video_id).await;
 
 }
 
