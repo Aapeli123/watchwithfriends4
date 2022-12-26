@@ -59,7 +59,7 @@ const SideBar = (props: { conn: ServerConn }) => {
           <div className="user-list">
             {Object.keys(users).map(id => {
               return (
-                <div>
+                <div key={id}>
                   <h6>
                     {users[id].name} {id === leaderId && '(Leader)'}
                   </h6>

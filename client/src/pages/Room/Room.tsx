@@ -32,6 +32,7 @@ const Room = (props: { conn: ServerConn }) => {
   const navigate = useNavigate();
   const playing = useSelector((state: RootState) => state.room.playing);
   const username = useSelector((state: RootState) => state.pref.username);
+  const leader_id = useSelector((state: RootState) => state.room.leaderId);
 
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
@@ -62,9 +63,7 @@ const Room = (props: { conn: ServerConn }) => {
       console.log('Requesting room data');
       const data = await conn.roomData();
       dispatch(roomData(data));
-    } catch (err) {
-      console.log(err);
-    }
+    } catch {}
     props.conn.addMessageCallback(msgHandler);
     dispatch(enableRoomBar());
   };
@@ -132,19 +131,29 @@ const Room = (props: { conn: ServerConn }) => {
   return (
     <>
       <div className="player-container">
-        <ReactPlayer
-          url={videoLink}
-          width={'100%'}
-          ref={playerRef}
-          playing={playing}
-          onPlay={onPlay}
-          onPause={onPause}
-          onProgress={onProgress}
-          height="100%"
-          controls
-          autoPlay={true}
-          loop={true}
-        />
+        {videoLink === null && (
+          <>
+            <h1>No video loaded yet...</h1>
+            {leader_id === props.conn.user_id && (
+              <h1>To load a video, click change video</h1>
+            )}
+          </>
+        )}
+        {videoLink !== null && (
+          <ReactPlayer
+            url={videoLink}
+            width={'100%'}
+            ref={playerRef}
+            playing={playing}
+            onPlay={onPlay}
+            onPause={onPause}
+            onProgress={onProgress}
+            height="100%"
+            controls
+            autoPlay={true}
+            loop={true}
+          />
+        )}
       </div>
     </>
   );
