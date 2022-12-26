@@ -1,21 +1,19 @@
-import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
-
-
+import { createAction, createReducer, createSlice } from '@reduxjs/toolkit';
 
 const uiSlice = createSlice({
-    name: "ui",
-    initialState: {
-        roomBar: false,
+  name: 'ui',
+  initialState: {
+    roomBar: false,
+  },
+  reducers: {
+    enableRoomBar(state) {
+      state.roomBar = true;
     },
-    reducers: {
-        enableRoomBar(state) {
-            state.roomBar = true
-        },
-        disableRoomBar(state) {
-            state.roomBar = false
-        }
-    }
-})
+    disableRoomBar(state) {
+      state.roomBar = false;
+    },
+  },
+});
 
 export default uiSlice.reducer;
 export const { enableRoomBar, disableRoomBar } = uiSlice.actions;
