@@ -21,7 +21,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: server-build
-          path: target/release/watchwithfriends-4
+          path: server/target/release/watchwithfriends-4
 
   deploy:
     needs: [build]
