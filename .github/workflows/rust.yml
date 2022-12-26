@@ -17,4 +17,27 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build
-        run: cd server && cargo build --verbose
+      - run: cd server && cargo build --verbose --release
+      - uses: actions/upload-artifact@v2
+      with:
+        name: server-build
+        path: ./target/release
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: server-build
+      - shell: bash
+      env:
+        SSH_KEY: ${{ secrets.SSHKEY }}
+        SERVER_IP: ${{ secrets.SERVERIP }}
+      - run: touch .ssh/id_rsa.pub 
+      - run: "echo $SSH_KEY > .ssh/id_rsa.pub"
+      - run: "scp ./server-build watchwithfriends@$SERVER_IP:~/watchwithfriends/server"
+          
+
+
+    
+
