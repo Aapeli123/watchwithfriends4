@@ -5,6 +5,8 @@ on:
     branches: ["main"]
     paths:
       - "server/**"
+  workflow_dispatch:
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -15,4 +17,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build
-        run: cargo build --verbose
+        run: cd server && cargo build --verbose
