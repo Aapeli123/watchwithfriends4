@@ -39,4 +39,4 @@ jobs:
           mkdir .ssh
           touch .ssh/id_rsa.pub
           echo "$SSH_KEY" > .ssh/id_rsa.pub
-          scp ./server-build watchwithfriends@"$SERVER_IP":~/watchwithfriends/server -o StrictHostKeyChecking=no
+          scp ~/work/watchwithfriends4/watchwithfriends4 watchwithfriends@"$SERVER_IP":~/watchwithfriends/server -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
