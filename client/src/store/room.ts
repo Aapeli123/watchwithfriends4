@@ -42,9 +42,7 @@ const roomSlice = createSlice({
             state.playing = action.payload.playing;
         },
         setTime: (state, action: PayloadAction<Response.Sync>) => {
-            if(state.time - action.payload.time > 0.5) {
-                state.time = action.payload.time
-            }
+            state.time = action.payload.time
         },
         changeUsername: (state, action: PayloadAction<Response.UserChangedName>) => {
             state.users[action.payload.user_id] = {name: action.payload.new_name};

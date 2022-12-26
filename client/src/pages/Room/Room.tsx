@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from 'react-player'
-import { useDispatch, useSelector } from "react-redux";
+import { ReactReduxContext, useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ServerConn } from "../../lib/conn";
 import { Response } from "../../lib/messages";
@@ -17,6 +17,31 @@ const Room = (props: {conn: ServerConn}) => {
     const playing  = useSelector((state: RootState) => state.room.playing);
     const username = useSelector((state: RootState) => state.pref.username);
 
+    const { store } = useContext(ReactReduxContext)
+
+    const sync = () => {
+        const state = store.getState();
+        const player = playerRef.current as ReactPlayer;
+
+        if(state.room.leaderId === props.conn.user_id) {
+            const time = player.getCurrentTime();
+            if(time !== null)
+                props.conn.syncTime(time as number);
+        } else {
+            const tm = state.room.time;
+            console.log(tm);
+            const curTime = player.getCurrentTime() as number;
+            if(Math.abs(curTime - tm) >= 0.75) {
+                console.log(tm, curTime);
+                player.seekTo(tm, "seconds");
+            }
+        }
+    }
+
+    const [intervalId, ___] = useState(() => setInterval(sync, 250));
+    
+    const playerRef = useRef<ReactPlayer>(null);
+    
     const initRoom = async () => {
         const roomCode = params["code"] as string;
         const {conn} = props;
@@ -39,7 +64,6 @@ const Room = (props: {conn: ServerConn}) => {
         }
         props.conn.addMessageCallback(msgHandler);
         dispatch(enableRoomBar());
-
     }
 
     useEffect(() => {
@@ -51,7 +75,10 @@ const Room = (props: {conn: ServerConn}) => {
             props.conn.leaveRoom();
             props.conn.removeCallback();
             dispatch(disableRoomBar());
-            dispatch(leaveRoom())
+            dispatch(leaveRoom());
+            if(intervalId !== null)  {
+                clearInterval(intervalId);
+            }
         }
     }, []);
 
@@ -84,17 +111,23 @@ const Room = (props: {conn: ServerConn}) => {
     }
 
     const onPlay = () => {
-        props.conn.setPlay(true);
+        if(!playing) {
+            props.conn.setPlay(true);
+        }
     }
 
     const onPause = () => {
-        props.conn.setPlay(false);
+        if(playing) {
+            props.conn.setPlay(false);
+        }
     }
+
+
 
     return (
         <>
             <div className="player-container">
-                <ReactPlayer url={videoLink} width={"100%"} playing={playing} onPlay={onPlay} onPause={onPause} height="100%" controls autoplay/>
+                <ReactPlayer url={videoLink} width={"100%"} ref={playerRef} playing={playing} onPlay={onPlay} onPause={onPause} height="100%" controls autoPlay={true} loop={true}/>
             </div>
         </>
     )
