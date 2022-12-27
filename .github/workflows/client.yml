@@ -48,6 +48,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
+          overwrite: true
           rm: true
+          debug: true
           source: "~/distfiles"
           target: "/home/${{ secrets.USERNAME }}/watchwithfriends/website/"
