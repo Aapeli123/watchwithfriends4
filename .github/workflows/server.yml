@@ -1,4 +1,4 @@
-name: Build Server
+name: Build and deploy server
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands using ssh key

@@ -1,0 +1,48 @@
+name: Build and deploy client
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "client/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Go to the client files
+        run: cd watchwithfriends4/client
+      - name: Use yarn to install packages
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      - name: Build for prod
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: watchwithfriends/client/dist
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: ssh copy the files over to the server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVERIP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          source: "build"
+          target: "~/watchwithfriends/website/"
