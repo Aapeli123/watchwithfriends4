@@ -1,0 +1,29 @@
+name: Build and deploy server
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "server/**"
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVERIP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          script: |
+            source "$HOME/.cargo/env"
+            cd watchwithfriends4
+            git pull
+            cd server
+            cargo build --release
+            echo ${{secrets.PASSWORD}} | sudo -S make install
