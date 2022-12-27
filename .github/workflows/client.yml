@@ -36,11 +36,10 @@ jobs:
         with:
           name: build
           path: ~/distfiles
-      - name: list files
-        run: |
-          which scp 
-          cd ~
-          echo ${{secrets.SSHKEY}} >> ./id_rsa
-          ls -a
-          echo $PATH
-          scp -o "StrictHostKeyChecking=no" -i ./id_rsa ./distfiles ${{ secrets.USERNAME }}@${{ secrets.SERVERIP }}:~/watchwithfriends/website
+      - uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVERIP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          source: "~/distfiles/*"
+          target: "test"
