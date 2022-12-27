@@ -38,6 +38,7 @@ jobs:
       - name: list files
         run: |
           ls -R
+          pwd
       - name: ssh copy the files over to the server
         uses: appleboy/scp-action@master
         with:
