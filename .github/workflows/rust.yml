@@ -13,32 +13,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-        name: Build
-      - run: cd server && cargo build --release
-      - uses: actions/upload-artifact@v3
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.6
         with:
-          name: server-build
-          path: server/target/release/watchwithfriends-4
-
-  deploy:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: server-build
-
-      - shell: bash
-        env:
-          SSH_KEY: ${{ secrets.SSHKEY }}
-          SERVER_IP: ${{ secrets.SERVERIP }}
-          PUBKEY: ${{secrets.PUBKEY}}
-        run: |
-          mkdir .ssh
-          touch .ssh/id_rsa
-          echo "$SSH_KEY" > .ssh/id_rsa
-          echo "$PUBKEY" > .ssh/id_rsa.pub
-          scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  /home/runner/work/watchwithfriends4/watchwithfriends4 watchwithfriends@"$SERVER_IP":~/watchwithfriends/server
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            git clone
