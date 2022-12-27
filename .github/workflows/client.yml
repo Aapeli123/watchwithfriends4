@@ -41,4 +41,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           source: "distfiles/*"
-          target: "test"
+          target: "watchwithfriends/website/"
+          overwrite: true
