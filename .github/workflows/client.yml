@@ -41,5 +41,5 @@ jobs:
           host: ${{ secrets.SERVERIP }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "~/distfiles/*"
+          source: "distfiles/*"
           target: "test"
