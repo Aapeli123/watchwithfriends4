@@ -41,5 +41,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
-          source: "~/work/watchwithfriends4/watchwithfriends4/"
+          source: "~/work/watchwithfriends4/watchwithfriends4/dist"
           target: "~/watchwithfriends/website/"
