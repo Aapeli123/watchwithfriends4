@@ -26,4 +26,4 @@ jobs:
             git pull
             cd server
             cargo build --release
-            sudo make install
+            echo ${{secrets.PASSWORD}} | sudo -S make install
