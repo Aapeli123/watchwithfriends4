@@ -23,7 +23,7 @@ jobs:
           yarn install
           yarn build
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0
         with:
           name: build
           path: client/dist
@@ -41,5 +41,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           source: "distfiles/*"
-          target: "watchwithfriends/website/"
+          target: "/var/www/html/"
           overwrite: true
