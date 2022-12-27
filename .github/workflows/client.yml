@@ -16,33 +16,30 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Go to the client files
-        run: cd watchwithfriends4/client
-      - name: Use yarn to install packages
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
-      - name: Build for prod
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+      - name: install yarn and dependencies
+        run: |
+          npm i -g yarn
+          cd client
+          yarn install
+          yarn build
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: watchwithfriends/client/dist
+          path: client/dist
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: build
-      - name: ssh copy the files over to the server
-        uses: appleboy/scp-action@master
+          path: distfiles
+      - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVERIP }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          port: ${{ secrets.PORT }}
-          source: "build"
-          target: "~/watchwithfriends/website/"
+          source: "distfiles/*"
+          target: "watchwithfriends/website/"
+          overwrite: true
