@@ -41,4 +41,5 @@ jobs:
           which scp 
           cd ~
           echo ${{secrets.SSHKEY}} >> ./id_rsa
+          ls -a
           scp -o "StrictHostKeyChecking=no" -i ./id_rsa ./distfiles ${{ secrets.USERNAME }}@${{ secrets.SERVERIP }}:~/watchwithfriends/website
