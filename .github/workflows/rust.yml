@@ -17,8 +17,12 @@ jobs:
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SERVERIP }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.SSHKEY }}
           script: |
-            git clone
+            cd watchwithfriends4
+            git pull
+            cd server
+            make build
+            sudo make install
