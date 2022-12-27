@@ -34,6 +34,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: build
+      - name: list files
+        run: |
+          ls -R
       - name: ssh copy the files over to the server
         uses: appleboy/scp-action@master
         with:
