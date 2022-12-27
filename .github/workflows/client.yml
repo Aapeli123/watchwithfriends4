@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 18.x
       - name: Go to the client files
-        run: cd watchwithfriends4/client
+        run: cd client
       - name: Use yarn to install packages
         uses: borales/actions-yarn@v4
         with:
@@ -30,9 +30,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: watchwithfriends/client/dist
+          path: dist
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/download-artifact@v3
         with:
