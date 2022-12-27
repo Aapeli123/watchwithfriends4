@@ -39,17 +39,5 @@ jobs:
       - name: list files
         run: |
           cd ~
-          ls distfiles -R
-          pwd
-      - name: ssh copy the files over to the server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SERVERIP }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSHKEY }}
-          port: ${{ secrets.PORT }}
-          overwrite: true
-          rm: true
-          debug: true
-          source: "~/distfiles"
-          target: "/home/${{ secrets.USERNAME }}/watchwithfriends/website/"
+          echo ${{secrets.SSHKEY}} >> ./id_rsa
+          scp -o "StrictHostKeyChecking=no" -i ./id_rsa ./distfiles ${{ secrets.USERNAME }}@${{ secrets.SERVERIP }}:~/watchwithfriends/website
