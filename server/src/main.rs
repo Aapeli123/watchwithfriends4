@@ -23,7 +23,7 @@ async fn main() -> Result<(), IoError>{
     SimpleLogger::new().with_level(log::LevelFilter::Debug).init().unwrap();
     info!("Starting Watch W/Friends Server...");
     info!("Trying to listen on port {}", PORT);
-    
+    info!("Test");
     tokio::spawn(stats::stat_display_thread());
     let try_socket = TcpListener::bind(format!("0.0.0.0:{}", PORT)).await;
     if try_socket.is_err() {
