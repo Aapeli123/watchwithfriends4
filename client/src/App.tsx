@@ -1,6 +1,12 @@
 import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { useContext, useEffect, useState } from 'react';
+import {
+  Provider,
+  ReactReduxContext,
+  ReactReduxContextValue,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -47,6 +53,8 @@ function App(): JSX.Element {
   const dispatch = useDispatch();
   const showUnPrompt = useSelector((state: RootState) => state.ui.unPrompt);
 
+  const { store } =
+    useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   useEffect(() => {
     const hasUn = localStorage.getItem('username') !== null;
 
@@ -73,6 +81,9 @@ function App(): JSX.Element {
   const unPromptCB = (un: string) => {
     if (un.trimStart().trimEnd() === '') {
       return;
+    }
+    if (store.getState().room.roomLoaded) {
+      connection?.changeUsername(un);
     }
     localStorage.setItem('username', un);
     dispatch(setUn(un));
