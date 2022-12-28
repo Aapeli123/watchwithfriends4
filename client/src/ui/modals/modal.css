@@ -65,3 +65,12 @@
   color: white;
   background-color: #19c1c7;
 }
+
+.modal-content button {
+  border: none;
+  border-radius: 0;
+  background-color: #19c1c7;
+  color: white;
+  width: fit-content;
+  font-size: 15px;
+}
