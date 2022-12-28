@@ -1,5 +1,5 @@
 .top-bar {
-  background-color: #232323;
+  background-color: var(--bar-main-color);
   width: 100%;
   height: var(--top-bar-height);
   margin: 0;
@@ -15,7 +15,7 @@
 }
 
 .logo {
-  background-color: #2d2e2e;
+  background-color: var(--logo-bg-color);
 
   width: calc(var(--sidebar-width) + 60px);
   height: 100%;
@@ -34,7 +34,7 @@
   font-family: Arial;
   font-weight: 900;
   font-size: 2em;
-  color: #efefef;
+  color: var(--text-color);
 }
 
 .logo-text-container h2 {
@@ -42,7 +42,7 @@
   font-family: Arial;
   font-weight: 500;
   font-size: 1.9em;
-  color: #efefef;
+  color: var(--text-color);
   vertical-align: super;
   margin-top: calc((var(--top-bar-height) - 1.7em + 2px)) !important;
 }
@@ -54,7 +54,7 @@
 
 #logo-text-right {
   margin-right: 5px;
-  color: #19c1c7;
+  color: var(--logo-text-accent);
 }
 #logo-text-left {
   margin-left: 5px;
@@ -103,7 +103,7 @@
   margin-bottom: 10px !important;
 }
 .username-drop-shadow {
-  filter: drop-shadow(3px 3px 3px #000000);
+  filter: drop-shadow(4px 4px 2px #000000);
 }
 
 .username-container .material-icons {
@@ -111,7 +111,7 @@
   position: relative;
   float: right;
   vertical-align: bottom;
-  color: #efefef;
+  color: var(--text-color);
   margin: 0;
   font-size: 30px;
   text-align: right;
@@ -121,10 +121,10 @@
   font-family: Arial;
   text-align: left;
   font-weight: 100;
-  color: #efefef;
+  color: var(--text-color);
   font-size: 30px;
   margin-top: calc((var(--top-bar-height) - 20px) / 2 - 0.6em) !important;
 }
 .username-container u {
-  color: #efefef;
+  color: var(--text-color);
 }

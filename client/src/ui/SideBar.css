@@ -1,17 +1,17 @@
 .side-bar {
   user-select: none;
   height: calc(100vh - var(--top-bar-height));
-  background-color: #232323;
+  background-color: var(--bar-main-color);
   width: var(--sidebar-width);
 }
 
 .sidebar-top {
-  background-color: #19c1c7;
+  background-color: var(--accent-color);
   margin: 0;
   width: 100%;
   height: 125px;
-  margin-bottom: 2px;
   transition: background-color 0.2s;
+  border-bottom: var(--sidebar-button-border) 1px solid;
 }
 
 .user-list div {
@@ -32,18 +32,18 @@
 }
 
 .sidebar-top:hover {
-  background-color: #19a4c7;
+  background-color: #19adc7;
   transition: background-color 0.2s;
 }
 
 .sidebar-top:active {
-  background-color: #195fc7;
+  background-color: #199ec7;
   transition: background-color 0.2s;
 }
 
 .sidebar-top h2 {
   margin: 0;
-  color: #efefef;
+  color: var(--text-color);
   font-size: 30px;
   text-align: center;
 
@@ -65,28 +65,33 @@
   width: 100%;
   height: 75px;
   transition: box-shadow 0.2s;
-  box-shadow: 0px 0px 1px 1px #3c3c3c inset;
-  margin-top: 1px;
+  /*   box-shadow: 0px 0px 1px 1px #3c3c3c inset;
+ */
+  border-bottom: var(--sidebar-button-border) 1px solid;
   text-align: center;
 }
 
 .sidebar-item:hover {
-  box-shadow: 0px 0px 2px 2px #19c1c7 inset;
+  box-shadow: 0px 0px 3px 3px var(--sidebar-shadow-color) inset;
   transition: box-shadow 0.2;
 }
 
 .sidebar-item:active {
-  box-shadow: 0px 0px 2px 2px #1933c7 inset;
+  box-shadow: 0px 0px 3px 3px #1996c7 inset;
   transition: box-shadow 0.2;
 }
 
 .sidebar-item h4 {
   margin: auto;
-  color: #efefef;
+  color: var(--text-color);
   font-family: Arial;
   font-size: 25px;
   margin-top: calc(75px / 2 - calc(1em / 2));
   display: flex;
   text-align: left;
   vertical-align: middle;
+}
+
+hr {
+  margin: 0;
 }

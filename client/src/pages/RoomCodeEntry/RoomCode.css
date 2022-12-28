@@ -5,7 +5,7 @@
 }
 
 .code-input-container input {
-  background-color: aqua;
+  background-color: var(--logo-text-accent);
   border: none;
   margin: 5px;
   height: fit-content;
@@ -13,6 +13,7 @@
   text-align: center;
   border-radius: 2px;
   width: 50px;
+  color: var(--text-color);
 }
 
 .code-input-container input[type='number'] {

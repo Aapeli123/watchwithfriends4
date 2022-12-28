@@ -103,7 +103,7 @@ const SideBar = (props: { conn: ServerConn }) => {
             <h2>Join Room</h2>
           </div>
         </Link>
-        <a href="/createroom" onClick={createRoomClick}>
+        <a href="" onClick={createRoomClick}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">add</span>New Room
