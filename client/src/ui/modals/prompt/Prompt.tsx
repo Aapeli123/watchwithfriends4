@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import './modal.css';
+import '../modal.css';
 
 const Prompt = (props: {
   question: string;

@@ -27,7 +27,8 @@ import {
   disableVideoPrompt,
   enableRoomBar,
 } from '../../store/ui';
-import Prompt from '../../ui/prompt/Prompt';
+import Alert from '../../ui/modals/alert/Alert';
+import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
 
 const Room = (props: { conn: ServerConn }) => {
@@ -38,6 +39,9 @@ const Room = (props: { conn: ServerConn }) => {
   const playing = useSelector((state: RootState) => state.room.playing);
   const username = useSelector((state: RootState) => state.pref.username);
   const leader_id = useSelector((state: RootState) => state.room.leaderId);
+
+  const [showNotFound, setNotFound] = useState(false);
+
   const showVideoSelector = useSelector(
     (state: RootState) => state.ui.videoPrompt.show
   );
@@ -59,8 +63,7 @@ const Room = (props: { conn: ServerConn }) => {
       await conn.joinRoom(roomCode, username);
     } catch (msg) {
       if (msg === 'Room not found') {
-        alert('Room not found.');
-        navigate('/');
+        setNotFound(true);
         return;
       }
       console.log(
@@ -146,6 +149,12 @@ const Room = (props: { conn: ServerConn }) => {
 
   return (
     <>
+      <Alert
+        show={showNotFound}
+        text="Room not found"
+        buttontext="Ok."
+        onClickBtn={() => navigate('/')}
+      />
       <Prompt
         show={showVideoSelector}
         question={'Video link:'}

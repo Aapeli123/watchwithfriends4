@@ -19,7 +19,7 @@ import Settings from './pages/Settings/Settings';
 import { setUn } from './store/prefs';
 import { RootState } from './store/store';
 import { hideUnSelector, showUnSelector } from './store/ui';
-import Prompt from './ui/prompt/Prompt';
+import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
 
