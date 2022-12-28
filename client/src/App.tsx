@@ -146,7 +146,7 @@ function App(): JSX.Element {
     </>
   ) : (
     <div className="App">
-      <h1>Connecting..</h1>
+      <h1>Connecting...</h1>
     </div>
   );
 }
