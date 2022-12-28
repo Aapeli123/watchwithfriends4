@@ -55,6 +55,19 @@
   color: white;
   caret-color: #19c1c7;
 }
+
+.modal-content input[type='text']:focus {
+  outline: none;
+}
+
+.closable form input[type='text'] {
+  width: calc(100% - 31px * 2 - 20px) !important;
+}
+#close-btn {
+  background-color: #afafaf;
+  margin-left: 2px;
+}
+
 .modal-content input[type='submit'] {
   width: 30px;
   height: 30px;

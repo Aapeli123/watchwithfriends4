@@ -1,10 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const uiSlice = createSlice({
   name: 'ui',
   initialState: {
     roomBar: false,
-    unPrompt: { show: false, closable: false },
+    unPrompt: { show: false, closable: true },
     videoPrompt: { show: false },
   },
   reducers: {
@@ -20,6 +20,10 @@ const uiSlice = createSlice({
     },
     hideUnSelector(state) {
       state.unPrompt.show = false;
+    },
+
+    setUnSelectorClosable(state, action: PayloadAction<boolean>) {
+      state.unPrompt.closable = action.payload;
     },
 
     showVideoPrompt(state) {
@@ -39,4 +43,5 @@ export const {
   hideUnSelector,
   showVideoPrompt,
   disableVideoPrompt,
+  setUnSelectorClosable,
 } = uiSlice.actions;

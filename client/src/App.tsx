@@ -18,7 +18,11 @@ import RoomCode from './pages/RoomCodeEntry/RoomCode';
 import Settings from './pages/Settings/Settings';
 import { setUn } from './store/prefs';
 import { RootState } from './store/store';
-import { hideUnSelector, showUnSelector } from './store/ui';
+import {
+  hideUnSelector,
+  setUnSelectorClosable,
+  showUnSelector,
+} from './store/ui';
 import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
@@ -48,6 +52,7 @@ function App(): JSX.Element {
 
     console.log(hasUn);
     if (!hasUn) {
+      dispatch(setUnSelectorClosable(false));
       dispatch(showUnSelector());
     }
 
@@ -83,6 +88,7 @@ function App(): JSX.Element {
             closable={showUnPrompt.closable}
             show={showUnPrompt.show}
             callback={unPromptCB}
+            close={() => dispatch(hideUnSelector())}
           />
           <Routes>
             <Route

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUn } from '../store/prefs';
 import { RootState } from '../store/store';
 import { ServerConn } from '../lib/conn';
-import { showUnSelector } from '../store/ui';
+import { setUnSelectorClosable, showUnSelector } from '../store/ui';
 const TopBar = (props: { conn: ServerConn }) => {
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
@@ -14,6 +14,7 @@ const TopBar = (props: { conn: ServerConn }) => {
 
   const changeName = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    dispatch(setUnSelectorClosable(true));
     dispatch(showUnSelector());
   };
 

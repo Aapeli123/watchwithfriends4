@@ -31,13 +31,27 @@ const Prompt = (props: {
     }
   };
 
+  const closeBtnPress = () => {
+    if (props.close !== undefined) props.close();
+  };
+
   return props.show ? (
     <div className="modal">
-      <div className="modal-content">
+      <div
+        className={props.closable ? 'modal-content closable' : 'modal-content'}
+      >
         <h2>{props.question}</h2>
         <form onKeyDown={onKeyDown} onSubmit={onFormSubmit}>
           <input ref={textRef} type="text" />
           <input type="submit" value={'✓'} />
+          {props.closable && (
+            <input
+              id="close-btn"
+              type="submit"
+              value={'X'}
+              onClick={closeBtnPress}
+            />
+          )}
         </form>
       </div>
     </div>
