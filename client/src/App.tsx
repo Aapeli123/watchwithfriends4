@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -17,6 +17,9 @@ import Room from './pages/Room/Room';
 import RoomCode from './pages/RoomCodeEntry/RoomCode';
 import Settings from './pages/Settings/Settings';
 import { setUn } from './store/prefs';
+import { RootState } from './store/store';
+import { hideUnSelector, showUnSelector } from './store/ui';
+import Prompt from './ui/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
 
@@ -38,21 +41,14 @@ function App(): JSX.Element {
   const [connection, setConnection] = useState<ServerConn | undefined>();
   const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
+  const showUnPrompt = useSelector((state: RootState) => state.ui.unPrompt);
+
   useEffect(() => {
     const hasUn = localStorage.getItem('username') !== null;
+
     console.log(hasUn);
     if (!hasUn) {
-      while (1) {
-        const username = prompt('Username?');
-        if (username === null) {
-          continue;
-        }
-        if (username.trimStart().trimEnd() !== '') {
-          localStorage.setItem('username', username);
-          dispatch(setUn(username));
-          break;
-        }
-      }
+      dispatch(showUnSelector());
     }
 
     if (connected) {
@@ -68,10 +64,26 @@ function App(): JSX.Element {
     };
     connectToServer();
   }, []);
+
+  const unPromptCB = (un: string) => {
+    if (un.trimStart().trimEnd() === '') {
+      return;
+    }
+    localStorage.setItem('username', un);
+    dispatch(setUn(un));
+    dispatch(hideUnSelector());
+  };
+
   return connected ? (
     <>
       <BrowserRouter>
         <div className="App">
+          <Prompt
+            question="Choose a name:"
+            closable={showUnPrompt.closable}
+            show={showUnPrompt.show}
+            callback={unPromptCB}
+          />
           <Routes>
             <Route
               path="/"

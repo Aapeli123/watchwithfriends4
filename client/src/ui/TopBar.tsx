@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUn } from '../store/prefs';
 import { RootState } from '../store/store';
 import { ServerConn } from '../lib/conn';
+import { showUnSelector } from '../store/ui';
 const TopBar = (props: { conn: ServerConn }) => {
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
@@ -13,20 +14,7 @@ const TopBar = (props: { conn: ServerConn }) => {
 
   const changeName = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    while (1) {
-      const username = prompt('Username?');
-      if (username === null) {
-        continue;
-      }
-      if (username.trimStart().trimEnd() !== '') {
-        localStorage.setItem('username', username);
-        dispatch(setUn(username));
-        if (roomLoaded) {
-          props.conn.changeUsername(username);
-        }
-        break;
-      }
-    }
+    dispatch(showUnSelector());
   };
 
   return (

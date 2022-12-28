@@ -4,6 +4,7 @@ const uiSlice = createSlice({
   name: 'ui',
   initialState: {
     roomBar: false,
+    unPrompt: { show: false, closable: false },
   },
   reducers: {
     enableRoomBar(state) {
@@ -12,8 +13,17 @@ const uiSlice = createSlice({
     disableRoomBar(state) {
       state.roomBar = false;
     },
+
+    showUnSelector(state) {
+      state.unPrompt.show = true;
+    },
+
+    hideUnSelector(state) {
+      state.unPrompt.show = false;
+    },
   },
 });
 
 export default uiSlice.reducer;
-export const { enableRoomBar, disableRoomBar } = uiSlice.actions;
+export const { enableRoomBar, disableRoomBar, showUnSelector, hideUnSelector } =
+  uiSlice.actions;
