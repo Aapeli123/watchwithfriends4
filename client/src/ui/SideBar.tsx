@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useState } from 'react';
+import {
+  ReactReduxContext,
+  ReactReduxContextValue,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ServerConn } from '../lib/conn';
 import { RootState } from '../store/store';
 import { showVideoPrompt } from '../store/ui';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
+
 const SideBar = (props: { conn: ServerConn }) => {
   const [showUsers, setShowUsers] = useState(false);
 
@@ -16,6 +25,21 @@ const SideBar = (props: { conn: ServerConn }) => {
 
   const leaderId = useSelector((state: RootState) => state.room.leaderId);
   const dispatch = useDispatch();
+
+  const { store } =
+    useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
+
+  const copyRoomCode = async () => {
+    await navigator.clipboard.writeText(store.getState().room.roomCode);
+    toast('Room code copied to clipboard!', {
+      type: 'success',
+      theme: 'dark',
+      closeOnClick: true,
+      autoClose: 500,
+      delay: 0,
+    });
+  };
+
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
@@ -47,7 +71,12 @@ const SideBar = (props: { conn: ServerConn }) => {
   return roomBar ? (
     <>
       <div className="side-bar">
-        <div className="sidebar-top">
+        <div
+          className="sidebar-top"
+          onClick={() => {
+            copyRoomCode();
+          }}
+        >
           <h2>Room code: {roomCode}</h2>
         </div>
         <div className="sidebar-item" onClick={clickUsers}>
@@ -94,6 +123,11 @@ const SideBar = (props: { conn: ServerConn }) => {
           </div>
         </Link>
       </div>
+      <ToastContainer
+        pauseOnHover={false}
+        hideProgressBar={false}
+        position="bottom-right"
+      />
     </>
   ) : (
     <>

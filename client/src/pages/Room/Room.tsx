@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { OnProgressProps } from 'react-player/base';
 import {
@@ -18,7 +18,6 @@ import {
   newVideo,
   roomData,
   setPlaying,
-  setTime,
   userLeft,
 } from '../../store/room';
 import { RootState } from '../../store/store';
