@@ -78,6 +78,17 @@ function App(): JSX.Element {
     connectToServer();
   }, []);
 
+  const reconnect = async () => {
+    setConnected(false);
+    connection?.disconnect();
+    setConnection(undefined);
+
+    const conn = await connect('wss://watchwithfriends.ml/ws');
+
+    setConnection(conn);
+    setConnected(true);
+  };
+
   const unPromptCB = (un: string) => {
     if (un.trimStart().trimEnd() === '') {
       return;
@@ -115,7 +126,15 @@ function App(): JSX.Element {
                 element={<Room conn={connection as ServerConn} />}
               />
               <Route path="/info" element={<Info />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route
+                path="/settings"
+                element={
+                  <Settings
+                    conn={connection as ServerConn}
+                    reconnect={reconnect}
+                  />
+                }
+              />
               <Route
                 path="/"
                 element={<Home conn={connection as ServerConn} />}

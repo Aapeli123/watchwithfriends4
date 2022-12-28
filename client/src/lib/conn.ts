@@ -105,6 +105,10 @@ export class ServerConn {
     this.sendMessage({ playing: playing }, Sendable.WsMsgType.SetPlay);
   }
 
+  disconnect() {
+    this.socket.close();
+  }
+
   private msgCb(event: MessageEvent) {
     let data = JSON.parse(event.data);
     const type = data.type;
