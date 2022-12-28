@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ServerConn } from '../lib/conn';
 import { RootState } from '../store/store';
+import { showVideoPrompt } from '../store/ui';
 import './SideBar.css';
 const SideBar = (props: { conn: ServerConn }) => {
   const [showUsers, setShowUsers] = useState(false);
@@ -14,7 +15,7 @@ const SideBar = (props: { conn: ServerConn }) => {
   const users = useSelector((state: RootState) => state.room.users);
 
   const leaderId = useSelector((state: RootState) => state.room.leaderId);
-
+  const dispatch = useDispatch();
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
@@ -28,8 +29,7 @@ const SideBar = (props: { conn: ServerConn }) => {
 
   const changeVideo = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const link = prompt('Video link?');
-    props.conn.setVideo(link as string);
+    dispatch(showVideoPrompt());
   };
 
   const clickUsers = (event: React.MouseEvent<HTMLDivElement>) => {

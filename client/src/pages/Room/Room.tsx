@@ -22,7 +22,12 @@ import {
   userLeft,
 } from '../../store/room';
 import { RootState } from '../../store/store';
-import { disableRoomBar, enableRoomBar } from '../../store/ui';
+import {
+  disableRoomBar,
+  disableVideoPrompt,
+  enableRoomBar,
+} from '../../store/ui';
+import Prompt from '../../ui/prompt/Prompt';
 import './Room.css';
 
 const Room = (props: { conn: ServerConn }) => {
@@ -33,7 +38,9 @@ const Room = (props: { conn: ServerConn }) => {
   const playing = useSelector((state: RootState) => state.room.playing);
   const username = useSelector((state: RootState) => state.pref.username);
   const leader_id = useSelector((state: RootState) => state.room.leaderId);
-
+  const showVideoSelector = useSelector(
+    (state: RootState) => state.ui.videoPrompt.show
+  );
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
 
@@ -47,6 +54,7 @@ const Room = (props: { conn: ServerConn }) => {
   const initRoom = async () => {
     const roomCode = params['code'] as string;
     const { conn } = props;
+
     try {
       await conn.joinRoom(roomCode, username);
     } catch (msg) {
@@ -128,8 +136,23 @@ const Room = (props: { conn: ServerConn }) => {
     }
   };
 
+  const changeVideoCb = (res: string) => {
+    if (res === '') {
+      return;
+    }
+    props.conn.setVideo(res);
+    dispatch(disableVideoPrompt());
+  };
+
   return (
     <>
+      <Prompt
+        show={showVideoSelector}
+        question={'Video link:'}
+        closable={true}
+        callback={changeVideoCb}
+        close={() => dispatch(disableVideoPrompt())}
+      />
       <div className="player-container">
         {videoLink === null && (
           <>
