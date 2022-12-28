@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ServerConn } from '../../lib/conn';
 import { RootState } from '../../store/store';
-import { enableRoomBar } from '../../store/ui';
+import { toast } from 'react-toastify';
+
 import './RoomCode.css';
 
 let codeInputs: NodeListOf<HTMLInputElement>;
@@ -29,6 +30,12 @@ const CodeInput = (props: { conn: ServerConn }) => {
       console.log(res);
       navigate(`/room/${code}`);
     } catch (err) {
+      toast.error('Could not join room: ' + err, {
+        theme: 'dark',
+        closeOnClick: true,
+        autoClose: 1000,
+        delay: 0,
+      });
       console.log(err);
     }
   };

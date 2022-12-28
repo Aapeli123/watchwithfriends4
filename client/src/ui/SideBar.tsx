@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ServerConn } from '../lib/conn';
 import { RootState } from '../store/store';
 import { showVideoPrompt } from '../store/ui';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
@@ -123,11 +123,6 @@ const SideBar = (props: { conn: ServerConn }) => {
           </div>
         </Link>
       </div>
-      <ToastContainer
-        pauseOnHover={false}
-        hideProgressBar={false}
-        position="bottom-right"
-      />
     </>
   ) : (
     <>

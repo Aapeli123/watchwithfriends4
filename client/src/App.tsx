@@ -15,6 +15,7 @@ import {
   RouterProvider,
   Routes,
 } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import './App.css';
 import connect, { ServerConn } from './lib/conn';
 import Home from './pages/Home/Home';
@@ -105,6 +106,11 @@ function App(): JSX.Element {
     <>
       <BrowserRouter>
         <div className="App">
+          <ToastContainer
+            pauseOnHover={false}
+            hideProgressBar={false}
+            position="bottom-right"
+          />
           <Prompt
             question="Choose a name:"
             closable={showUnPrompt.closable}
