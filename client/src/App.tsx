@@ -61,7 +61,7 @@ function App(): JSX.Element {
       return;
     }
     const connectToServer = async () => {
-      const conn = await connect('ws://watchwithfriends.ml:8080');
+      const conn = await connect('wss://watchwithfriends.ml/ws');
 
       console.log('Connected...');
       setConnection(conn);
