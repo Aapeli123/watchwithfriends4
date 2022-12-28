@@ -6,16 +6,23 @@ const Info = () => {
       <h1>Info and contributors:</h1>
       <h4>
         Code written by Aapo H.{' '}
-        <button onClick={() => location.assign('mailto:aaposharju@gmail.com')}>
+        <button
+          title="aaposharju@gmail.com"
+          onClick={() => location.assign('mailto:aaposharju@gmail.com')}
+        >
           <span className="material-icons">mail</span>
         </button>
-        <button onClick={() => location.assign('https://github.com/Aapeli123')}>
+        <button
+          title="Aapeli123"
+          onClick={() => location.assign('https://github.com/Aapeli123')}
+        >
           <img src={github}></img>
         </button>
       </h4>
       <h4>
         UI and logo design by Aarni S.{' '}
         <button
+          title="aarni.salmenpera@gmail.com"
           onClick={() => location.assign('mailto:aarni.salmenpera@gmail.com')}
         >
           <span className="material-icons">mail</span>
