@@ -14,7 +14,7 @@ const Info = () => {
         </button>
       </h4>
       <h4>
-        UI design by Aarni S.{' '}
+        UI and logo design by Aarni S.{' '}
         <button
           onClick={() => location.assign('mailto:aarni.salmenpera@gmail.com')}
         >
