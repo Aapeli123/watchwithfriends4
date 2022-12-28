@@ -39,9 +39,8 @@ function App(): JSX.Element {
   const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
-    const hasUn = Cookies.get('username') !== undefined;
+    const hasUn = localStorage.getItem('username') !== null;
     console.log(hasUn);
-
     if (!hasUn) {
       while (1) {
         const username = prompt('Username?');
@@ -49,7 +48,7 @@ function App(): JSX.Element {
           continue;
         }
         if (username.trimStart().trimEnd() !== '') {
-          Cookies.set('username', username);
+          localStorage.setItem('username', username);
           dispatch(setUn(username));
           break;
         }

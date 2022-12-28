@@ -19,7 +19,7 @@ const TopBar = (props: { conn: ServerConn }) => {
         continue;
       }
       if (username.trimStart().trimEnd() !== '') {
-        Cookies.set('username', username);
+        localStorage.setItem('username', username);
         dispatch(setUn(username));
         if (roomLoaded) {
           props.conn.changeUsername(username);
