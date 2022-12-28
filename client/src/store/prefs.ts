@@ -3,7 +3,10 @@ import Cookies from 'js-cookie';
 
 const preferencsSlice = createSlice({
   initialState: () => {
-    const username = localStorage.getItem('username') as string;
+    let username = localStorage.getItem('username');
+    if (username === null) {
+      username = '';
+    }
     return {
       username: username,
     };
