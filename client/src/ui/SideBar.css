@@ -120,10 +120,20 @@
 
   .sidebar-item h4 {
     text-align: center;
-    margin-left: calc(20px - 0.8em);
+    margin: 0;
+    margin-top: calc(20px - 1em);
+    color: white;
   }
+
+  .sidebar-item {
+    width: 40px;
+    height: 40px;
+  }
+
   .sidebar-top-responsive {
     font-size: 10px;
     background-color: var(--accent-color);
+    height: 40px;
+    margin: 0px;
   }
 }

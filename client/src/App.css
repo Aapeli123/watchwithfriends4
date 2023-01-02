@@ -18,23 +18,28 @@
 .main-content div {
   display: inline-block;
 }
+
+.app-data {
+  vertical-align: top;
+  text-align: center;
+  font-family: Arial;
+}
+
 @media screen and (min-width: 800px) {
   .app-data {
     background-color: #121212;
     box-shadow: inset 0px 0px 8px 8px #0e0e0e;
     width: calc(100% - var(--sidebar-width));
     height: calc(100vh - var(--top-bar-height));
-    vertical-align: top;
-    text-align: center;
-    font-family: Arial;
   }
 }
 @media screen and (max-width: 799px) {
   .app-data {
-    vertical-align: top;
     padding-right: 5px;
     padding-left: 5px;
     width: calc(100% - 50px);
+    overflow-y: scroll;
+    height: 100vh;
   }
 
   .logo-img {
