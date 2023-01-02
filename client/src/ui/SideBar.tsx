@@ -14,6 +14,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
 
+import logo from './logo_final.png';
+
 const SideBar = (props: { conn: ServerConn }) => {
   const [showUsers, setShowUsers] = useState(false);
 
@@ -127,29 +129,37 @@ const SideBar = (props: { conn: ServerConn }) => {
   ) : (
     <>
       <div className="side-bar">
+        <Link to={'/'}>
+          <div className="sidebar-top-responsive">
+            <img className="logo-img" src={logo} />
+          </div>
+        </Link>
         <Link to={'/joinroom'}>
-          <div className="sidebar-top">
+          <div className="sidebar-top desktop">
             <h2>Join Room</h2>
           </div>
         </Link>
         <a href="" onClick={createRoomClick}>
           <div className="sidebar-item">
             <h4>
-              <span className="material-icons">add</span>New Room
+              <span className="material-icons">add</span>
+              <span className="sidebar-text">New Room</span>
             </h4>
           </div>
         </a>
         <Link to={'/info'}>
           <div className="sidebar-item">
             <h4>
-              <span className="material-icons">menu_book</span>Info
+              <span className="material-icons">menu_book</span>
+              <span className="sidebar-text">Info</span>
             </h4>
           </div>
         </Link>
         <Link to={'/settings'}>
           <div className="sidebar-item">
             <h4>
-              <span className="material-icons">settings</span>Settings
+              <span className="material-icons">settings</span>
+              <span className="sidebar-text">Settings</span>
             </h4>
           </div>
         </Link>

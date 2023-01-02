@@ -1,102 +1,129 @@
-.side-bar {
-  user-select: none;
-  height: calc(100vh - var(--top-bar-height));
-  background-color: var(--bar-main-color);
-  width: var(--sidebar-width);
-}
+@media screen and (min-width: 800px) {
+  .side-bar {
+    user-select: none;
+    height: calc(100vh - var(--top-bar-height));
+    background-color: var(--bar-main-color);
+    width: var(--sidebar-width);
+  }
 
-.sidebar-top {
-  background-color: var(--accent-color);
-  margin: 0;
-  width: 100%;
-  height: 125px;
-  transition: background-color 0.2s;
-  border-bottom: var(--sidebar-button-border) 1px solid;
-}
+  .sidebar-top {
+    background-color: var(--accent-color);
+    margin: 0;
+    width: 100%;
+    height: 125px;
+    transition: background-color 0.2s;
+    border-bottom: var(--sidebar-button-border) 1px solid;
+  }
 
-.user-list button {
-  border-radius: 0px;
-  border: none;
-}
+  .user-list button {
+    border-radius: 0px;
+    border: none;
+  }
 
-.user-list div {
-  display: block;
-  margin-left: 15px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
+  .user-list div {
+    display: block;
+    margin-left: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 
-.user-list div * {
-  display: inline-block;
-  margin: 0;
-}
+  .user-list div * {
+    display: inline-block;
+    margin: 0;
+  }
 
-.user-list h6 {
-  font-size: 20px;
-  margin-right: 5px;
-}
+  .user-list h6 {
+    font-size: 20px;
+    margin-right: 5px;
+  }
 
-.sidebar-top:hover {
-  background-color: #19adc7;
-  transition: background-color 0.2s;
-}
+  .sidebar-top:hover {
+    background-color: #19adc7;
+    transition: background-color 0.2s;
+  }
 
-.sidebar-top:active {
-  background-color: #199ec7;
-  transition: background-color 0.2s;
-}
+  .sidebar-top:active {
+    background-color: #199ec7;
+    transition: background-color 0.2s;
+  }
 
-.sidebar-top h2 {
-  margin: 0;
-  color: var(--text-color);
-  font-size: 30px;
-  text-align: center;
+  .sidebar-top h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 30px;
+    text-align: center;
 
-  margin-top: calc(125px / 2 - calc(1em / 2));
-  display: block;
-  font-family: 'Arial';
-}
+    margin-top: calc(125px / 2 - calc(1em / 2));
+    display: block;
+    font-family: 'Arial';
+  }
 
-.sidebar-item .material-icons {
-  font-size: 1.1em;
-  margin-right: 5px;
-  margin-left: 5px;
-  vertical-align: bottom;
-  display: flex;
-}
+  .sidebar-item .material-icons {
+    font-size: 1.1em;
+    margin-right: 5px;
+    margin-left: 5px;
+    vertical-align: bottom;
+    display: flex;
+  }
 
-.sidebar-item {
-  margin: 0;
-  width: 100%;
-  height: 75px;
-  transition: box-shadow 0.2s;
-  /*   box-shadow: 0px 0px 1px 1px #3c3c3c inset;
+  .sidebar-item {
+    margin: 0;
+    width: 100%;
+    height: 75px;
+    transition: box-shadow 0.2s;
+    /*   box-shadow: 0px 0px 1px 1px #3c3c3c inset;
  */
-  border-bottom: var(--sidebar-button-border) 1px solid;
-  text-align: center;
+    border-bottom: var(--sidebar-button-border) 1px solid;
+    text-align: center;
+  }
+
+  .sidebar-item:hover {
+    box-shadow: 0px 0px 3px 3px var(--sidebar-shadow-color) inset;
+    transition: box-shadow 0.2;
+  }
+
+  .sidebar-item:active {
+    box-shadow: 0px 0px 3px 3px #1996c7 inset;
+    transition: box-shadow 0.2;
+  }
+
+  .sidebar-item h4 {
+    margin: auto;
+    color: var(--text-color);
+    font-family: Arial;
+    font-size: 25px;
+    margin-top: calc(75px / 2 - calc(1em / 2));
+    display: flex;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .sidebar-top-responsive {
+    display: none !important;
+  }
+  hr {
+    margin: 0;
+  }
 }
 
-.sidebar-item:hover {
-  box-shadow: 0px 0px 3px 3px var(--sidebar-shadow-color) inset;
-  transition: box-shadow 0.2;
-}
+@media screen and (max-width: 799px) {
+  .side-bar {
+    user-select: none;
+    height: calc(100vh - var(--top-bar-height));
+    background-color: var(--bar-main-color);
+    width: 40px;
+    height: 100vh;
+  }
 
-.sidebar-item:active {
-  box-shadow: 0px 0px 3px 3px #1996c7 inset;
-  transition: box-shadow 0.2;
-}
+  .sidebar-item h4 .sidebar-text {
+    display: none;
+  }
 
-.sidebar-item h4 {
-  margin: auto;
-  color: var(--text-color);
-  font-family: Arial;
-  font-size: 25px;
-  margin-top: calc(75px / 2 - calc(1em / 2));
-  display: flex;
-  text-align: left;
-  vertical-align: middle;
-}
-
-hr {
-  margin: 0;
+  .sidebar-item h4 {
+    text-align: center;
+    margin-left: calc(20px - 0.8em);
+  }
+  .sidebar-top-responsive {
+    font-size: 10px;
+    background-color: var(--accent-color);
+  }
 }
