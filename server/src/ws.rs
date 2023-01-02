@@ -104,6 +104,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         let data = msg.unwrap();
         if data.is_err() {
             warn!("Websocket data from user {} was erroneous. Disconnecting them.", user_id);
+            warn!("Error: {}", data.unwrap_err());
             break 'main_loop;
         }
         let msg = data.unwrap();
