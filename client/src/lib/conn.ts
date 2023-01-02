@@ -10,6 +10,12 @@ export class ServerConn {
     this.msgCallback = _ => {};
 
     this.socket.addEventListener('message', this.msgCb.bind(this), false);
+    setInterval(this.sendPing.bind(this), 5000);
+  }
+
+  private sendPing() {
+    console.log('pinging server');
+    this.sendMessage({}, Sendable.WsMsgType.Ping);
   }
 
   createRoom(username: string): Promise<Response.CreateRoomResp> {
