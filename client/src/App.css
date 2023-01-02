@@ -15,16 +15,47 @@
   --app-data-background: #191919;
 }
 
-.main-content div {
+.main-content .side-bar {
+  display: inline-block;
+}
+.main-content .side-bar div {
+  display: inline-block;
+}
+
+.main-content .app-data {
   display: inline-block;
 }
 
 .app-data {
-  background-color: #121212;
-  box-shadow: inset 0px 0px 8px 8px #0e0e0e;
-  width: calc(100% - var(--sidebar-width));
-  height: calc(100vh - var(--top-bar-height));
   vertical-align: top;
   text-align: center;
   font-family: Arial;
+}
+
+@media screen and (min-width: 800px) {
+  .app-data {
+    background-color: #121212;
+    box-shadow: inset 0px 0px 8px 8px #0e0e0e;
+    width: calc(100% - var(--sidebar-width));
+    height: calc(100vh - var(--top-bar-height));
+  }
+  .mobile {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 799px) {
+  .app-data {
+    padding-right: 5px;
+    padding-left: 5px;
+    width: calc(100% - 50px);
+    overflow-y: scroll;
+    height: 100vh;
+  }
+
+  .logo-img {
+    width: 40px;
+  }
+  .desktop {
+    display: none !important;
+  }
 }

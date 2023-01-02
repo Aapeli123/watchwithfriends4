@@ -1,6 +1,14 @@
-.player-container {
-  margin: 2px;
-  width: calc(100% - 4px);
-  height: calc(100% - 6px);
-  align-self: center;
+@media screen and (min-width: 800px) {
+  .player-container {
+    margin: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 6px);
+    align-self: center;
+  }
+}
+@media screen and (max-width: 799px) {
+  .player-container {
+    height: calc(100% - 10px);
+    margin-top: 5px;
+  }
 }
