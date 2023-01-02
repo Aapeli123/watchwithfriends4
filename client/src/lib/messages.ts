@@ -13,7 +13,7 @@ export namespace Response {
     | Sync
     | SetPlay
     | UserChangedName;
-
+  export interface Pong {}
   export interface UserIdResp {
     user_id: string;
   }
@@ -73,6 +73,7 @@ export namespace Response {
     SetPlay = 'SetPlay',
     NewVideo = 'NewVideo',
     UserChangedName = 'UserChangedName',
+    Pong = 'Pong',
   }
   export interface WsResponse {
     type: MessageType;
@@ -142,5 +143,6 @@ export namespace Sendable {
     SyncTime = 'SyncTime',
     RoomData = 'RoomData',
     ChangeName = 'ChangeName',
+    Ping = 'Ping',
   }
 }
