@@ -18,6 +18,9 @@
 .main-content .side-bar {
   display: inline-block;
 }
+.main-content .side-bar div {
+  display: inline-block;
+}
 
 .main-content .app-data {
   display: inline-block;
