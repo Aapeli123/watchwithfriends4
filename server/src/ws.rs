@@ -32,7 +32,8 @@ pub enum WsMsg {
     SetLeader{leader_id: String},
     SyncTime{time: f64},
     ChangeName{new_name: String},
-    RoomData
+    RoomData,
+    Ping
 }
 
 impl WSSendable for WsMsg {
@@ -58,7 +59,8 @@ pub enum ServerWsMsg<'a> {
     Sync {time: f64},
     SetPlay {playing: bool},
     UserChangedName {user_id: String, new_name: String},
-    NewVideo {video_id: String}
+    NewVideo {video_id: String},
+    Pong
 }
 impl<'a> WSSendable for ServerWsMsg<'a> {
     fn to_msg(&self) -> Message {
@@ -79,6 +81,7 @@ pub async fn remove_user_from_count() {
     *lock = uc;
 }
 
+
 pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), WsError> {
     debug!("New connection from {}", &addr.to_string());
     
@@ -94,7 +97,6 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
     let user_id = Uuid::new_v4().to_string();
     send_message(&ws_sender, ServerWsMsg::UserID { user_id: user_id.clone() }).await;
     debug!("Assinged user id {} to address {}", user_id, &addr.to_string());
-
     'main_loop: loop {
         let msg = ws_reader.next().await;
         if msg.is_none() {
@@ -153,6 +155,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
             WsMsg::SyncTime { time } => sync_time(&room_code, time, &user_id).await,
             WsMsg::RoomData => get_room_data(&room_code, &user_id, &ws_sender).await,
             WsMsg::ChangeName { new_name } => change_name(&room_code, &user_id, &new_name).await,
+            WsMsg::Ping => {send_pong(&ws_sender).await},
         }
     }
 
@@ -166,6 +169,9 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
     Ok(())
 }
 
+async fn send_pong(ws_sender: &WsWriter) {
+    send_message(ws_sender, ServerWsMsg::Pong).await;
+}
 
 async fn create_room(ws_sender: &WsWriter, user_id: &String, name: String)  -> String  {
     let un = name.clone();
