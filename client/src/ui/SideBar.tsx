@@ -41,6 +41,17 @@ const RoomBar = (props: { conn: ServerConn }) => {
     });
   };
 
+  const copyRoomCodeResponsive = async () => {
+    await navigator.clipboard.writeText(store.getState().room.roomCode);
+    toast(`Room code(${store.getState().room.roomCode}) copied!`, {
+      type: 'success',
+      theme: 'dark',
+      closeOnClick: true,
+      autoClose: 4000,
+      delay: 0,
+    });
+  };
+
   const clickUsers = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     setShowUsers(!showUsers);
@@ -57,12 +68,21 @@ const RoomBar = (props: { conn: ServerConn }) => {
     <>
       <div className="side-bar">
         <div
-          className="sidebar-top"
+          className="sidebar-top desktop"
           onClick={() => {
             copyRoomCode();
           }}
         >
           <h2>Room code: {roomCode}</h2>
+        </div>
+
+        <div
+          className="sidebar-top-responsive"
+          onClick={() => {
+            copyRoomCodeResponsive();
+          }}
+        >
+          <span className="material-icons">link</span>
         </div>
         <div className="sidebar-item" onClick={clickUsers}>
           <h4>
@@ -97,21 +117,24 @@ const RoomBar = (props: { conn: ServerConn }) => {
               className="mobile"
               closeBtnPress={() => setShowUsers(false)}
             >
-              <>
+              <div className="user-list">
                 <h1>Users:</h1>
                 {Object.keys(users).map(id => {
                   return (
-                    <div className="username-container">
+                    <div className="username-container" key={id}>
                       <h2>
                         {users[id].name} {id === leaderId && '(Leader)'}
                       </h2>
                       {leaderId === props.conn.user_id && id !== leaderId && (
-                        <button>Make leader</button>
+                        <button onClick={() => makeLeader(id)}>
+                          Make leader
+                        </button>
                       )}
+                      <br />
                     </div>
                   );
                 })}
-              </>
+              </div>
             </AlertWithChildren>
           </>
         )}

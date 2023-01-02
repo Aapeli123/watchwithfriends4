@@ -21,7 +21,7 @@
   }
 
   .user-list div {
-    display: block;
+    display: block !important;
     margin-left: 15px;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -106,6 +106,9 @@
 }
 
 @media screen and (max-width: 799px) {
+  .user-list h1 {
+    margin: 0;
+  }
   .side-bar {
     user-select: none;
     height: calc(100vh - var(--top-bar-height));
@@ -135,9 +138,19 @@
     background-color: var(--accent-color);
     height: 40px;
     margin: 0px;
+    width: 40px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .sidebar-top-responsive span {
+    margin-top: calc(50% - 0.5em);
   }
   .username-container * {
     display: inline;
+    margin-bottom: 5px;
+  }
+  .username-container {
+    display: block !important;
     margin-bottom: 5px;
   }
 }

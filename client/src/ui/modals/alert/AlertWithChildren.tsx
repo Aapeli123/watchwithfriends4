@@ -15,12 +15,10 @@ const AlertWithChildren: React.FC<Props> = ({
     <div className={`modal ${className}`}>
       <div className="modal-content">
         {children}
-        <input
-          id="close-btn-alert"
-          type="submit"
-          value={'Close'}
-          onClick={closeBtnPress}
-        />
+        <br></br>
+        <button id="close-btn-alert" type="submit" onClick={closeBtnPress}>
+          Close
+        </button>
       </div>
     </div>
   );

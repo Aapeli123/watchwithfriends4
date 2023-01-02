@@ -45,6 +45,11 @@
   margin-top: 0;
 }
 
+.modal-content button {
+  text-align: right;
+  margin-top: 10px !important;
+}
+
 .modal-content .close-container #close {
   margin-top: 0;
   text-align: right;
