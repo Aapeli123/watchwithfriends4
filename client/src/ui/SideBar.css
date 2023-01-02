@@ -136,4 +136,8 @@
     height: 40px;
     margin: 0px;
   }
+  .username-container * {
+    display: inline;
+    margin-bottom: 5px;
+  }
 }

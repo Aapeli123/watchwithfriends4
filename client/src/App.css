@@ -15,7 +15,11 @@
   --app-data-background: #191919;
 }
 
-.main-content div {
+.main-content .side-bar {
+  display: inline-block;
+}
+
+.main-content .app-data {
   display: inline-block;
 }
 

@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
 
 import logo from './logo_final.png';
+import AlertWithChildren from './modals/alert/AlertWithChildren';
 
 const RoomBar = (props: { conn: ServerConn }) => {
   const { store } =
@@ -65,44 +66,69 @@ const RoomBar = (props: { conn: ServerConn }) => {
         </div>
         <div className="sidebar-item" onClick={clickUsers}>
           <h4>
-            <span className="material-icons">group</span>Users
+            <span className="material-icons">group</span>
+            <span className="sidebar-text">Users</span>
           </h4>
         </div>
         {showUsers && (
-          <div className="user-list">
-            {Object.keys(users).map(id => {
-              return (
-                <div key={id}>
-                  <h6>
-                    {users[id].name} {id === leaderId && '(Leader)'}
-                  </h6>
-                  {props.conn.user_id === leaderId &&
-                    id !== props.conn.user_id && (
-                      <button
-                        onClick={() => {
-                          makeLeader(id);
-                        }}
-                      >
-                        Make leader
-                      </button>
-                    )}
-                </div>
-              );
-            })}
-          </div>
+          <>
+            <div className="user-list desktop">
+              {Object.keys(users).map(id => {
+                return (
+                  <div key={id}>
+                    <h6>
+                      {users[id].name} {id === leaderId && '(Leader)'}
+                    </h6>
+                    {props.conn.user_id === leaderId &&
+                      id !== props.conn.user_id && (
+                        <button
+                          onClick={() => {
+                            makeLeader(id);
+                          }}
+                        >
+                          Make leader
+                        </button>
+                      )}
+                  </div>
+                );
+              })}
+            </div>
+            <AlertWithChildren
+              className="mobile"
+              closeBtnPress={() => setShowUsers(false)}
+            >
+              <>
+                <h1>Users:</h1>
+                {Object.keys(users).map(id => {
+                  return (
+                    <div className="username-container">
+                      <h2>
+                        {users[id].name} {id === leaderId && '(Leader)'}
+                      </h2>
+                      {leaderId === props.conn.user_id && id !== leaderId && (
+                        <button>Make leader</button>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            </AlertWithChildren>
+          </>
         )}
 
         {leaderId === props.conn.user_id && (
           <div className="sidebar-item" onClick={changeVideo}>
             <h4>
-              <span className="material-icons">video_settings</span>Change video
+              <span className="material-icons">video_settings</span>
+              <span className="sidebar-text">Change video</span>
             </h4>
           </div>
         )}
         <Link to={'/'}>
           <div className="sidebar-item">
             <h4>
-              <span className="material-icons">exit_to_app</span>Leave Room
+              <span className="material-icons">exit_to_app</span>
+              <span className="sidebar-text">Leave Room</span>
             </h4>
           </div>
         </Link>
