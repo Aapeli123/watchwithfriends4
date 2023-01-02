@@ -32,6 +32,9 @@
     width: calc(100% - var(--sidebar-width));
     height: calc(100vh - var(--top-bar-height));
   }
+  .mobile {
+    display: none !important;
+  }
 }
 @media screen and (max-width: 799px) {
   .app-data {

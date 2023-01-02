@@ -1,9 +1,10 @@
-.room-code-container {
-  width: 100%;
-  height: calc(100vh - var(--top-bar-height));
-  text-align: center;
+@media screen and (min-width: 800px) {
+  .room-code-container {
+    width: 100%;
+    height: calc(100vh - var(--top-bar-height));
+    text-align: center;
+  }
 }
-
 .code-input-container input {
   background-color: var(--logo-text-accent);
   border: none;

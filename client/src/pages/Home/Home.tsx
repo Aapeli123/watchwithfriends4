@@ -1,5 +1,6 @@
 import './Home.css';
 import { ServerConn } from '../../lib/conn';
+import RoomCode from '../RoomCodeEntry/RoomCode';
 
 const Home = (props: { conn: ServerConn }) => {
   return (
@@ -9,6 +10,10 @@ const Home = (props: { conn: ServerConn }) => {
         Watch youtube, twitch and more with your friends. Just create a new room
         from the sidebar on the left or join a room with the room code.
       </p>
+      <div className="mobile">
+        <h2>Join a room:</h2>
+        <RoomCode conn={props.conn} />
+      </div>
     </div>
   );
 };
