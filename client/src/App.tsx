@@ -39,6 +39,9 @@ import "./themes/Light.css";
 
 
 const theme = localStorage.getItem("theme") || "dark";
+if(localStorage.getItem("theme") === null) { // For first time users set dark theme as default
+  localStorage.setItem(theme, "dark");
+}
 document.body.setAttribute("data-theme", theme);
 
 const MainLayout = (props: { conn: ServerConn }) => {

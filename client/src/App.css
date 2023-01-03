@@ -27,7 +27,7 @@ body {
 @media screen and (min-width: 800px) {
   .app-data {
     background-color: var(--app-data-background);
-    box-shadow: inset 0px 0px 8px 8px #0e0e0e;
+    box-shadow: inset 0px 0px 8px 8px var(--shadow-color);
     width: calc(100% - var(--sidebar-width));
     height: calc(100vh - var(--top-bar-height));
   }
