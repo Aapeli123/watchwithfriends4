@@ -1,0 +1,15 @@
+body[data-theme="dark"] {
+
+  
+    --logo-text-accent: #19c1c7;
+    --logo-bg-color: #313232;
+  
+    --bar-main-color: #232323;
+    --accent-color: #14aeb3;
+    --sidebar-button-border: #5a5a5a;
+    --sidebar-shadow-color: #18c1c7;
+  
+    --text-color: white;
+  
+    --app-data-background: #191919;
+}

@@ -1,18 +1,6 @@
-* {
+:root {
   --sidebar-width: 300px;
   --top-bar-height: 60px;
-
-  --logo-text-accent: #19c1c7;
-  --logo-bg-color: #313232;
-
-  --bar-main-color: #232323;
-  --accent-color: #14aeb3;
-  --sidebar-button-border: #5a5a5a;
-  --sidebar-shadow-color: #18c1c7;
-
-  --text-color: white;
-
-  --app-data-background: #191919;
 }
 
 .main-content .side-bar {
@@ -26,6 +14,10 @@
   display: inline-block;
 }
 
+body {
+  background-color: var(--app-data-background);
+}
+
 .app-data {
   vertical-align: top;
   text-align: center;
@@ -34,7 +26,7 @@
 
 @media screen and (min-width: 800px) {
   .app-data {
-    background-color: #121212;
+    background-color: var(--app-data-background);
     box-shadow: inset 0px 0px 8px 8px #0e0e0e;
     width: calc(100% - var(--sidebar-width));
     height: calc(100vh - var(--top-bar-height));
