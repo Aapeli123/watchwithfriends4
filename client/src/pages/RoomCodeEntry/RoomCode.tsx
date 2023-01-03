@@ -181,6 +181,7 @@ const CodeInput = (props: { conn: ServerConn }) => {
 const RoomCode = (props: { conn: ServerConn }) => {
   return (
     <div className="room-code-container">
+      <h1 className="desktop">Join a room:</h1>
       <CodeInput conn={props.conn} />
     </div>
   );
