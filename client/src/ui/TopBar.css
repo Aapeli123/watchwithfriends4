@@ -92,7 +92,7 @@
       10px 100%,
       0 30px
     );
-    background-color: var(--logo-text-accent);
+    background-color: var(--nickname-set-color);
     padding: 0;
     padding-left: 15px;
     padding-right: 15px;
