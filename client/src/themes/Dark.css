@@ -17,4 +17,10 @@ body[data-theme='dark'] {
   --text-color: white;
 
   --app-data-background: #191919;
+
+  --modal-background: #2d2e2e;
+  --modal-accent: #19c1c7;
+  --modal-input: #0e0e0e;
+  --modal-text: white;
+  --modal-close-btn: #afafaf;
 }

@@ -17,4 +17,10 @@ body[data-theme='light'] {
   --text-color: rgb(66, 66, 66);
 
   --app-data-background: #efefef;
+
+  --modal-background: #efefef;
+  --modal-accent: #19c1c7;
+  --modal-input: #dddddd;
+  --modal-text: black;
+  --modal-close-btn: #afafaf;
 }
