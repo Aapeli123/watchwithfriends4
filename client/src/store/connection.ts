@@ -26,4 +26,4 @@ const connSlice = createSlice({
 
 export default connSlice.reducer;
 
-export const {} = connSlice.actions;
+export const { startConnecting, connected } = connSlice.actions;
