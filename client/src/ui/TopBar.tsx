@@ -1,9 +1,7 @@
 import './TopBar.css';
 import logo from './logo_final.png';
 import { Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUn } from '../store/prefs';
 import { RootState } from '../store/store';
 import { ServerConn } from '../lib/conn';
 import { setUnSelectorClosable, showUnSelector } from '../store/ui';
