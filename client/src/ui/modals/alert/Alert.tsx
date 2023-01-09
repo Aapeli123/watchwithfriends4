@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import '../modal.css';
 
 const Alert = (props: {

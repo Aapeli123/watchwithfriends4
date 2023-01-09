@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import { useContext, useEffect, useState } from 'react';
 import {
   Provider,
