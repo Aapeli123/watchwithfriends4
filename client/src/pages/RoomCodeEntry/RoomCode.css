@@ -6,7 +6,7 @@
   }
 }
 .code-input-container input {
-  background-color: var(--logo-text-accent);
+  background-color: var(--code-entry-color);
   border: none;
   margin: 5px;
   height: fit-content;

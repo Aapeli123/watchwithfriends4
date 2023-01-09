@@ -1,6 +1,7 @@
 body[data-theme='dark'] {
   --logo-text-accent: #19c1c7;
   --nickname-set-color: #19c1c7;
+  --code-entry-color: #19c1c7;
 
   --logo-bg-color: #313232;
 
