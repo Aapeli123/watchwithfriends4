@@ -1,0 +1,27 @@
+body[data-theme='dark'] {
+  --logo-text-accent: #19c1c7;
+  --nickname-set-color: #19c1c7;
+  --code-entry-color: #19c1c7;
+
+  --logo-bg-color: #313232;
+
+  --bar-main-color: #232323;
+  --accent-color: #14aeb3;
+
+  --bar-top-hover: #19adc7;
+  --bar-top-active: #199ec7;
+
+  --sidebar-button-border: #5a5a5a;
+  --sidebar-shadow-color: #18c1c7;
+
+  --shadow-color: #0e0e0e;
+  --text-color: white;
+
+  --app-data-background: #191919;
+
+  --modal-background: #2d2e2e;
+  --modal-accent: #19c1c7;
+  --modal-input: #0e0e0e;
+  --modal-text: white;
+  --modal-close-btn: #afafaf;
+}
