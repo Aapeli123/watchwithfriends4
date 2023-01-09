@@ -22,6 +22,7 @@ import Info from './pages/Info/Info';
 import Room from './pages/Room/Room';
 import RoomCode from './pages/RoomCodeEntry/RoomCode';
 import Settings from './pages/Settings/Settings';
+import { startConnecting } from './store/connection';
 import { setUn } from './store/prefs';
 import { RootState } from './store/store';
 import {
@@ -63,16 +64,16 @@ function App(): JSX.Element {
       dispatch(setUnSelectorClosable(false));
       dispatch(showUnSelector());
     }
-
+    dispatch(startConnecting());
     if (connected) {
       console.log('Already connected.');
       return;
     }
     const connectToServer = async () => {
-      const conn = await connect('wss://watchwithfriends.ml/ws');
+      // const conn = await connect('wss://watchwithfriends.ml/ws');
 
       console.log('Connected...');
-      setConnection(conn);
+      // setConnection(conn);
       setConnected(true);
     };
     connectToServer();

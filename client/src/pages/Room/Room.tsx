@@ -29,6 +29,7 @@ import {
 import Alert from '../../ui/modals/alert/Alert';
 import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
+import { setMsgCb } from '../../lib/connMiddleware';
 
 const Room = (props: { conn: ServerConn }) => {
   const params = useParams();
@@ -75,6 +76,7 @@ const Room = (props: { conn: ServerConn }) => {
       dispatch(roomData(data));
     } catch {}
     props.conn.addMessageCallback(msgHandler);
+    setMsgCb(msgHandler);
     dispatch(enableRoomBar());
   };
 
@@ -84,45 +86,23 @@ const Room = (props: { conn: ServerConn }) => {
     initRoom();
 
     return () => {
-      props.conn.leaveRoom();
-      props.conn.removeCallback();
+      setMsgCb(undefined);
       dispatch(disableRoomBar());
       dispatch(leaveRoom());
     };
   }, []);
 
   const msgHandler = (msg: Response.WsResponse) => {
-    console.log(msg.message);
-    switch (msg.type) {
-      case Response.MessageType.NewUserConnected:
-        dispatch(newUserJoined(msg.message as Response.NewUserConnectedResp));
-        break;
-      case Response.MessageType.UserLeft:
-        dispatch(userLeft(msg.message as Response.UserLeft));
-        break;
-      case Response.MessageType.Sync:
-        let syncMsg = msg.message as Response.Sync;
-        const isLeader = store.getState().room.leaderId === props.conn.user_id;
-        if (
-          Math.abs(
-            (playerRef.current?.getCurrentTime() as number) - syncMsg.time
-          ) >= 0.75 &&
-          !isLeader
-        )
-          playerRef.current?.seekTo(syncMsg.time);
-        break;
-      case Response.MessageType.NewLeader:
-        dispatch(newLeader(msg.message as Response.NewLeader));
-        break;
-      case Response.MessageType.SetPlay:
-        dispatch(setPlaying(msg.message as Response.SetPlay));
-        break;
-      case Response.MessageType.NewVideo:
-        dispatch(newVideo(msg.message as Response.NewVideo));
-        break;
-      case Response.MessageType.UserChangedName:
-        dispatch(changeUsername(msg.message as Response.UserChangedName));
-        break;
+    if (msg.type === Response.MessageType.Sync) {
+      let syncMsg = msg.message as Response.Sync;
+      const isLeader = store.getState().room.leaderId === props.conn.user_id;
+      if (
+        Math.abs(
+          (playerRef.current?.getCurrentTime() as number) - syncMsg.time
+        ) >= 0.75 &&
+        !isLeader
+      )
+        playerRef.current?.seekTo(syncMsg.time);
     }
   };
 

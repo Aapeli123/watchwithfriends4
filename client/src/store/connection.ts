@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Sendable } from '../lib/messages';
 
 interface ConnState {
   connected: boolean;
@@ -20,7 +21,8 @@ const connSlice = createSlice({
     connected: state => {
       state.isConnecting = false;
       state.connected = true;
-    },
+    },  
+
   },
 });
 

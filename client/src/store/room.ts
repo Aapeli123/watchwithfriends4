@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Response } from '../lib/messages';
+import { Response, Sendable } from '../lib/messages';
 
 const roomSlice = createSlice({
   name: 'roomData',
@@ -11,8 +11,17 @@ const roomSlice = createSlice({
     users: {} as { [key: string]: { name: string } },
     time: 0,
     roomLoaded: false,
+    roomLoading: false
   },
   reducers: {
+    joinRoom: (state, action: PayloadAction<string>) => {
+      state.roomLoading = true;
+    },
+
+    joinFailed: (state) => {
+      state.roomLoading = false;
+    },
+
     roomData: (state, action: PayloadAction<Response.RoomDataResp>) => {
       const { code, leader_id, playing, time, users, video_id } =
         action.payload.room;
@@ -23,6 +32,7 @@ const roomSlice = createSlice({
       state.users = users;
       state.time = time;
       state.roomLoaded = true;
+      state.roomLoading = false;
     },
     leaveRoom: state => {
       state.roomLoaded = false;
@@ -60,6 +70,7 @@ const roomSlice = createSlice({
 export default roomSlice.reducer;
 
 export const {
+  joinRoom,
   roomData,
   leaveRoom,
   newLeader,
@@ -69,4 +80,5 @@ export const {
   setPlaying,
   setTime,
   changeUsername,
+  joinFailed
 } = roomSlice.actions;

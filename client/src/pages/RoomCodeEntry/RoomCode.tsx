@@ -6,6 +6,7 @@ import { RootState } from '../../store/store';
 import { toast } from 'react-toastify';
 
 import './RoomCode.css';
+import { joinRoom } from '../../store/room';
 
 let codeInputs: NodeListOf<HTMLInputElement>;
 const CodeInput = (props: { conn: ServerConn }) => {
@@ -13,7 +14,7 @@ const CodeInput = (props: { conn: ServerConn }) => {
   const navigate = useNavigate();
 
   const username = useSelector((state: RootState) => state.pref.username);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     codeInputs = formRef.current?.querySelectorAll(
       '[data-room-input]'
@@ -25,19 +26,9 @@ const CodeInput = (props: { conn: ServerConn }) => {
     if (code.length !== 6) {
       return;
     }
-    try {
-      let res = await props.conn.joinRoom(code, username);
-      console.log(res);
-      navigate(`/room/${code}`);
-    } catch (err) {
-      toast.error('Could not join room: ' + err, {
-        theme: 'dark',
-        closeOnClick: true,
-        autoClose: 1000,
-        delay: 0,
-      });
-      console.log(err);
-    }
+    dispatch(joinRoom(code));
+
+    // navigate(`/room/${code}`);
   };
 
   const onInput = (e: React.FormEvent<HTMLFormElement | HTMLInputElement>) => {
