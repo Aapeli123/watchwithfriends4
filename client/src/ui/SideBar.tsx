@@ -16,6 +16,7 @@ import './SideBar.css';
 
 import logo from './logo_final.png';
 import AlertWithChildren from './modals/alert/AlertWithChildren';
+import { createRoom } from '../store/room';
 
 const RoomBar = (props: { conn: ServerConn }) => {
   const { store } =
@@ -162,13 +163,15 @@ const RoomBar = (props: { conn: ServerConn }) => {
 
 const HomeBar = (props: { conn: ServerConn }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
       console.log(username);
-      let r = await props.conn.createRoom(username);
-      navigate(`room/${r.room_code}`);
+      dispatch(createRoom({username: "aaa"}));
+      // let r = await props.conn.createRoom(username);
+      // navigate(`room/${r.room_code}`);
     } catch {
       console.log('Room creation failed...');
     }

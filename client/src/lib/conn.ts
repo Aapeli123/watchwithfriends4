@@ -14,7 +14,7 @@ export class ServerConn {
   }
 
   private sendPing() {
-    console.log('pinging server');
+    // console.log('pinging server');
     this.sendMessage({}, Sendable.WsMsgType.Ping);
   }
 

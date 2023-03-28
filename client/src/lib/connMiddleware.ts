@@ -2,23 +2,36 @@ import { Middleware } from '@reduxjs/toolkit';
 import { redirect, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connected, startConnecting } from '../store/connection';
-import { changeUsername, joinFailed, joinRoom, newLeader, newUserJoined, newVideo, roomData, setPlaying, userLeft } from '../store/room';
+import {
+  changeUsername,
+  createRoom,
+  joinFailed,
+  joinRoom,
+  newLeader,
+  newUserJoined,
+  newVideo,
+  roomData,
+  setPlaying,
+  userLeft,
+} from '../store/room';
 import { RootState } from '../store/store';
 import connect, { ServerConn } from './conn';
 import { Response } from './messages';
 const serverURL = 'ws://localhost:8080';
-let msgCallback: ((msg: Response.WsResponse)=> void) | undefined = undefined;
+let msgCallback: ((msg: Response.WsResponse) => void) | undefined = undefined;
 
-const setMsgCb = (cb: ((msg: Response.WsResponse) => void ) | undefined ) => {
+const setMsgCb = (cb: ((msg: Response.WsResponse) => void) | undefined) => {
   msgCallback = cb;
-}
+};
 const connMiddleware: Middleware = store => {
   let connection: ServerConn;
   const onMessage = (msg: Response.WsResponse) => {
-    console.log(msg);
-    switch(msg.type) {
+    if (msg.type !== Response.MessageType.Pong) console.log(msg);
+    switch (msg.type) {
       case Response.MessageType.NewUserConnected:
-        store.dispatch(newUserJoined(msg.message as Response.NewUserConnectedResp));
+        store.dispatch(
+          newUserJoined(msg.message as Response.NewUserConnectedResp)
+        );
         break;
       case Response.MessageType.UserLeft:
         store.dispatch(userLeft(msg.message as Response.UserLeft));
@@ -37,38 +50,48 @@ const connMiddleware: Middleware = store => {
         break;
       case Response.MessageType.RoomData:
         let roomdata = msg.message as Response.RoomDataResp;
-        redirect(`/room/${roomdata.room.code}`)
+        redirect(`/room/${roomdata.room.code}`);
         store.dispatch(roomData(roomdata));
         break;
       case Response.MessageType.JoinRoom:
         let joinroom = msg.message as Response.JoinRoomResp;
-        if(!joinroom.success) {
-          toast(joinroom.message, {theme: 'dark', type: 'error'});
+        if (!joinroom.success) {
+          toast(joinroom.message, { theme: 'dark', type: 'error' });
           break;
         }
-        
-
     }
-    if(msgCallback !== undefined) msgCallback(msg);
-  }
+    if (msgCallback !== undefined) msgCallback(msg);
+  };
 
   return next => async action => {
     if (startConnecting.match(action)) {
       connection = await connect(serverURL);
-      connection.addMessageCallback(onMessage)
-      next(action);
+      connection.addMessageCallback(onMessage);
       store.dispatch(connected());
       console.log(connection);
     } else if (joinRoom.match(action)) {
-      try {await connection.joinRoom(action.payload, store.getState().pref.username)} catch {
-        store.dispatch(joinFailed())
-      };
-      next(action);
+      try {
+        await connection.joinRoom(
+          action.payload,
+          store.getState().pref.username
+        );
+      } catch {
+        store.dispatch(joinFailed());
+      }
+    } else if (createRoom.match(action)) {
+      console.log('Creating room');
+      try {
+        let res = await connection.createRoom(action.payload.username);
+        console.log(res.success);
+      } catch (err) {
+        store.dispatch(joinFailed());
+        console.log(err);
+      }
     } else {
-      next(action);
     }
+    next(action);
   };
 };
 
 export default connMiddleware;
-export {setMsgCb};
+export { setMsgCb };

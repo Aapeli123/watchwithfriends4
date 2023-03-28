@@ -11,17 +11,17 @@ const roomSlice = createSlice({
     users: {} as { [key: string]: { name: string } },
     time: 0,
     roomLoaded: false,
-    roomLoading: false
+    roomLoading: false,
   },
   reducers: {
     joinRoom: (state, action: PayloadAction<string>) => {
       state.roomLoading = true;
     },
 
-    joinFailed: (state) => {
+    joinFailed: state => {
       state.roomLoading = false;
     },
-
+    createRoom: (state, action: PayloadAction<Sendable.CreateRoom>) => {},
     roomData: (state, action: PayloadAction<Response.RoomDataResp>) => {
       const { code, leader_id, playing, time, users, video_id } =
         action.payload.room;
@@ -80,5 +80,6 @@ export const {
   setPlaying,
   setTime,
   changeUsername,
-  joinFailed
+  joinFailed,
+  createRoom,
 } = roomSlice.actions;

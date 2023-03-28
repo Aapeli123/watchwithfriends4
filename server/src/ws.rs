@@ -122,7 +122,7 @@ pub async fn handle_connection(conn: TcpStream, addr: SocketAddr) -> Result<(), 
         }
 
         let ws_msg = ws_msg.unwrap();
-        debug!("Recieved message from user {}. Message: {:?}", user_id, ws_msg);
+        // debug!("Recieved message from user {}. Message: {:?}", user_id, ws_msg);
         match ws_msg {
             WsMsg::SetPlay { playing } => set_playing(&room_code, playing, &user_id).await,
             WsMsg::JoinRoom { room_id, username } => {
