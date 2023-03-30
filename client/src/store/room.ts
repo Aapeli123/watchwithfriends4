@@ -69,6 +69,8 @@ const roomSlice = createSlice({
     setTime: (state, action: PayloadAction<Response.Sync>) => {
       state.time = action.payload.time;
     },
+    setVideo: (state, action: PayloadAction<number>) => {},
+    sync: (state, action: PayloadAction<number>) => {},
     changeUsername: (
       state,
       action: PayloadAction<Response.UserChangedName>
@@ -96,4 +98,6 @@ export const {
   createFailed,
   createSuccess,
   makeLeader,
+  setVideo,
+  sync,
 } = roomSlice.actions;

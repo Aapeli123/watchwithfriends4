@@ -77,7 +77,9 @@ function App(): JSX.Element {
       return;
     }
     dispatch(startConnecting());
-  }, []);
+    // if(roomLoaded) {navigate(`/room/${store.getState().room.roomCode}`);}
+
+  });
 
   const reconnect = async () => {
     // setConnected(false);
@@ -106,11 +108,10 @@ function App(): JSX.Element {
       <h1>Loading...</h1>
     </>
   }
-  if(roomLoaded) {
+  /* if(roomLoaded) {
     /* console.log("Redirecting to room")
-    console.log(`/room/${store.getState().room.roomCode}`); */
-    navigate(`/room/${store.getState().room.roomCode}`);
-  }
+    console.log(`/room/${store.getState().room.roomCode}`);
+  } */
   return isConnected ? (
     <>
 
@@ -138,7 +139,7 @@ function App(): JSX.Element {
               />
               <Route
                 path="/room/:code"
-                element={<Room conn={connection as ServerConn} />}
+                element={<Room />}
               />
               <Route path="/info" element={<Info />} />
               <Route
@@ -152,7 +153,7 @@ function App(): JSX.Element {
               />
               <Route
                 path="/"
-                element={<Home conn={connection as ServerConn} />}
+                element={<Home />}
               />
             </Route>
           </Routes>
