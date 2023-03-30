@@ -56,6 +56,7 @@ const roomSlice = createSlice({
     ) => {
       state.users[action.payload.user[0]] = { name: action.payload.user[1] };
     },
+    makeLeader: (state, action: PayloadAction<string>) => {},
     userLeft: (state, action: PayloadAction<Response.UserLeft>) => {
       delete state.users[action.payload.user];
     },
@@ -94,4 +95,5 @@ export const {
   createRoom,
   createFailed,
   createSuccess,
+  makeLeader,
 } = roomSlice.actions;

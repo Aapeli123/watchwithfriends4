@@ -4,11 +4,13 @@ import { Sendable } from '../lib/messages';
 interface ConnState {
   connected: boolean;
   isConnecting: boolean;
+  userID: string;
 }
 
 const initialState: ConnState = {
   connected: false,
   isConnecting: false,
+  userID: '',
 };
 
 const connSlice = createSlice({
@@ -18,11 +20,11 @@ const connSlice = createSlice({
     startConnecting: state => {
       state.isConnecting = true;
     },
-    connected: state => {
+    connected: (state, action: PayloadAction<string>) => {
       state.isConnecting = false;
       state.connected = true;
-    },  
-
+      state.userID = action.payload;
+    },
   },
 });
 

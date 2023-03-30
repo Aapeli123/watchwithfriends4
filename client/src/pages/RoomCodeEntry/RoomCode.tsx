@@ -9,7 +9,7 @@ import './RoomCode.css';
 import { joinRoom } from '../../store/room';
 
 let codeInputs: NodeListOf<HTMLInputElement>;
-const CodeInput = (props: { conn: ServerConn }) => {
+const CodeInput = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const navigate = useNavigate();
 
@@ -169,11 +169,11 @@ const CodeInput = (props: { conn: ServerConn }) => {
   );
 };
 
-const RoomCode = (props: { conn: ServerConn }) => {
+const RoomCode = () => {
   return (
     <div className="room-code-container">
       <h1 className="desktop">Join a room:</h1>
-      <CodeInput conn={props.conn} />
+      <CodeInput />
     </div>
   );
 };

@@ -12,7 +12,9 @@ import {
   Outlet,
   Route,
   RouterProvider,
+  redirect,
   Routes,
+  useNavigate,
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -34,12 +36,12 @@ import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
 
-const MainLayout = (props: { conn: ServerConn }) => {
+const MainLayout = () => {
   return (
     <>
-      <TopBar conn={props.conn} />
+      <TopBar />
       <div className="main-content">
-        <SideBar conn={props.conn} />
+        <SideBar />
         <div className="app-data">
           <Outlet />
         </div>
@@ -50,10 +52,15 @@ const MainLayout = (props: { conn: ServerConn }) => {
 
 function App(): JSX.Element {
   const [connection, setConnection] = useState<ServerConn | undefined>();
-  const [connected, setConnected] = useState(false);
+  // const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
   const showUnPrompt = useSelector((state: RootState) => state.ui.unPrompt);
+  const isConnected = useSelector((state: RootState) => state.conn.connected);
+  const isConnecting = useSelector((state: RootState) => state.conn.isConnecting);
+  const roomLoading = useSelector((state: RootState) => state.room.roomLoading);
+  const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
 
+  const navigate = useNavigate();
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   useEffect(() => {
@@ -64,30 +71,22 @@ function App(): JSX.Element {
       dispatch(setUnSelectorClosable(false));
       dispatch(showUnSelector());
     }
-    dispatch(startConnecting());
-    if (connected) {
+
+    if (store.getState().conn.connected) {
       console.log('Already connected.');
       return;
     }
-    const connectToServer = async () => {
-      // const conn = await connect('wss://watchwithfriends.ml/ws');
-
-      console.log('Connected...');
-      // setConnection(conn);
-      setConnected(true);
-    };
-    connectToServer();
+    dispatch(startConnecting());
   }, []);
 
   const reconnect = async () => {
-    setConnected(false);
+    // setConnected(false);
     connection?.disconnect();
     setConnection(undefined);
 
     const conn = await connect('wss://watchwithfriends.ml/ws');
 
     setConnection(conn);
-    setConnected(true);
   };
 
   const unPromptCB = (un: string) => {
@@ -102,9 +101,19 @@ function App(): JSX.Element {
     dispatch(hideUnSelector());
   };
 
-  return connected ? (
+  if(!isConnecting && !isConnected) {
+    return <>
+      <h1>Loading...</h1>
+    </>
+  }
+  if(roomLoaded) {
+    /* console.log("Redirecting to room")
+    console.log(`/room/${store.getState().room.roomCode}`); */
+    navigate(`/room/${store.getState().room.roomCode}`);
+  }
+  return isConnected ? (
     <>
-      <BrowserRouter>
+
         <div className="App">
           <ToastContainer
             pauseOnHover={false}
@@ -121,11 +130,11 @@ function App(): JSX.Element {
           <Routes>
             <Route
               path="/"
-              element={<MainLayout conn={connection as ServerConn} />}
+              element={<MainLayout />}
             >
               <Route
                 path="/joinroom"
-                element={<RoomCode conn={connection as ServerConn} />}
+                element={<RoomCode />}
               />
               <Route
                 path="/room/:code"
@@ -148,7 +157,6 @@ function App(): JSX.Element {
             </Route>
           </Routes>
         </div>
-      </BrowserRouter>
     </>
   ) : (
     <div className="App">

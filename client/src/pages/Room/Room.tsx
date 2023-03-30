@@ -31,7 +31,7 @@ import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
 import { setMsgCb } from '../../lib/connMiddleware';
 
-const Room = (props: { conn: ServerConn }) => {
+const Room = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const videoLink = useSelector((state: RootState) => state.room.videoId);
@@ -49,7 +49,7 @@ const Room = (props: { conn: ServerConn }) => {
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
 
   const onProgress = (state: OnProgressProps) => {
-    const isLeader = store.getState().room.leaderId === props.conn.user_id;
+    const isLeader = store.getState().room.leaderId === store.getState().conn.userID;
     if (isLeader) props.conn.syncTime(state.playedSeconds);
   };
 

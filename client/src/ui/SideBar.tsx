@@ -16,14 +16,15 @@ import './SideBar.css';
 
 import logo from './logo_final.png';
 import AlertWithChildren from './modals/alert/AlertWithChildren';
-import { createRoom } from '../store/room';
+import { createRoom, makeLeader } from '../store/room';
 
-const RoomBar = (props: { conn: ServerConn }) => {
+const RoomBar = () => {
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   const roomCode = useSelector((state: RootState) => state.room.roomCode);
   const [showUsers, setShowUsers] = useState(false);
   const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.conn.userID);
   const leaderId = useSelector((state: RootState) => state.room.leaderId);
 
   const changeVideo = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -59,11 +60,8 @@ const RoomBar = (props: { conn: ServerConn }) => {
   };
 
   const users = useSelector((state: RootState) => state.room.users);
-  const makeLeader = async (user_id: string) => {
-    const res = await props.conn.makeLeader(user_id);
-    if (!res.success) {
-      console.log('Something went horribly wrong...');
-    }
+  const newLeader = async (user_id: string) => {
+    dispatch(makeLeader(user_id));
   };
   return (
     <>
@@ -100,11 +98,11 @@ const RoomBar = (props: { conn: ServerConn }) => {
                     <h6>
                       {users[id].name} {id === leaderId && '(Leader)'}
                     </h6>
-                    {props.conn.user_id === leaderId &&
-                      id !== props.conn.user_id && (
+                    {userId === leaderId &&
+                      id !== userId && (
                         <button
                           onClick={() => {
-                            makeLeader(id);
+                            newLeader(id);
                           }}
                         >
                           Make leader
@@ -126,7 +124,7 @@ const RoomBar = (props: { conn: ServerConn }) => {
                       <h2>
                         {users[id].name} {id === leaderId && '(Leader)'}
                       </h2>
-                      {leaderId === props.conn.user_id && id !== leaderId && (
+                      {leaderId === userId && id !== leaderId && (
                         <button onClick={() => makeLeader(id)}>
                           Make leader
                         </button>
@@ -140,7 +138,7 @@ const RoomBar = (props: { conn: ServerConn }) => {
           </>
         )}
 
-        {leaderId === props.conn.user_id && (
+        {leaderId === userId && (
           <div className="sidebar-item" onClick={changeVideo}>
             <h4>
               <span className="material-icons">video_settings</span>
@@ -161,7 +159,7 @@ const RoomBar = (props: { conn: ServerConn }) => {
   );
 };
 
-const HomeBar = (props: { conn: ServerConn }) => {
+const HomeBar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
@@ -218,13 +216,13 @@ const HomeBar = (props: { conn: ServerConn }) => {
   );
 };
 
-const SideBar = (props: { conn: ServerConn }) => {
+const SideBar = () => {
   const roomBar = useSelector((state: RootState) => state.ui.roomBar);
 
   return roomBar ? (
-    <RoomBar conn={props.conn} />
+    <RoomBar />
   ) : (
-    <HomeBar conn={props.conn} />
+    <HomeBar />
   );
 };
 

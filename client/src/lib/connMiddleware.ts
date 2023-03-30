@@ -9,11 +9,13 @@ import {
   createSuccess,
   joinFailed,
   joinRoom,
+  makeLeader,
   newLeader,
   newUserJoined,
   newVideo,
   roomData,
   setPlaying,
+  setTime,
   userLeft,
 } from '../store/room';
 import { RootState } from '../store/store';
@@ -61,6 +63,9 @@ const connMiddleware: Middleware = store => {
           toast(joinroom.message, { theme: 'dark', type: 'error' });
           break;
         }
+      case Response.MessageType.Sync:
+        let syncmsg = msg.message as Response.Sync;
+        store.dispatch(setTime(syncmsg));
     }
     if (msgCallback !== undefined) msgCallback(msg);
   };
@@ -70,7 +75,7 @@ const connMiddleware: Middleware = store => {
     if (startConnecting.match(action)) {
       connection = await connect(serverURL);
       connection.addMessageCallback(onMessage);
-      store.dispatch(connected());
+      store.dispatch(connected(connection.user_id));
       console.log(connection);
     } else if (joinRoom.match(action)) {
       try {
@@ -97,6 +102,8 @@ const connMiddleware: Middleware = store => {
         store.dispatch(createFailed());
         console.log(err);
       }
+    } else if (makeLeader.match(action)) {
+      connection.makeLeader(action.payload);
     } else {
     }
   };
