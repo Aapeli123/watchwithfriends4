@@ -4,7 +4,9 @@ import { toast } from 'react-toastify';
 import { connected, startConnecting } from '../store/connection';
 import {
   changeUsername,
+  createFailed,
   createRoom,
+  createSuccess,
   joinFailed,
   joinRoom,
   newLeader,
@@ -64,6 +66,7 @@ const connMiddleware: Middleware = store => {
   };
 
   return next => async action => {
+    next(action);
     if (startConnecting.match(action)) {
       connection = await connect(serverURL);
       connection.addMessageCallback(onMessage);
@@ -82,14 +85,20 @@ const connMiddleware: Middleware = store => {
       console.log('Creating room');
       try {
         let res = await connection.createRoom(action.payload.username);
-        console.log(res.success);
+        // console.log(res.success);
+        if (!res.success) {
+          store.dispatch(createFailed());
+          return;
+        }
+        console.log('Room created...');
+        store.dispatch(createSuccess(res));
+        connection.roomData();
       } catch (err) {
-        store.dispatch(joinFailed());
+        store.dispatch(createFailed());
         console.log(err);
       }
     } else {
     }
-    next(action);
   };
 };
 
