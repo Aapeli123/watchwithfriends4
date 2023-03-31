@@ -50,7 +50,7 @@ const Room = () => {
   );
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
-
+  const roomLoadFailed = useSelector((state: RootState) => state.room.roomLoadFailed);
 
 
 
@@ -66,7 +66,10 @@ const Room = () => {
 
   useEffect(() => {
 
-
+    if(store.getState().room.roomLoadFailed === true) {
+      console.log("RoomLoadFailed")
+      return;
+    }
     console.log(params['code']);
 
     initRoom();
@@ -77,7 +80,7 @@ const Room = () => {
       dispatch(leaveRoom());
 
     };
-  }, []);
+  }, [roomLoadFailed]);
 
 
 
@@ -93,12 +96,15 @@ const Room = () => {
 
   return (
     <>
+      {
+        roomLoadFailed &&
       <Alert
-        show={showNotFound}
+        show={true}
         text="Room not found"
         buttontext="Ok."
         onClickBtn={() => navigate('/')}
       />
+      }
       <Prompt
         show={showVideoSelector}
         question={'Video link:'}

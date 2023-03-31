@@ -12,14 +12,18 @@ const roomSlice = createSlice({
     time: 0,
     roomLoaded: false,
     roomLoading: false,
+    roomLoadFailed: false
+
   },
   reducers: {
     joinRoom: (state, action: PayloadAction<string>) => {
       state.roomLoading = true;
+      state.roomLoadFailed = false;
     },
 
     joinFailed: state => {
       state.roomLoading = false;
+      state.roomLoadFailed = true;
     },
     joinSuccess: state => {
       state.roomLoaded = true;
@@ -27,9 +31,12 @@ const roomSlice = createSlice({
     },
     createRoom: (state, action: PayloadAction<Sendable.CreateRoom>) => {
       state.roomLoading = true;
+      state.roomLoadFailed = false;
+
     },
     createFailed: state => {
       state.roomLoading = false;
+      state.roomLoadFailed = true;
     },
     createSuccess: (state, action: PayloadAction<Response.CreateRoomResp>) => {
       state.roomLoaded = true;
