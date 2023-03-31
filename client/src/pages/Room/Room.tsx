@@ -115,6 +115,9 @@ const Room = () => {
   const timeChangeHandler = () => {
     if(!isLeader()) return;
     const curTime = store.getState().room.time;
+    const playerTime = playerRef.current?.getCurrentTime();
+    if(playerTime === undefined) return;
+    if(Math.abs(curTime - playerTime) >= 0.75) playerRef.current?.seekTo(curTime);
     console.log(curTime);    
   };
 

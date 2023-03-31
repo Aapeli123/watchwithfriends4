@@ -113,10 +113,7 @@ function App(): JSX.Element {
       <h1>Loading...</h1>
     </>
   }
-  /* if(roomLoaded) {
-    /* console.log("Redirecting to room")
-    console.log(`/room/${store.getState().room.roomCode}`);
-  } */
+
   return isConnected ? (
     <>
 
