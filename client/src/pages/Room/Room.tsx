@@ -18,7 +18,10 @@ import {
   newUserJoined,
   newVideo,
   roomData,
+  setPlay,
   setPlaying,
+  setVideo,
+  sync,
   userLeft,
 } from '../../store/room';
 import { RootState } from '../../store/store';
@@ -55,7 +58,7 @@ const Room = () => {
 
   const onProgress = (state: OnProgressProps) => {
     // const isLeader = store.getState().room.leaderId === store.getState().conn.userID;
-    if (isLeader()) dispatch();// props.conn.syncTime(state.playedSeconds);
+    if (isLeader()) dispatch(sync(state.playedSeconds));// props.conn.syncTime(state.playedSeconds);
   };
 
   const playerRef = useRef<ReactPlayer>(null);
@@ -67,6 +70,7 @@ const Room = () => {
     if(!store.getState().room.roomLoaded) {
       dispatch(joinRoom(roomCode));
     }
+    dispatch(enableRoomBar());
 /* 
     try {
       // await conn.joinRoom(roomCode, username);
@@ -96,7 +100,7 @@ const Room = () => {
   useEffect(() => {
     console.log(params['code']);
 
-    // initRoom();
+    initRoom();
 
     return () => {
       setMsgCb(undefined);
@@ -111,18 +115,18 @@ const Room = () => {
   const timeChangeHandler = () => {
     if(!isLeader()) return;
     const curTime = store.getState().room.time;
-    
+    console.log(curTime);    
   };
 
   const onPlay = () => {
     if (!playing) {
-      props.conn.setPlay(true);
+      dispatch(setPlay(false))
     }
   };
 
   const onPause = () => {
     if (playing) {
-      props.conn.setPlay(false);
+      dispatch(setPlay(false));
     }
   };
 
@@ -130,7 +134,7 @@ const Room = () => {
     if (res === '') {
       return;
     }
-    props.conn.setVideo(res);
+    dispatch(setVideo(res))
     dispatch(disableVideoPrompt());
   };
 

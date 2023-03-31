@@ -21,6 +21,10 @@ const roomSlice = createSlice({
     joinFailed: state => {
       state.roomLoading = false;
     },
+    joinSuccess: state => {
+      state.roomLoaded = true;
+      state.roomLoading = false;
+    },
     createRoom: (state, action: PayloadAction<Sendable.CreateRoom>) => {
       state.roomLoading = true;
     },
@@ -69,7 +73,8 @@ const roomSlice = createSlice({
     setTime: (state, action: PayloadAction<Response.Sync>) => {
       state.time = action.payload.time;
     },
-    setVideo: (state, action: PayloadAction<number>) => {},
+    setVideo: (state, action: PayloadAction<string>) => {},
+    setPlay: (state, action: PayloadAction<boolean>) => {},
     sync: (state, action: PayloadAction<number>) => {},
     changeUsername: (
       state,
@@ -100,4 +105,6 @@ export const {
   makeLeader,
   setVideo,
   sync,
+  setPlay,
+  joinSuccess,
 } = roomSlice.actions;

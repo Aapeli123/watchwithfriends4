@@ -1,3 +1,4 @@
+import { Unsubscribe } from '@reduxjs/toolkit';
 import { useContext, useEffect, useState } from 'react';
 import {
   Provider,
@@ -59,27 +60,31 @@ function App(): JSX.Element {
   const isConnecting = useSelector((state: RootState) => state.conn.isConnecting);
   const roomLoading = useSelector((state: RootState) => state.room.roomLoading);
   const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
-
+  const [unsub, setUnsub] = useState<null | Unsubscribe>(null);
   const navigate = useNavigate();
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   useEffect(() => {
     const hasUn = localStorage.getItem('username') !== null;
+    if(roomLoaded) {
+      navigate(`/room/${store.getState().room.roomCode}`); 
+      return;
+  }
 
     console.log(hasUn);
     if (!hasUn) {
       dispatch(setUnSelectorClosable(false));
       dispatch(showUnSelector());
     }
+    console.log("Rerunning app constructor")
 
     if (store.getState().conn.connected) {
       console.log('Already connected.');
       return;
     }
     dispatch(startConnecting());
-    // if(roomLoaded) {navigate(`/room/${store.getState().room.roomCode}`);}
+  }, [roomLoaded]);
 
-  });
 
   const reconnect = async () => {
     // setConnected(false);

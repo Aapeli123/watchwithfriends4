@@ -9,13 +9,18 @@ import {
   createSuccess,
   joinFailed,
   joinRoom,
+  joinSuccess,
+  leaveRoom,
   makeLeader,
   newLeader,
   newUserJoined,
   newVideo,
   roomData,
+  setPlay,
   setPlaying,
   setTime,
+  setVideo,
+  sync,
   userLeft,
 } from '../store/room';
 import { RootState } from '../store/store';
@@ -83,6 +88,8 @@ const connMiddleware: Middleware = store => {
           action.payload,
           store.getState().pref.username
         );
+        await connection.roomData();
+        store.dispatch(joinSuccess());
       } catch {
         store.dispatch(joinFailed());
       }
@@ -102,8 +109,16 @@ const connMiddleware: Middleware = store => {
         store.dispatch(createFailed());
         console.log(err);
       }
+    } else if (leaveRoom.match(action)) {
+      connection.leaveRoom();
     } else if (makeLeader.match(action)) {
       connection.makeLeader(action.payload);
+    } else if (sync.match(action)) {
+      connection.syncTime(action.payload);
+    } else if (setPlay.match(action)) {
+      connection.setPlay(action.payload);
+    } else if (setVideo.match(action)) {
+      connection.setVideo(action.payload);
     } else {
     }
   };
