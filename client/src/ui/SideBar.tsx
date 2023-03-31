@@ -7,7 +7,7 @@ import {
 } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ServerConn } from '../lib/conn';
-import { RootState } from '../store/store';
+import { RootState, store } from '../store/store';
 import { showVideoPrompt } from '../store/ui';
 import { toast } from 'react-toastify';
 
@@ -167,7 +167,7 @@ const HomeBar = () => {
     e.preventDefault();
     try {
       console.log(username);
-      dispatch(createRoom({username: "aaa"}));
+      dispatch(createRoom({username: store.getState().pref.username}));
       // let r = await props.conn.createRoom(username);
       // navigate(`room/${r.room_code}`);
     } catch {
