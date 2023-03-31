@@ -27,6 +27,7 @@ import RoomCode from './pages/RoomCodeEntry/RoomCode';
 import Settings from './pages/Settings/Settings';
 import { startConnecting } from './store/connection';
 import { setUn } from './store/prefs';
+import { changeName } from './store/room';
 import { RootState } from './store/store';
 import {
   hideUnSelector,
@@ -101,7 +102,8 @@ function App(): JSX.Element {
       return;
     }
     if (store.getState().room.roomLoaded) {
-      connection?.changeUsername(un);
+      dispatch(changeName(un));
+      // connection?.changeUsername(un);
     }
     localStorage.setItem('username', un);
     dispatch(setUn(un));

@@ -76,6 +76,7 @@ const roomSlice = createSlice({
     setVideo: (state, action: PayloadAction<string>) => {},
     setPlay: (state, action: PayloadAction<boolean>) => {},
     sync: (state, action: PayloadAction<number>) => {},
+    changeName: (state, action: PayloadAction<string>) => {},
     changeUsername: (
       state,
       action: PayloadAction<Response.UserChangedName>
@@ -107,4 +108,5 @@ export const {
   sync,
   setPlay,
   joinSuccess,
+  changeName,
 } = roomSlice.actions;

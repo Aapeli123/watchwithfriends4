@@ -3,6 +3,7 @@ import { redirect, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connected, startConnecting } from '../store/connection';
 import {
+  changeName,
   changeUsername,
   createFailed,
   createRoom,
@@ -119,6 +120,8 @@ const connMiddleware: Middleware = store => {
       connection.setPlay(action.payload);
     } else if (setVideo.match(action)) {
       connection.setVideo(action.payload);
+    } else if (changeName.match(action)) {
+      connection.changeUsername(action.payload);
     } else {
     }
   };
