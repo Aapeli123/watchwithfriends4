@@ -35,19 +35,14 @@ import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
 import { setMsgCb } from '../../lib/connMiddleware';
 import { Unsubscribe } from '@reduxjs/toolkit';
+import Player from "./Player/Player";
 
 const Room = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const videoLink = useSelector((state: RootState) => state.room.videoId);
   const navigate = useNavigate();
-  const playing = useSelector((state: RootState) => state.room.playing);
-  const username = useSelector((state: RootState) => state.pref.username);
-  const leader_id = useSelector((state: RootState) => state.room.leaderId);
-  const userid = useSelector((state: RootState) => state.conn.userID);
-  
-  const [unsubTime, setUnsubTime] = useState<Unsubscribe | null>(null);
-  
+
+
   const [showNotFound, setNotFound] = useState(false);
 
   const showVideoSelector = useSelector(
@@ -56,48 +51,22 @@ const Room = () => {
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
 
-  const onProgress = (state: OnProgressProps) => {
-    // const isLeader = store.getState().room.leaderId === store.getState().conn.userID;
-    if (isLeader()) dispatch(sync(state.playedSeconds));// props.conn.syncTime(state.playedSeconds);
-  };
 
-  const playerRef = useRef<ReactPlayer>(null);
 
-  const initRoom = async () => {
+
+  const initRoom = () => {
     const roomCode = params['code'] as string;
-    const unsub = store.subscribe(timeChangeHandler);
-    setUnsubTime(unsub);
     if(!store.getState().room.roomLoaded) {
       dispatch(joinRoom(roomCode));
     }
     dispatch(enableRoomBar());
-/* 
-    try {
-      // await conn.joinRoom(roomCode, username);
-    } catch (msg) {
-      if (msg === 'Room not found') {
-        setNotFound(true);
-        return;
-      }
-      console.log(
-        'Already in the room, joined from RoomCodeInput or Create room'
-      );
-    }
-    try {
-      console.log('Requesting room data');
-      const data = await conn.roomData();
-      dispatch(roomData(data)); 
-    } catch {}
-    props.conn.addMessageCallback(msgHandler);
-    setMsgCb(msgHandler);
-    dispatch(enableRoomBar());
-    */
   };
 
-  const isLeader = () => store.getState().conn.userID === store.getState().room.leaderId;
-    
+
 
   useEffect(() => {
+
+
     console.log(params['code']);
 
     initRoom();
@@ -106,32 +75,13 @@ const Room = () => {
       setMsgCb(undefined);
       dispatch(disableRoomBar());
       dispatch(leaveRoom());
-      if(unsubTime !== null) {
-        unsubTime();
-      };
+
     };
   }, []);
 
-  const timeChangeHandler = () => {
-    if(!isLeader()) return;
-    const curTime = store.getState().room.time;
-    const playerTime = playerRef.current?.getCurrentTime();
-    if(playerTime === undefined) return;
-    if(Math.abs(curTime - playerTime) >= 0.75) playerRef.current?.seekTo(curTime);
-    console.log(curTime);    
-  };
 
-  const onPlay = () => {
-    if (!playing) {
-      dispatch(setPlay(false))
-    }
-  };
 
-  const onPause = () => {
-    if (playing) {
-      dispatch(setPlay(false));
-    }
-  };
+
 
   const changeVideoCb = (res: string) => {
     if (res === '') {
@@ -157,29 +107,7 @@ const Room = () => {
         close={() => dispatch(disableVideoPrompt())}
       />
       <div className="player-container">
-        {videoLink === null && (
-          <>
-            <h1>No video loaded yet...</h1>
-            {leader_id === userid && (
-              <h1>To load a video, click change video</h1>
-            )}
-          </>
-        )}
-        {videoLink !== null && (
-          <ReactPlayer
-            url={videoLink}
-            width={'100%'}
-            ref={playerRef}
-            playing={playing}
-            onPlay={onPlay}
-            onPause={onPause}
-            onProgress={onProgress}
-            height="100%"
-            controls
-            autoPlay={true}
-            loop={true}
-          />
-        )}
+        <Player />
       </div>
     </>
   );

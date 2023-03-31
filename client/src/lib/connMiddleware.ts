@@ -113,7 +113,7 @@ const connMiddleware: Middleware = store => {
     } else if (leaveRoom.match(action)) {
       connection.leaveRoom();
     } else if (makeLeader.match(action)) {
-      connection.makeLeader(action.payload);
+      await connection.makeLeader(action.payload);
     } else if (sync.match(action)) {
       connection.syncTime(action.payload);
     } else if (setPlay.match(action)) {

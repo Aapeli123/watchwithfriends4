@@ -61,7 +61,6 @@ function App(): JSX.Element {
   const isConnecting = useSelector((state: RootState) => state.conn.isConnecting);
   const roomLoading = useSelector((state: RootState) => state.room.roomLoading);
   const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
-  const [unsub, setUnsub] = useState<null | Unsubscribe>(null);
   const navigate = useNavigate();
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);

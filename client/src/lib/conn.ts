@@ -71,14 +71,10 @@ export class ServerConn {
     });
   }
 
-  makeLeader(new_leader: string): Promise<Response.SetLeaderResp> {
+  makeLeader(new_leader: string): Promise<Response.NewLeader> {
     return new Promise((res, rej) => {
       this.socket.onmessage = event => {
-        const msg = parseMessage(event.data).message as Response.SetLeaderResp;
-        if (!msg.success) {
-          rej('Could not set leader');
-          return;
-        }
+        const msg = parseMessage(event.data).message as Response.NewLeader;
         res(msg);
       };
       this.sendMessage({ leader_id: new_leader }, Sendable.WsMsgType.SetLeader);
