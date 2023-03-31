@@ -1,5 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { redirect, useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {connected, disconnect, startConnecting} from '../store/connection';
 import {
@@ -24,7 +24,6 @@ import {
   sync,
   userLeft,
 } from '../store/room';
-import { RootState } from '../store/store';
 import connect, { ServerConn } from './conn';
 import { Response } from './messages';
 const serverURL = 'ws://localhost:8080';
@@ -67,11 +66,12 @@ const connMiddleware: Middleware = store => {
         let joinroom = msg.message as Response.JoinRoomResp;
         if (!joinroom.success) {
           toast(joinroom.message, { theme: 'dark', type: 'error' });
-          break;
         }
+        break;
       case Response.MessageType.Sync:
         let syncmsg = msg.message as Response.Sync;
         store.dispatch(setTime(syncmsg));
+        break;
     }
     if (msgCallback !== undefined) msgCallback(msg);
   };
