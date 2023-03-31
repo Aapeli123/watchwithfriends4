@@ -1,7 +1,7 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { redirect, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { connected, startConnecting } from '../store/connection';
+import {connected, disconnect, startConnecting} from '../store/connection';
 import {
   changeName,
   changeUsername,
@@ -83,6 +83,9 @@ const connMiddleware: Middleware = store => {
       connection.addMessageCallback(onMessage);
       store.dispatch(connected(connection.user_id));
       console.log(connection);
+    } else if (disconnect.match(action)) {
+      connection.disconnect();
+      console.log("Disconnected...")
     } else if (joinRoom.match(action)) {
       try {
         await connection.joinRoom(
@@ -105,21 +108,21 @@ const connMiddleware: Middleware = store => {
         }
         console.log('Room created...');
         store.dispatch(createSuccess(res));
-        connection.roomData();
+        await connection.roomData();
       } catch (err) {
         store.dispatch(createFailed());
         console.log(err);
       }
     } else if (leaveRoom.match(action)) {
-      connection.leaveRoom();
+      await connection.leaveRoom();
     } else if (makeLeader.match(action)) {
       await connection.makeLeader(action.payload);
     } else if (sync.match(action)) {
-      connection.syncTime(action.payload);
+      await connection.syncTime(action.payload);
     } else if (setPlay.match(action)) {
-      connection.setPlay(action.payload);
+      await connection.setPlay(action.payload);
     } else if (setVideo.match(action)) {
-      connection.setVideo(action.payload);
+      await connection.setVideo(action.payload);
     } else if (changeName.match(action)) {
       connection.changeUsername(action.payload);
     } else {

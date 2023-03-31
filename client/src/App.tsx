@@ -1,25 +1,18 @@
-import { Unsubscribe } from '@reduxjs/toolkit';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import {
-  Provider,
   ReactReduxContext,
   ReactReduxContextValue,
   useDispatch,
   useSelector,
 } from 'react-redux';
 import {
-  BrowserRouter,
-  createBrowserRouter,
   Outlet,
   Route,
-  RouterProvider,
-  redirect,
   Routes,
   useNavigate,
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
-import connect, { ServerConn } from './lib/conn';
 import Home from './pages/Home/Home';
 import Info from './pages/Info/Info';
 import Room from './pages/Room/Room';
@@ -53,13 +46,10 @@ const MainLayout = () => {
 };
 
 function App(): JSX.Element {
-  const [connection, setConnection] = useState<ServerConn | undefined>();
-  // const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
   const showUnPrompt = useSelector((state: RootState) => state.ui.unPrompt);
   const isConnected = useSelector((state: RootState) => state.conn.connected);
   const isConnecting = useSelector((state: RootState) => state.conn.isConnecting);
-  const roomLoading = useSelector((state: RootState) => state.room.roomLoading);
   const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
   const navigate = useNavigate();
   const { store } =
@@ -85,24 +75,12 @@ function App(): JSX.Element {
     dispatch(startConnecting());
   }, [roomLoaded]);
 
-
-  const reconnect = async () => {
-    // setConnected(false);
-    connection?.disconnect();
-    setConnection(undefined);
-
-    const conn = await connect('wss://watchwithfriends.ml/ws');
-
-    setConnection(conn);
-  };
-
   const unPromptCB = (un: string) => {
     if (un.trimStart().trimEnd() === '') {
       return;
     }
     if (store.getState().room.roomLoaded) {
       dispatch(changeName(un));
-      // connection?.changeUsername(un);
     }
     localStorage.setItem('username', un);
     dispatch(setUn(un));
@@ -148,10 +126,7 @@ function App(): JSX.Element {
               <Route
                 path="/settings"
                 element={
-                  <Settings
-                    conn={connection as ServerConn}
-                    reconnect={reconnect}
-                  />
+                  <Settings />
                 }
               />
               <Route

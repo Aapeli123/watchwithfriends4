@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Sendable } from '../lib/messages';
 
 interface ConnState {
   connected: boolean;
@@ -25,9 +24,12 @@ const connSlice = createSlice({
       state.connected = true;
       state.userID = action.payload;
     },
+    disconnect: (state) => {
+      state.connected = false;
+    }
   },
 });
 
 export default connSlice.reducer;
 
-export const { startConnecting, connected } = connSlice.actions;
+export const { startConnecting, connected, disconnect } = connSlice.actions;

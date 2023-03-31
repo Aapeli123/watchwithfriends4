@@ -1,5 +1,4 @@
 import './Home.css';
-import { ServerConn } from '../../lib/conn';
 import RoomCode from '../RoomCodeEntry/RoomCode';
 
 const Home = () => {

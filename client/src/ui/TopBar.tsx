@@ -3,12 +3,10 @@ import logo from './logo_final.png';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { ServerConn } from '../lib/conn';
 import { setUnSelectorClosable, showUnSelector } from '../store/ui';
 const TopBar = () => {
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
-  const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
 
   const changeName = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();

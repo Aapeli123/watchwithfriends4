@@ -1,6 +1,4 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import ReactPlayer from 'react-player';
-import { OnProgressProps } from 'react-player/base';
 import {
   ReactReduxContext,
   ReactReduxContextValue,
@@ -8,21 +6,10 @@ import {
   useSelector,
 } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ServerConn } from '../../lib/conn';
-import { Response } from '../../lib/messages';
 import {
-  changeUsername,
   joinRoom,
   leaveRoom,
-  newLeader,
-  newUserJoined,
-  newVideo,
-  roomData,
-  setPlay,
-  setPlaying,
   setVideo,
-  sync,
-  userLeft,
 } from '../../store/room';
 import { RootState } from '../../store/store';
 import {
@@ -34,7 +21,6 @@ import Alert from '../../ui/modals/alert/Alert';
 import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
 import { setMsgCb } from '../../lib/connMiddleware';
-import { Unsubscribe } from '@reduxjs/toolkit';
 import Player from "./Player/Player";
 
 const Room = () => {
@@ -42,8 +28,6 @@ const Room = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-  const [showNotFound, setNotFound] = useState(false);
 
   const showVideoSelector = useSelector(
     (state: RootState) => state.ui.videoPrompt.show
@@ -62,8 +46,6 @@ const Room = () => {
     dispatch(enableRoomBar());
   };
 
-
-
   useEffect(() => {
 
     if(store.getState().room.roomLoadFailed === true) {
@@ -81,10 +63,6 @@ const Room = () => {
 
     };
   }, [roomLoadFailed]);
-
-
-
-
 
   const changeVideoCb = (res: string) => {
     if (res === '') {

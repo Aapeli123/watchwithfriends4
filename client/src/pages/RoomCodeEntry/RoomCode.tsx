@@ -1,9 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { ServerConn } from '../../lib/conn';
 import { RootState } from '../../store/store';
-import { toast } from 'react-toastify';
 
 import './RoomCode.css';
 import { joinRoom } from '../../store/room';
@@ -11,9 +9,7 @@ import { joinRoom } from '../../store/room';
 let codeInputs: NodeListOf<HTMLInputElement>;
 const CodeInput = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const navigate = useNavigate();
 
-  const username = useSelector((state: RootState) => state.pref.username);
   const dispatch = useDispatch();
   useEffect(() => {
     codeInputs = formRef.current?.querySelectorAll(
@@ -27,8 +23,6 @@ const CodeInput = () => {
       return;
     }
     dispatch(joinRoom(code));
-
-    // navigate(`/room/${code}`);
   };
 
   const onInput = (e: React.FormEvent<HTMLFormElement | HTMLInputElement>) => {

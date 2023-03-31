@@ -13,8 +13,6 @@ const Player = () => {
     const time = useSelector((state: RootState) => state.room.time);
     const playing = useSelector((state: RootState) => state.room.playing);
 
-    const [prevTime, setPrevTime] = useState(time);
-
     const { store } =
         useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
     const isLeader = () => store.getState().conn.userID === store.getState().room.leaderId;
@@ -32,8 +30,7 @@ const Player = () => {
     };
 
     const onProgress = (state: OnProgressProps) => {
-        // const isLeader = store.getState().room.leaderId === store.getState().conn.userID;
-        if (isLeader()) dispatch(sync(state.playedSeconds));// props.conn.syncTime(state.playedSeconds);
+        if (isLeader()) dispatch(sync(state.playedSeconds));
     };
 
     const playerRef = useRef<ReactPlayer>(null);

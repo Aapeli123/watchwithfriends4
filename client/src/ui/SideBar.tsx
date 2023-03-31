@@ -6,7 +6,6 @@ import {
   useSelector,
 } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { ServerConn } from '../lib/conn';
 import { RootState, store } from '../store/store';
 import { showVideoPrompt } from '../store/ui';
 import { toast } from 'react-toastify';
