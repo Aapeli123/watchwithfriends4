@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
 
-import logo from './logo_final.png';
+import logo from './logo_sm.webp';
 import AlertWithChildren from './modals/alert/AlertWithChildren';
 import { createRoom, makeLeader } from '../store/room';
 
@@ -172,17 +172,17 @@ const HomeBar = () => {
   return (
     <>
       <div className="side-bar">
-        <Link to={'/'}>
+        <Link aria-label={"Go Home"} to={'/'}>
           <div className="sidebar-top-responsive">
-            <img className="logo-img" src={logo} />
+            <img className="logo-img" src={logo}  alt={"logo"}/>
           </div>
         </Link>
-        <Link to={'/joinroom'}>
+        <Link aria-label={"Join a room"} to={'/joinroom'}>
           <div className="sidebar-top desktop">
             <h2>Join Room</h2>
           </div>
         </Link>
-        <a href="" onClick={createRoomClick}>
+        <a href="/" onClick={createRoomClick}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">add</span>
@@ -190,7 +190,7 @@ const HomeBar = () => {
             </h4>
           </div>
         </a>
-        <Link to={'/info'}>
+        <Link aria-label={"More information about website"} to={'/info'}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">menu_book</span>
@@ -198,7 +198,7 @@ const HomeBar = () => {
             </h4>
           </div>
         </Link>
-        <Link to={'/settings'}>
+        <Link aria-label={"Go to settings"} to={'/settings'}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">settings</span>

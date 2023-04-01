@@ -48,7 +48,7 @@ const Settings = () => {
       <select ref={themeSelector}>
         {themes.map(({id, name}) => {
           return (
-            <option value={id}>{name}</option>
+            <option key={id} value={id}>{name}</option>
           )
         })}
       </select>

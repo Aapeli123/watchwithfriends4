@@ -118,7 +118,7 @@
     text-align: right;
     margin-top: calc((var(--top-bar-height) - 10px) / 2 - 0.75em) !important;
   }
-  .username-container h5 {
+  .username-container h3 {
     font-family: Arial;
     text-align: left;
     font-weight: 100;
