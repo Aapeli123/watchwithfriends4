@@ -1,28 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import {
-  Provider,
   ReactReduxContext,
   ReactReduxContextValue,
   useDispatch,
   useSelector,
 } from 'react-redux';
-import {
-  BrowserRouter,
-  createBrowserRouter,
-  Outlet,
-  Route,
-  RouterProvider,
-  Routes,
-} from 'react-router-dom';
+import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
-import connect, { ServerConn } from './lib/conn';
 import Home from './pages/Home/Home';
 import Info from './pages/Info/Info';
 import Room from './pages/Room/Room';
 import RoomCode from './pages/RoomCodeEntry/RoomCode';
 import Settings from './pages/Settings/Settings';
+import { startConnecting } from './store/connection';
 import { setUn } from './store/prefs';
+import { changeName } from './store/room';
 import { RootState } from './store/store';
 import {
   hideUnSelector,
@@ -32,8 +25,20 @@ import {
 import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
+
 import './themes/Dark.css';
 import './themes/Light.css';
+
+import ServerChanger from './pages/Settings/ServerChanger';
+
+export const getBackURL = () => {
+  const url = localStorage.getItem('backendUrl');
+  if (url === null) {
+    localStorage.setItem('backendUrl', 'wss://watchwithfriends.ml/ws');
+    return 'wss://watchwithfriends.ml/ws';
+  }
+  return url;
+};
 
 const theme = localStorage.getItem('theme') || 'dark';
 if (localStorage.getItem('theme') === null) {
@@ -42,12 +47,12 @@ if (localStorage.getItem('theme') === null) {
 }
 document.body.setAttribute('data-theme', theme);
 
-const MainLayout = (props: { conn: ServerConn }) => {
+const MainLayout = () => {
   return (
     <>
-      <TopBar conn={props.conn} />
+      <TopBar />
       <div className="main-content">
-        <SideBar conn={props.conn} />
+        <SideBar />
         <div className="app-data">
           <Outlet />
         </div>
@@ -57,106 +62,99 @@ const MainLayout = (props: { conn: ServerConn }) => {
 };
 
 function App(): JSX.Element {
-  const [connection, setConnection] = useState<ServerConn | undefined>();
-  const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
   const showUnPrompt = useSelector((state: RootState) => state.ui.unPrompt);
+  const isConnected = useSelector((state: RootState) => state.conn.connected);
+  const isConnecting = useSelector(
+    (state: RootState) => state.conn.isConnecting
+  );
+  const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
+  const connectionFailed = useSelector(
+    (state: RootState) => state.conn.connectionFailed
+  );
 
+  const navigate = useNavigate();
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   useEffect(() => {
     const hasUn = localStorage.getItem('username') !== null;
+    if (roomLoaded) {
+      navigate(`/room/${store.getState().room.roomCode}`);
+      return;
+    }
 
     console.log(hasUn);
     if (!hasUn) {
       dispatch(setUnSelectorClosable(false));
       dispatch(showUnSelector());
     }
+    console.log('Rerunning app constructor');
 
-    if (connected) {
+    if (store.getState().conn.connected) {
       console.log('Already connected.');
       return;
     }
-    const connectToServer = async () => {
-      const conn = await connect('wss://watchwithfriends.ml/ws');
-
-      console.log('Connected...');
-      setConnection(conn);
-      setConnected(true);
-    };
-    connectToServer();
-  }, []);
-
-  const reconnect = async () => {
-    setConnected(false);
-    connection?.disconnect();
-    setConnection(undefined);
-
-    const conn = await connect('wss://watchwithfriends.ml/ws');
-
-    setConnection(conn);
-    setConnected(true);
-  };
+    dispatch(startConnecting(getBackURL()));
+  }, [roomLoaded]);
 
   const unPromptCB = (un: string) => {
     if (un.trimStart().trimEnd() === '') {
       return;
     }
     if (store.getState().room.roomLoaded) {
-      connection?.changeUsername(un);
+      dispatch(changeName(un));
     }
     localStorage.setItem('username', un);
     dispatch(setUn(un));
     dispatch(hideUnSelector());
   };
 
-  return connected ? (
+  if (connectionFailed) {
+    return (
+      <>
+        <h1>Connection failed</h1>
+        <button onClick={() => dispatch(startConnecting(getBackURL()))}>
+          {' '}
+          Retry{' '}
+        </button>
+        <ServerChanger />
+      </>
+    );
+  }
+
+  if (!isConnecting && !isConnected) {
+    return (
+      <>
+        <h1>Loading...</h1>
+      </>
+    );
+  }
+
+  return isConnected ? (
     <>
-      <BrowserRouter>
-        <div className="App">
-          <ToastContainer
-            pauseOnHover={false}
-            hideProgressBar={false}
-            position="bottom-right"
-          />
-          <Prompt
-            question="Choose a name:"
-            closable={showUnPrompt.closable}
-            show={showUnPrompt.show}
-            callback={unPromptCB}
-            close={() => dispatch(hideUnSelector())}
-          />
-          <Routes>
-            <Route
-              path="/"
-              element={<MainLayout conn={connection as ServerConn} />}
-            >
-              <Route
-                path="/joinroom"
-                element={<RoomCode conn={connection as ServerConn} />}
-              />
-              <Route
-                path="/room/:code"
-                element={<Room conn={connection as ServerConn} />}
-              />
-              <Route path="/info" element={<Info />} />
-              <Route
-                path="/settings"
-                element={
-                  <Settings
-                    conn={connection as ServerConn}
-                    reconnect={reconnect}
-                  />
-                }
-              />
-              <Route
-                path="/"
-                element={<Home conn={connection as ServerConn} />}
-              />
-            </Route>
-          </Routes>
-        </div>
-      </BrowserRouter>
+      <div className="App">
+        <ToastContainer
+          pauseOnHover={false}
+          hideProgressBar={false}
+          position="bottom-right"
+        />
+        <Prompt
+          question="Choose a name:"
+          closable={showUnPrompt.closable}
+          show={showUnPrompt.show}
+          callback={unPromptCB}
+          close={() => dispatch(hideUnSelector())}
+        />
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route path="/joinroom" element={<RoomCode />} />
+            <Route path="/room/:code" element={<Room />} />
+            <Route path="/info" element={<Info />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+      </div>
     </>
   ) : (
     <div className="App">

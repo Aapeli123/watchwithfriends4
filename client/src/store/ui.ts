@@ -14,7 +14,6 @@ const uiSlice = createSlice({
     disableRoomBar(state) {
       state.roomBar = false;
     },
-
     showUnSelector(state) {
       state.unPrompt.show = true;
     },
