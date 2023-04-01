@@ -1,9 +1,9 @@
-import {useDispatch, useSelector} from "react-redux";
-import {disconnect, startConnecting} from "../../store/connection";
-import {RootState} from "../../store/store";
-import {getBackURL} from "../../App";
-import {useRef, useState} from "react";
-import ServerChanger from "./ServerChanger";
+import { useDispatch, useSelector } from 'react-redux';
+import { disconnect, startConnecting } from '../../store/connection';
+import { RootState } from '../../store/store';
+import { getBackURL } from '../../App';
+import { useRef, useState } from 'react';
+import ServerChanger from './ServerChanger';
 
 const Settings = () => {
   const clearLocalstorage = () => {
@@ -11,15 +11,13 @@ const Settings = () => {
     location.reload();
   };
   const dispatch = useDispatch();
-  const connected = useSelector((state:RootState) => state.conn.connected);
+  const connected = useSelector((state: RootState) => state.conn.connected);
   const userid = useSelector((state: RootState) => state.conn.userID);
 
   const reconnect = async () => {
-      dispatch(disconnect());
-      dispatch(startConnecting(getBackURL()));
+    dispatch(disconnect());
+    dispatch(startConnecting(getBackURL()));
   };
-
-
 
   return (
     <>
@@ -30,7 +28,8 @@ const Settings = () => {
       <button onClick={clearLocalstorage}>Clear local storage</button>
       <h2>Connection:</h2>
       {connected && <h3>Session id: {userid}</h3>}
-      <button onClick={reconnect}>Reconnect to server</button><ServerChanger />
+      <button onClick={reconnect}>Reconnect to server</button>
+      <ServerChanger />
 
       <br />
     </>

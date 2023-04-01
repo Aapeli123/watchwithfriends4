@@ -97,16 +97,15 @@ const RoomBar = () => {
                     <h6>
                       {users[id].name} {id === leaderId && '(Leader)'}
                     </h6>
-                    {userId === leaderId &&
-                      id !== userId && (
-                        <button
-                          onClick={() => {
-                            newLeader(id);
-                          }}
-                        >
-                          Make leader
-                        </button>
-                      )}
+                    {userId === leaderId && id !== userId && (
+                      <button
+                        onClick={() => {
+                          newLeader(id);
+                        }}
+                      >
+                        Make leader
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -165,7 +164,7 @@ const HomeBar = () => {
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
-      dispatch(createRoom({username: store.getState().pref.username}));
+      dispatch(createRoom({ username: store.getState().pref.username }));
     } catch {
       console.log('Room creation failed...');
     }
@@ -215,11 +214,7 @@ const HomeBar = () => {
 const SideBar = () => {
   const roomBar = useSelector((state: RootState) => state.ui.roomBar);
 
-  return roomBar ? (
-    <RoomBar />
-  ) : (
-    <HomeBar />
-  );
+  return roomBar ? <RoomBar /> : <HomeBar />;
 };
 
 export default SideBar;

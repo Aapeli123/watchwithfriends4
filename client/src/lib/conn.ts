@@ -161,7 +161,6 @@ const connect = (server_url: string): Promise<ServerConn> => {
     };
     ws.addEventListener('error', errorEventListner);
     ws.addEventListener('message', messageEventListner);
-
   });
 };
 

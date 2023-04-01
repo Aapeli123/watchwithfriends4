@@ -27,17 +27,18 @@ const connSlice = createSlice({
       state.connected = true;
       state.userID = action.payload;
     },
-    connectionFailed: (state) => {
+    connectionFailed: state => {
       state.connectionFailed = true;
       state.isConnecting = false;
       state.connected = false;
     },
-    disconnect: (state) => {
+    disconnect: state => {
       state.connected = false;
-    }
+    },
   },
 });
 
 export default connSlice.reducer;
 
-export const { startConnecting, connected, disconnect ,connectionFailed} = connSlice.actions;
+export const { startConnecting, connected, disconnect, connectionFailed } =
+  connSlice.actions;

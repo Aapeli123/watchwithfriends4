@@ -1,7 +1,12 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {connected, connectionFailed, disconnect, startConnecting} from '../store/connection';
+import {
+  connected,
+  connectionFailed,
+  disconnect,
+  startConnecting,
+} from '../store/connection';
 import {
   changeName,
   changeUsername,
@@ -35,7 +40,6 @@ const setMsgCb = (cb: ((msg: Response.WsResponse) => void) | undefined) => {
 const connMiddleware: Middleware = store => {
   let connection: ServerConn;
   const onMessage = (msg: Response.WsResponse) => {
-
     switch (msg.type) {
       case Response.MessageType.NewUserConnected:
         store.dispatch(
@@ -82,7 +86,7 @@ const connMiddleware: Middleware = store => {
       try {
         connection = await connect(action.payload);
       } catch (err) {
-        console.log("Err: " + err);
+        console.log('Err: ' + err);
         store.dispatch(connectionFailed());
         return;
       }
@@ -90,7 +94,7 @@ const connMiddleware: Middleware = store => {
       store.dispatch(connected(connection.user_id));
     } else if (disconnect.match(action)) {
       connection.disconnect();
-      console.log("Disconnected...")
+      console.log('Disconnected...');
     } else if (joinRoom.match(action)) {
       try {
         await connection.joinRoom(

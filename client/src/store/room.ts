@@ -12,8 +12,7 @@ const roomSlice = createSlice({
     time: 0,
     roomLoaded: false,
     roomLoading: false,
-    roomLoadFailed: false
-
+    roomLoadFailed: false,
   },
   reducers: {
     joinRoom: (state, action: PayloadAction<string>) => {
@@ -32,7 +31,6 @@ const roomSlice = createSlice({
     createRoom: (state, action: PayloadAction<Sendable.CreateRoom>) => {
       state.roomLoading = true;
       state.roomLoadFailed = false;
-
     },
     createFailed: state => {
       state.roomLoading = false;

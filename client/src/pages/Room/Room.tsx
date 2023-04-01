@@ -6,11 +6,7 @@ import {
   useSelector,
 } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  joinRoom,
-  leaveRoom,
-  setVideo,
-} from '../../store/room';
+import { joinRoom, leaveRoom, setVideo } from '../../store/room';
 import { RootState } from '../../store/store';
 import {
   disableRoomBar,
@@ -21,35 +17,33 @@ import Alert from '../../ui/modals/alert/Alert';
 import Prompt from '../../ui/modals/prompt/Prompt';
 import './Room.css';
 import { setMsgCb } from '../../lib/connMiddleware';
-import Player from "./Player/Player";
+import Player from './Player/Player';
 
 const Room = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const showVideoSelector = useSelector(
     (state: RootState) => state.ui.videoPrompt.show
   );
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
-  const roomLoadFailed = useSelector((state: RootState) => state.room.roomLoadFailed);
-
-
+  const roomLoadFailed = useSelector(
+    (state: RootState) => state.room.roomLoadFailed
+  );
 
   const initRoom = () => {
     const roomCode = params['code'] as string;
-    if(!store.getState().room.roomLoaded) {
+    if (!store.getState().room.roomLoaded) {
       dispatch(joinRoom(roomCode));
     }
     dispatch(enableRoomBar());
   };
 
   useEffect(() => {
-
-    if(store.getState().room.roomLoadFailed === true) {
-      console.log("RoomLoadFailed")
+    if (store.getState().room.roomLoadFailed === true) {
+      console.log('RoomLoadFailed');
       return;
     }
 
@@ -58,9 +52,7 @@ const Room = () => {
     return () => {
       setMsgCb(undefined);
       dispatch(disableRoomBar());
-      if(store.getState().room.roomLoaded)
-        dispatch(leaveRoom());
-
+      if (store.getState().room.roomLoaded) dispatch(leaveRoom());
     };
   }, [roomLoadFailed]);
 
@@ -68,21 +60,20 @@ const Room = () => {
     if (res === '') {
       return;
     }
-    dispatch(setVideo(res))
+    dispatch(setVideo(res));
     dispatch(disableVideoPrompt());
   };
 
   return (
     <>
-      {
-        roomLoadFailed &&
-      <Alert
-        show={true}
-        text="Room not found"
-        buttontext="Ok."
-        onClickBtn={() => navigate('/')}
-      />
-      }
+      {roomLoadFailed && (
+        <Alert
+          show={true}
+          text="Room not found"
+          buttontext="Ok."
+          onClickBtn={() => navigate('/')}
+        />
+      )}
       <Prompt
         show={showVideoSelector}
         question={'Video link:'}
