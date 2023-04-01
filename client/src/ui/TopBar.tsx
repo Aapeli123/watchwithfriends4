@@ -18,16 +18,16 @@ const TopBar = () => {
     <>
       <div className="top-bar">
         <div className="logo">
-          <Link to={'/'}>
+          <Link aria-label={"Main page"} to={'/'}>
             <div className="logo-text-container">
-              <img src={logo}></img>
+              <img alt={"Watchwithfriends logo"} src={logo}></img>
               <h2 id="logo-text-left">Watchwith</h2>
               <h2 id="logo-text-right">friends</h2>
             </div>
           </Link>
         </div>
         <div className="username-container">
-          <a href="" onClick={changeName}>
+          <a href="/" onClick={changeName}>
             <div className="username-drop-shadow">
               <div className="username-btn">
                 <h5>
