@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
 
-import logo from './logo_final.png';
+import logo from './logo_sm.webp';
 import AlertWithChildren from './modals/alert/AlertWithChildren';
 import { createRoom, makeLeader } from '../store/room';
 
