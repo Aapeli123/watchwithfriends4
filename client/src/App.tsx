@@ -51,6 +51,8 @@ function App(): JSX.Element {
   const isConnected = useSelector((state: RootState) => state.conn.connected);
   const isConnecting = useSelector((state: RootState) => state.conn.isConnecting);
   const roomLoaded = useSelector((state: RootState) => state.room.roomLoaded);
+  const connectionFailed = useSelector((state: RootState) => state.conn.connectionFailed);
+
   const navigate = useNavigate();
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
@@ -86,6 +88,13 @@ function App(): JSX.Element {
     dispatch(setUn(un));
     dispatch(hideUnSelector());
   };
+
+  if (connectionFailed) {
+    return <>
+      <h1>Connection failed</h1>
+      <button onClick={() => dispatch(startConnecting())}> Retry </button>
+    </>
+  }
 
   if(!isConnecting && !isConnected) {
     return <>

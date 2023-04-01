@@ -165,10 +165,7 @@ const HomeBar = () => {
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
-      console.log(username);
       dispatch(createRoom({username: store.getState().pref.username}));
-      // let r = await props.conn.createRoom(username);
-      // navigate(`room/${r.room_code}`);
     } catch {
       console.log('Room creation failed...');
     }

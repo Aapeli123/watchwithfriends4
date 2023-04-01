@@ -52,14 +52,14 @@ const Room = () => {
       console.log("RoomLoadFailed")
       return;
     }
-    console.log(params['code']);
 
     initRoom();
 
     return () => {
       setMsgCb(undefined);
       dispatch(disableRoomBar());
-      dispatch(leaveRoom());
+      if(store.getState().room.roomLoaded)
+        dispatch(leaveRoom());
 
     };
   }, [roomLoadFailed]);

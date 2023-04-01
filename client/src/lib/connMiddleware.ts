@@ -1,7 +1,7 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {connected, disconnect, startConnecting} from '../store/connection';
+import {connected, connectionFailed, disconnect, startConnecting} from '../store/connection';
 import {
   changeName,
   changeUsername,
@@ -35,7 +35,7 @@ const setMsgCb = (cb: ((msg: Response.WsResponse) => void) | undefined) => {
 const connMiddleware: Middleware = store => {
   let connection: ServerConn;
   const onMessage = (msg: Response.WsResponse) => {
-    if (msg.type !== Response.MessageType.Pong) console.log(msg);
+
     switch (msg.type) {
       case Response.MessageType.NewUserConnected:
         store.dispatch(
@@ -79,10 +79,15 @@ const connMiddleware: Middleware = store => {
   return next => async action => {
     next(action);
     if (startConnecting.match(action)) {
-      connection = await connect(serverURL);
+      try {
+        connection = await connect(serverURL);
+      } catch (err) {
+        console.log("Err: " + err);
+        store.dispatch(connectionFailed());
+        return;
+      }
       connection.addMessageCallback(onMessage);
       store.dispatch(connected(connection.user_id));
-      console.log(connection);
     } else if (disconnect.match(action)) {
       connection.disconnect();
       console.log("Disconnected...")
@@ -98,15 +103,12 @@ const connMiddleware: Middleware = store => {
         store.dispatch(joinFailed());
       }
     } else if (createRoom.match(action)) {
-      console.log('Creating room');
       try {
         let res = await connection.createRoom(action.payload.username);
-        // console.log(res.success);
         if (!res.success) {
           store.dispatch(createFailed());
           return;
         }
-        console.log('Room created...');
         store.dispatch(createSuccess(res));
         await connection.roomData();
       } catch (err) {
@@ -124,7 +126,7 @@ const connMiddleware: Middleware = store => {
     } else if (setVideo.match(action)) {
       await connection.setVideo(action.payload);
     } else if (changeName.match(action)) {
-      connection.changeUsername(action.payload);
+      await connection.changeUsername(action.payload);
     } else {
     }
   };
