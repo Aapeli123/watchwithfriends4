@@ -30,9 +30,9 @@ const TopBar = () => {
           <a href="/" onClick={changeName}>
             <div className="username-drop-shadow">
               <div className="username-btn">
-                <h5>
+                <h3>
                   {username} <span className="material-icons">edit</span>{' '}
-                </h5>
+                </h3>
               </div>
             </div>
           </a>
