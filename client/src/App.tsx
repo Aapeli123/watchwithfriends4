@@ -25,6 +25,10 @@ import {
 import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
+
+import './themes/Dark.css';
+import './themes/Light.css';
+
 import ServerChanger from './pages/Settings/ServerChanger';
 
 export const getBackURL = () => {
@@ -35,6 +39,13 @@ export const getBackURL = () => {
   }
   return url;
 };
+
+const theme = localStorage.getItem('theme') || 'dark';
+if (localStorage.getItem('theme') === null) {
+  // For first time users set dark theme as default
+  localStorage.setItem('theme', 'dark');
+}
+document.body.setAttribute('data-theme', theme);
 
 const MainLayout = () => {
   return (

@@ -38,12 +38,12 @@
   }
 
   .sidebar-top:hover {
-    background-color: #19adc7;
+    background-color: var(--bar-top-hover);
     transition: background-color 0.2s;
   }
 
   .sidebar-top:active {
-    background-color: #199ec7;
+    background-color: var(--bar-top-active);
     transition: background-color 0.2s;
   }
 
