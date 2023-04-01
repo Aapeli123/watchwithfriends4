@@ -18,7 +18,7 @@ const connSlice = createSlice({
   initialState: initialState,
   name: 'connection',
   reducers: {
-    startConnecting: state => {
+    startConnecting: (state, action: PayloadAction<string>) => {
       state.isConnecting = true;
       state.connectionFailed = false;
     },

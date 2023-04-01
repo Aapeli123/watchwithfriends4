@@ -80,7 +80,7 @@ const connMiddleware: Middleware = store => {
     next(action);
     if (startConnecting.match(action)) {
       try {
-        connection = await connect(serverURL);
+        connection = await connect(action.payload);
       } catch (err) {
         console.log("Err: " + err);
         store.dispatch(connectionFailed());

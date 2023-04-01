@@ -30,6 +30,17 @@ import {
 import Prompt from './ui/modals/prompt/Prompt';
 import SideBar from './ui/SideBar';
 import TopBar from './ui/TopBar';
+import ServerChanger from "./pages/Settings/ServerChanger";
+
+
+export const getBackURL = () => {
+  const url = localStorage.getItem("backendUrl");
+  if(url === null) {
+    localStorage.setItem("backendUrl", "wss://watchwithfriends.ml/ws")
+    return "wss://watchwithfriends.ml/ws"
+  }
+  return url;
+}
 
 const MainLayout = () => {
   return (
@@ -74,7 +85,7 @@ function App(): JSX.Element {
       console.log('Already connected.');
       return;
     }
-    dispatch(startConnecting());
+    dispatch(startConnecting(getBackURL()));
   }, [roomLoaded]);
 
   const unPromptCB = (un: string) => {
@@ -92,7 +103,8 @@ function App(): JSX.Element {
   if (connectionFailed) {
     return <>
       <h1>Connection failed</h1>
-      <button onClick={() => dispatch(startConnecting())}> Retry </button>
+      <button onClick={() => dispatch(startConnecting(getBackURL()))}> Retry </button>
+      <ServerChanger />
     </>
   }
 
