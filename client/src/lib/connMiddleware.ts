@@ -124,7 +124,9 @@ const connMiddleware: Middleware = store => {
     } else if (makeLeader.match(action)) {
       await connection.makeLeader(action.payload);
     } else if (sync.match(action)) {
-      await connection.syncTime(action.payload);
+      const state = store.getState();
+      if (state.conn.userID === state.room.leaderId)
+        await connection.syncTime(action.payload);
     } else if (setPlay.match(action)) {
       await connection.setPlay(action.payload);
     } else if (setVideo.match(action)) {
