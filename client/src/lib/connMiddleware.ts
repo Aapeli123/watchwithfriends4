@@ -31,6 +31,7 @@ import {
 } from '../store/room';
 import connect, { ServerConn } from './conn';
 import { Response } from './messages';
+import { RootState } from '../store/store';
 const serverURL = 'ws://localhost:8080';
 let msgCallback: ((msg: Response.WsResponse) => void) | undefined = undefined;
 
@@ -74,7 +75,12 @@ const connMiddleware: Middleware = store => {
         break;
       case Response.MessageType.Sync:
         let syncmsg = msg.message as Response.Sync;
-        store.dispatch(setTime(syncmsg));
+        let state = store.getState() as RootState;
+        if (
+          Math.abs(state.room.time - syncmsg.time) >= 1.75 &&
+          state.conn.userID !== state.room.leaderId
+        )
+          store.dispatch(setTime(syncmsg));
         break;
     }
     if (msgCallback !== undefined) msgCallback(msg);
