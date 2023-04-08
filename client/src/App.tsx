@@ -34,7 +34,7 @@ import ServerChanger from './pages/Settings/ServerChanger';
 export const getBackURL = () => {
   const url = localStorage.getItem('backendUrl');
   if (url === null) {
-    localStorage.setItem('backendUrl', 'wss://watchwithfriends.ml/ws');
+    localStorage.setItem('backendUrl', 'wss://watchwithfriends.live/ws');
     return 'wss://watchwithfriends.ml/ws';
   }
   return url;
