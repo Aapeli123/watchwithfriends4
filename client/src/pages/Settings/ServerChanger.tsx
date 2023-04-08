@@ -37,7 +37,7 @@ const ServerChanger = () => {
         <input type={'submit'} value={'Change'} />
       </form>
       <br />
-      <button onClick={() => changeServerUrl('wss://watchwithfriends.ml/ws')}>
+      <button onClick={() => changeServerUrl('wss://watchwithfriends.live/ws')}>
         Reset server url
       </button>
     </>
