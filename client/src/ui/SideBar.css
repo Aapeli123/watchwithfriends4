@@ -125,7 +125,7 @@
     text-align: center;
     margin: 0;
     margin-top: calc(20px - 1em);
-    color: white;
+    color: var(--text-color);
   }
 
   .sidebar-item {
