@@ -20,15 +20,15 @@
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 .modal-content {
-  background-color: #2d2e2e;
-  color: white;
+  background-color: var(--modal-background);
+  color: var(--modal-text);
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   padding-top: 5px;
   display: block !important;
   border: none;
   border-bottom-left-radius: 15px;
-  box-shadow: 0px 0px 2px 2px #19c1c7 inset;
+  box-shadow: 0px 0px 2px 2px var(--modal-accent) inset;
   overflow: hidden;
   text-align: center;
 }
@@ -64,9 +64,9 @@
   padding: 0;
   margin-right: 1px;
   vertical-align: middle;
-  background-color: #0e0e0e;
-  color: white;
-  caret-color: #19c1c7;
+  background-color: var(--modal-input);
+  color: var(--modal-text);
+  caret-color: var(--modal-accent);
 }
 
 .modal-content input[type='text']:focus {
@@ -88,15 +88,15 @@
   border: none;
   padding: 0;
   vertical-align: middle;
-  color: white;
-  background-color: #19c1c7;
+  color: var(--modal-text);
+  background-color: var(--modal-accent);
 }
 
 .modal-content button {
   border: none;
   border-radius: 0;
-  background-color: #19c1c7;
-  color: white;
+  background-color: var(--modal-accent);
+  color: var(--modal-text);
   width: fit-content;
   font-size: 15px;
 }

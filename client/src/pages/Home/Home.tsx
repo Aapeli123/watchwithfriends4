@@ -1,8 +1,7 @@
 import './Home.css';
-import { ServerConn } from '../../lib/conn';
 import RoomCode from '../RoomCodeEntry/RoomCode';
 
-const Home = (props: { conn: ServerConn }) => {
+const Home = () => {
   return (
     <div className="home">
       <h1>Welcome to watch with friends!</h1>
@@ -12,7 +11,7 @@ const Home = (props: { conn: ServerConn }) => {
       </p>
       <div className="mobile">
         <h2>Join a room:</h2>
-        <RoomCode conn={props.conn} />
+        <RoomCode />
       </div>
     </div>
   );

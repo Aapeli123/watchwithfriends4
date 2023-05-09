@@ -6,23 +6,24 @@ import {
   useSelector,
 } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { ServerConn } from '../lib/conn';
-import { RootState } from '../store/store';
+import { RootState, store } from '../store/store';
 import { showVideoPrompt } from '../store/ui';
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './SideBar.css';
 
-import logo from './logo_final.png';
+import logo from './logo_sm.webp';
 import AlertWithChildren from './modals/alert/AlertWithChildren';
+import { createRoom, makeLeader } from '../store/room';
 
-const RoomBar = (props: { conn: ServerConn }) => {
+const RoomBar = () => {
   const { store } =
     useContext<ReactReduxContextValue<RootState>>(ReactReduxContext);
   const roomCode = useSelector((state: RootState) => state.room.roomCode);
   const [showUsers, setShowUsers] = useState(false);
   const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.conn.userID);
   const leaderId = useSelector((state: RootState) => state.room.leaderId);
 
   const changeVideo = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -58,11 +59,8 @@ const RoomBar = (props: { conn: ServerConn }) => {
   };
 
   const users = useSelector((state: RootState) => state.room.users);
-  const makeLeader = async (user_id: string) => {
-    const res = await props.conn.makeLeader(user_id);
-    if (!res.success) {
-      console.log('Something went horribly wrong...');
-    }
+  const newLeader = async (user_id: string) => {
+    dispatch(makeLeader(user_id));
   };
   return (
     <>
@@ -99,16 +97,15 @@ const RoomBar = (props: { conn: ServerConn }) => {
                     <h6>
                       {users[id].name} {id === leaderId && '(Leader)'}
                     </h6>
-                    {props.conn.user_id === leaderId &&
-                      id !== props.conn.user_id && (
-                        <button
-                          onClick={() => {
-                            makeLeader(id);
-                          }}
-                        >
-                          Make leader
-                        </button>
-                      )}
+                    {userId === leaderId && id !== userId && (
+                      <button
+                        onClick={() => {
+                          newLeader(id);
+                        }}
+                      >
+                        Make leader
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -125,7 +122,7 @@ const RoomBar = (props: { conn: ServerConn }) => {
                       <h2>
                         {users[id].name} {id === leaderId && '(Leader)'}
                       </h2>
-                      {leaderId === props.conn.user_id && id !== leaderId && (
+                      {leaderId === userId && id !== leaderId && (
                         <button onClick={() => makeLeader(id)}>
                           Make leader
                         </button>
@@ -139,7 +136,7 @@ const RoomBar = (props: { conn: ServerConn }) => {
           </>
         )}
 
-        {leaderId === props.conn.user_id && (
+        {leaderId === userId && (
           <div className="sidebar-item" onClick={changeVideo}>
             <h4>
               <span className="material-icons">video_settings</span>
@@ -160,15 +157,14 @@ const RoomBar = (props: { conn: ServerConn }) => {
   );
 };
 
-const HomeBar = (props: { conn: ServerConn }) => {
+const HomeBar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.pref.username);
   const createRoomClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
-      console.log(username);
-      let r = await props.conn.createRoom(username);
-      navigate(`room/${r.room_code}`);
+      dispatch(createRoom({ username: store.getState().pref.username }));
     } catch {
       console.log('Room creation failed...');
     }
@@ -176,17 +172,17 @@ const HomeBar = (props: { conn: ServerConn }) => {
   return (
     <>
       <div className="side-bar">
-        <Link to={'/'}>
+        <Link aria-label={"Go Home"} to={'/'}>
           <div className="sidebar-top-responsive">
-            <img className="logo-img" src={logo} />
+            <img className="logo-img" src={logo}  alt={"logo"}/>
           </div>
         </Link>
-        <Link to={'/joinroom'}>
+        <Link aria-label={"Join a room"} to={'/joinroom'}>
           <div className="sidebar-top desktop">
             <h2>Join Room</h2>
           </div>
         </Link>
-        <a href="" onClick={createRoomClick}>
+        <a href="/" onClick={createRoomClick}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">add</span>
@@ -194,7 +190,7 @@ const HomeBar = (props: { conn: ServerConn }) => {
             </h4>
           </div>
         </a>
-        <Link to={'/info'}>
+        <Link aria-label={"More information about website"} to={'/info'}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">menu_book</span>
@@ -202,7 +198,7 @@ const HomeBar = (props: { conn: ServerConn }) => {
             </h4>
           </div>
         </Link>
-        <Link to={'/settings'}>
+        <Link aria-label={"Go to settings"} to={'/settings'}>
           <div className="sidebar-item">
             <h4>
               <span className="material-icons">settings</span>
@@ -215,14 +211,10 @@ const HomeBar = (props: { conn: ServerConn }) => {
   );
 };
 
-const SideBar = (props: { conn: ServerConn }) => {
+const SideBar = () => {
   const roomBar = useSelector((state: RootState) => state.ui.roomBar);
 
-  return roomBar ? (
-    <RoomBar conn={props.conn} />
-  ) : (
-    <HomeBar conn={props.conn} />
-  );
+  return roomBar ? <RoomBar /> : <HomeBar />;
 };
 
 export default SideBar;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Response } from '../lib/messages';
+import { Response, Sendable } from '../lib/messages';
 
 const roomSlice = createSlice({
   name: 'roomData',
@@ -11,8 +11,36 @@ const roomSlice = createSlice({
     users: {} as { [key: string]: { name: string } },
     time: 0,
     roomLoaded: false,
+    roomLoading: false,
+    roomLoadFailed: false,
   },
   reducers: {
+    joinRoom: (state, action: PayloadAction<string>) => {
+      state.roomLoading = true;
+      state.roomLoadFailed = false;
+    },
+
+    joinFailed: state => {
+      state.roomLoading = false;
+      state.roomLoadFailed = true;
+    },
+    joinSuccess: state => {
+      state.roomLoaded = true;
+      state.roomLoading = false;
+    },
+    createRoom: (state, action: PayloadAction<Sendable.CreateRoom>) => {
+      state.roomLoading = true;
+      state.roomLoadFailed = false;
+    },
+    createFailed: state => {
+      state.roomLoading = false;
+      state.roomLoadFailed = true;
+    },
+    createSuccess: (state, action: PayloadAction<Response.CreateRoomResp>) => {
+      state.roomLoaded = true;
+      state.roomLoading = false;
+      state.roomCode = action.payload.room_code;
+    },
     roomData: (state, action: PayloadAction<Response.RoomDataResp>) => {
       const { code, leader_id, playing, time, users, video_id } =
         action.payload.room;
@@ -23,6 +51,7 @@ const roomSlice = createSlice({
       state.users = users;
       state.time = time;
       state.roomLoaded = true;
+      state.roomLoading = false;
     },
     leaveRoom: state => {
       state.roomLoaded = false;
@@ -36,6 +65,7 @@ const roomSlice = createSlice({
     ) => {
       state.users[action.payload.user[0]] = { name: action.payload.user[1] };
     },
+    makeLeader: (state, action: PayloadAction<string>) => {},
     userLeft: (state, action: PayloadAction<Response.UserLeft>) => {
       delete state.users[action.payload.user];
     },
@@ -48,6 +78,10 @@ const roomSlice = createSlice({
     setTime: (state, action: PayloadAction<Response.Sync>) => {
       state.time = action.payload.time;
     },
+    setVideo: (state, action: PayloadAction<string>) => {},
+    setPlay: (state, action: PayloadAction<boolean>) => {},
+    sync: (state, action: PayloadAction<number>) => {},
+    changeName: (state, action: PayloadAction<string>) => {},
     changeUsername: (
       state,
       action: PayloadAction<Response.UserChangedName>
@@ -60,6 +94,7 @@ const roomSlice = createSlice({
 export default roomSlice.reducer;
 
 export const {
+  joinRoom,
   roomData,
   leaveRoom,
   newLeader,
@@ -69,4 +104,14 @@ export const {
   setPlaying,
   setTime,
   changeUsername,
+  joinFailed,
+  createRoom,
+  createFailed,
+  createSuccess,
+  makeLeader,
+  setVideo,
+  sync,
+  setPlay,
+  joinSuccess,
+  changeName,
 } = roomSlice.actions;

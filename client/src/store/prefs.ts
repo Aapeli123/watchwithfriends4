@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
 
 const preferencsSlice = createSlice({
   initialState: () => {

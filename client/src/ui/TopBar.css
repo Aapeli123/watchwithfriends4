@@ -92,7 +92,7 @@
       10px 100%,
       0 30px
     );
-    background-color: #19c1c7;
+    background-color: var(--nickname-set-color);
     padding: 0;
     padding-left: 15px;
     padding-right: 15px;
@@ -104,7 +104,7 @@
     margin-bottom: 10px !important;
   }
   .username-drop-shadow {
-    filter: drop-shadow(4px 4px 2px #000000);
+    filter: drop-shadow(4px 4px 2px var(--shadow-color));
   }
 
   .username-container .material-icons {
@@ -118,7 +118,7 @@
     text-align: right;
     margin-top: calc((var(--top-bar-height) - 10px) / 2 - 0.75em) !important;
   }
-  .username-container h5 {
+  .username-container h3 {
     font-family: Arial;
     text-align: left;
     font-weight: 100;
